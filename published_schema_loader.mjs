@@ -1,0 +1,188 @@
+import { supabase } from "./supabase_client.mjs?v=46fb20f88edd1c0a";
+import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=46fb20f88edd1c0a";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=46fb20f88edd1c0a";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=46fb20f88edd1c0a";
+import { canonicalFolderHash } from "./grouping_schema_writer.mjs?v=46fb20f88edd1c0a";
+import { buildPermalink } from "./dag_permalink.mjs?v=46fb20f88edd1c0a";
+import { deriveDagView } from "./dag_view.mjs?v=46fb20f88edd1c0a";
+import { COMPILED_DAG_PATH, sha256Hex, stableJsonBytes,
+  validateCompiledArtifact } from "./compiled_dag.mjs?v=46fb20f88edd1c0a";
+
+export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=46fb20f88edd1c0a";
+import { publicSchemaBaseUrl as sharedPublicSchemaBaseUrl,
+  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=46fb20f88edd1c0a";
+
+export async function fetchPublishedFile(url, options, fetchImpl, sleep = ms => new Promise(resolve => setTimeout(resolve, ms))) {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    let response;
+    try {
+      response = await fetchImpl(url, options);
+    } catch (error) {
+      if (attempt === 4 || error?.name === "AbortError") {
+        throw new Error(`Could not fetch published schema file ${url}: ${error?.message || error}`, { cause: error });
+      }
+      await sleep(250 * (2 ** attempt));
+      continue;
+    }
+    if ((response.status !== 429 && response.status < 500) || attempt === 4) return response;
+    const retryAfter = Number(response.headers.get("retry-after"));
+    const delay = response.status === 429 && Number.isFinite(retryAfter) && retryAfter > 0
+      ? Math.min(retryAfter * 1000, 5000)
+      : 250 * (2 ** attempt);
+    await sleep(delay);
+  }
+}
+
+export function publicationPermalink(publicationId, location = globalThis.location, state = null) {
+  const origin = location?.origin || PRODUCTION_APP_ORIGIN;
+  const groups = state?.project?.groups || [];
+  const anchor = side => groups.find(group => group.group_id === state?.project?.[`${side}_group_id`]);
+  const hasView = Boolean(anchor("iv")?.variable_ids?.length && anchor("dv")?.variable_ids?.length
+    && state.project.iv_group_id !== state.project.dv_group_id);
+  const url = hasView
+    ? new URL(buildPermalink({
+        location: new URL("/", origin),
+        schemaUrl: "",
+        dataVersion: state.data?.snapshot?.snapshot_id || "",
+        state,
+      }))
+    : new URL("/", origin);
+  url.searchParams.delete("schema_url");
+  url.searchParams.set("schema", publicationId);
+  return url.href;
+}
+
+export function publicationId(location = globalThis.location) {
+  return location ? new URL(location.href).searchParams.get("schema") || "" : "";
+}
+
+export function publicSchemaBaseUrl(client, storagePrefix) {
+  return sharedPublicSchemaBaseUrl(client, storagePrefix);
+}
+
+export async function lookupPublishedSchema(publicationId, client = supabase) {
+  return sharedLookupPublishedSchema(publicationId, client);
+}
+
+export async function loadPublishedSchema(publicationId, client = supabase, fetchImpl = globalThis.fetch) {
+  const publication = await lookupPublishedSchema(publicationId, client);
+  const baseUrl = publicSchemaBaseUrl(client, publication.storage_prefix);
+  const memory = new Map();
+  // Include the compiled manifest binding and a cache-layout revision. This keeps
+  // an artifact cached during a publication cutover from poisoning later loads
+  // after the registry has reached its final immutable state.
+  const cacheName = `echo-published-v2-${publication.content_hash}-${publication.compiled_manifest_hash || "uncompiled"}`;
+  const browserCachePromise = globalThis.caches ? globalThis.caches.open(cacheName) : Promise.resolve(null);
+  const cachingFetch = async (url, options = {}) => {
+    const absolute = new URL(url).href;
+    if (!memory.has(absolute)) {
+      const browserCache = await browserCachePromise;
+      const cached = browserCache ? await browserCache.match(absolute) : null;
+      if (cached) memory.set(absolute, new Uint8Array(await cached.arrayBuffer()));
+      else {
+        const response = await fetchPublishedFile(absolute, options, fetchImpl);
+        if (!response.ok) return response;
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        memory.set(absolute, bytes);
+        // The downloaded bytes are held in memory and checked against the
+        // publication hash. Populating the browser cache need not delay the UI.
+        if (browserCache) void browserCache.put(absolute, new Response(bytes, {
+          status: 200, headers: { "content-type": response.headers?.get?.("content-type") || "application/octet-stream" },
+        })).catch(() => {});
+      }
+    }
+    return new Response(memory.get(absolute), { status: 200 });
+  };
+  let compiledDag = null;
+  let compiledFallbackReason = null;
+  try {
+    if (!publication.compiled_manifest_path || !publication.compiler_version) {
+      throw new Error("Published schema has no compiled DAG artifact.");
+    }
+    const manifestResponse = await cachingFetch(new URL(publication.compiled_manifest_path, baseUrl));
+    if (!manifestResponse.ok) throw new Error("Published schema has no compiled DAG artifact.");
+    const manifest = await manifestResponse.json();
+    const dagPath = manifest.artifacts?.dag?.path || COMPILED_DAG_PATH;
+    const dagResponse = await cachingFetch(new URL(dagPath, baseUrl));
+    if (!dagResponse.ok) throw new Error("Published schema has no compiled DAG artifact.");
+    const dag = await dagResponse.json();
+    if (publication.compiled_manifest_hash
+        && await sha256Hex(stableJsonBytes(manifest)) !== publication.compiled_manifest_hash) {
+      throw new Error("Compiled manifest registry hash mismatch.");
+    }
+    compiledDag = await validateCompiledArtifact({ publication, manifest, dag });
+  } catch (error) {
+    compiledFallbackReason = error instanceof Error ? error.message : String(error);
+  }
+  if (!compiledDag) {
+    throw new Error(`Published schema has no valid compiled DAG: ${compiledFallbackReason}`);
+  }
+  const schema = {
+    schema_version: GROUPING_FORMAT_VERSION,
+    grouping_set_id: publication.id,
+    label: publication.title || "Published grouping schema",
+    description: publication.description || "",
+    membership_unit: GROUPING_MEMBERSHIP_UNIT,
+    built_against: { record_signature: publication.evidence_snapshot },
+    cache_compatibility: { record_signature: publication.evidence_snapshot },
+    groups: compiledDag.nodes.map(node => ({ group_id: node.group_id, label: node.label,
+      member_count: node.member_count, variable_ids: [] })),
+    rejected_variables: [],
+  };
+  const loadSchema = async ({ onPriorityReady = () => {} } = {}) => {
+    const loadingStart = performance.now();
+    const schemaFiles = new Map();
+    const schemaFetch = async (url, options) => {
+      const response = await cachingFetch(url, options);
+      if (response.ok) {
+        const relative = new URL(url).href.slice(new URL(baseUrl).href.length);
+        schemaFiles.set(relative, new Uint8Array(await response.clone().arrayBuffer()));
+      }
+      return response;
+    };
+    const staged = await loadGroupingSchemaStructure(baseUrl, schemaFetch);
+    performance.measure("echo:schema:structure", { start: loadingStart, end: performance.now() });
+    const parameters = new URL(globalThis.location?.href || "http://localhost/").searchParams;
+    const bool = (key, fallback) => parameters.has(key) ? parameters.get(key) === "1" : fallback;
+    const ivId = parameters.get("iv"), dvId = parameters.get("dv");
+    const instrumentId = parameters.get("instrument");
+    const instrumentReady = Boolean(instrumentId && instrumentId !== ivId && instrumentId !== dvId
+      && schema.groups.some(group => group.group_id === instrumentId));
+    const showExogeneity = instrumentReady && bool("exog", false);
+    const displayed = parameters.get("p") === "1" && ivId && dvId
+      ? [...deriveDagView({
+          groups: schema.groups,
+          links: compiledDag.edges,
+          ivId,
+          dvId,
+          instrumentId: instrumentReady ? instrumentId : null,
+          maxPathLength: Math.max(1, Math.min(99, Number(parameters.get("path")) || 1)),
+          excludeBottlenecked: bool("bottle", true),
+          filterByCausalRelevance: false,
+          showConfoundersOnly: !instrumentReady && bool("conf", !parameters.has("coll")),
+          showCollidersOnly: !instrumentReady && bool("coll", false),
+          showExclusionViolations: instrumentReady && !showExogeneity,
+          showExogeneity,
+          exclusionMaxPathLength: Math.max(2, Math.min(99, Number(parameters.get("exclusion_path")) || 2)),
+          hideIrrelevantDiagnosticLinks: bool("paths", true),
+        }).componentGroupIds]
+      : [ivId, dvId].filter(Boolean);
+    await staged.loadMemberships(displayed);
+    const priorityStart = performance.now();
+    // A plain viewer has no priority groups. Publishing an empty partial schema
+    // would briefly clear the compiled graph and force a second full layout.
+    const priorityReady = displayed.length ? structuredClone(staged.schema) : null;
+    if (priorityReady) await onPriorityReady({ schema: priorityReady, groupIds: displayed });
+    performance.measure("echo:schema:priority", { start: loadingStart, end: performance.now() });
+    const complete = await staged.loadComplete();
+    performance.measure("echo:schema:memberships", { start: priorityStart, end: performance.now() });
+    const integrityStart = performance.now();
+    const downloadedHash = await canonicalFolderHash(schemaFiles);
+    performance.measure("echo:schema:integrity", { start: integrityStart, end: performance.now() });
+    if (downloadedHash !== publication.content_hash) {
+      throw new Error(`Published schema hash mismatch: registry ${publication.content_hash}, downloaded ${downloadedHash}.`);
+    }
+    return { schema: complete, priorityReady };
+  };
+  return { schema, loadSchema, publication, compiledDag, compiledFallbackReason };
+}

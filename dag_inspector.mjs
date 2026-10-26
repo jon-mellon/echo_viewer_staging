@@ -1,0 +1,148 @@
+import { directedGroupLabels } from "./dag_exports.mjs?v=46fb20f88edd1c0a";
+import { displayPaperTableKey } from "./dag_display.mjs?v=46fb20f88edd1c0a";
+
+export function diagnosticEvidenceDirection(link, {
+  showConfoundersOnly = false,
+  showCollidersOnly = false,
+  showExclusionViolations = false,
+  showExogeneity = false,
+  confounderPathsByGroup = new Map(),
+  colliderPathsByGroup = new Map(),
+  exclusionPathsByGroup = new Map(),
+  exogeneityPathsByGroup = new Map(),
+} = {}) {
+  if (!link || (!showConfoundersOnly && !showCollidersOnly && !showExclusionViolations && !showExogeneity)) return null;
+  if (showExclusionViolations) {
+    let aToB = false, bToA = false;
+    for (const path of exclusionPathsByGroup.values()) for (let index = 0; index < path.length - 1; index += 1) {
+      if (path[index] === link.group_a && path[index + 1] === link.group_b) aToB = true;
+      if (path[index] === link.group_b && path[index + 1] === link.group_a) bToA = true;
+    }
+    return aToB === bToA ? null : aToB ? "A_TO_B" : "B_TO_A";
+  }
+  const pathsByGroup = showExogeneity ? exogeneityPathsByGroup
+    : showConfoundersOnly ? confounderPathsByGroup : colliderPathsByGroup;
+  const pathFields = showConfoundersOnly || showExogeneity ? ["toIv", "toDv"] : ["fromIv", "fromDv"];
+  let aToB = false;
+  let bToA = false;
+  for (const paths of pathsByGroup?.values?.() || []) {
+    for (const field of pathFields) {
+      const path = paths?.[field] || [];
+      for (let index = 0; index < path.length - 1; index += 1) {
+        const from = path[index], to = path[index + 1];
+        if (from === link.group_a && to === link.group_b) aToB = true;
+        if (from === link.group_b && to === link.group_a) bToA = true;
+      }
+    }
+  }
+  if (aToB === bToA) return null;
+  return aToB ? "A_TO_B" : "B_TO_A";
+}
+
+export function edgeInspector(link, project, diagnosticView = {}) {
+  if (!link) return null;
+  const preferredDirection = diagnosticEvidenceDirection(link, diagnosticView);
+  const forwardIds = link.a_to_b_raw_link_ids || [];
+  const reverseIds = link.b_to_a_raw_link_ids || [];
+  const rawIds = [...new Set(preferredDirection === "B_TO_A"
+    ? [...reverseIds, ...forwardIds]
+    : [...forwardIds, ...reverseIds])];
+  return {
+    ...directedGroupLabels(link, project.groups, "↔"),
+    rawIds, rawCount: rawIds.length,
+    existingDecision: project.link_decisions[link.edge_id],
+    actions: [link.display_status === "excluded" || project.link_decisions[link.edge_id]?.display_status === "excluded"
+      ? { action: "restore", label: "Restore" }
+      : { action: "exclude", label: "Exclude" }],
+  };
+}
+
+export function studyInspector(project, rawLinksById) {
+  const link = project?.links?.find(candidate => candidate.is_target_relation);
+  if (!link) return null;
+  const rawIds = [...new Set([...(link.a_to_b_raw_link_ids || []), ...(link.b_to_a_raw_link_ids || [])])];
+  const keys = [...new Set(rawIds.map(id => {
+    const raw = rawLinksById.get(id);
+    return raw ? displayPaperTableKey(`${raw.paper_id || "unknown"}::${raw.within_table_occurrence_id || "unknown"}`) : "";
+  }).filter(Boolean))].slice(0, 8);
+  return {
+    sourceLabel: project.groups.find(g => g.group_id === project.iv_group_id)?.label || "IV",
+    targetLabel: project.groups.find(g => g.group_id === project.dv_group_id)?.label || "DV",
+    rawIds, keys,
+  };
+}
+
+/** Group labels per variable, in schema order, so each evidence row avoids scanning every membership. */
+export function groupLabelsByVariable(groups) {
+  const labels = new Map();
+  for (const group of groups || []) {
+    for (const id of group.variable_ids || []) {
+      if (!labels.has(id)) labels.set(id, []);
+      labels.get(id).push(group.label || group.group_id);
+    }
+  }
+  return labels;
+}
+
+export function provenanceVariable(variableId, variables, labelsByVariable) {
+  const variable = variables.get(variableId);
+  return {
+    concept: variable?.concept_label || variable?.display_label || variableId || "",
+    classifications: [...new Set(labelsByVariable.get(variableId) || [])],
+  };
+}
+
+/** One page of evidence rows, with the requested page clamped to those available. */
+export function provenancePage(rows, page, pageSize) {
+  const pageCount = Math.max(1, Math.ceil(rows.length / pageSize));
+  const current = Math.min(Math.max(0, page), pageCount - 1);
+  const start = current * pageSize;
+  return { page: current, pageCount, start, end: Math.min(start + pageSize, rows.length),
+    rows: rows.slice(start, start + pageSize), total: rows.length };
+}
+
+export function provenanceModel(link, project, rawLinksById, variables, diagnosticView = {}) {
+  const edge = edgeInspector(link, project, diagnosticView);
+  if (!edge) return null;
+  const groupLabel = id => project.groups.find(group => group.group_id === id)?.label || id;
+  const owners = new Map(project.groups.flatMap(group => (group.variable_ids || []).map(id => [id, group.group_id])));
+  const excluded = Object.keys(project.finding_decisions || {}).map(id => rawLinksById.get(id)).filter(Boolean);
+  const excludedFor = (source, target) => excluded.filter(raw =>
+    owners.get(raw.source_variable_id) === source && owners.get(raw.target_variable_id) === target)
+    .map(raw => raw.raw_causal_link_id);
+  const sections = [
+    { direction: "A_TO_B", sourceLabel: groupLabel(link.group_a), targetLabel: groupLabel(link.group_b),
+      rawIds: [...(link.a_to_b_raw_link_ids || []), ...excludedFor(link.group_a, link.group_b)] },
+    { direction: "B_TO_A", sourceLabel: groupLabel(link.group_b), targetLabel: groupLabel(link.group_a),
+      rawIds: [...(link.b_to_a_raw_link_ids || []), ...excludedFor(link.group_b, link.group_a)] },
+  ];
+  if (diagnosticEvidenceDirection(link, diagnosticView) === "B_TO_A") sections.reverse();
+  const seen = new Set();
+  const labelsByVariable = groupLabelsByVariable(project.groups);
+  const populatedSections = sections.map(section => ({
+    ...section,
+    rows: section.rawIds.filter(id => {
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    }).map(id => rawLinksById.get(id)).filter(Boolean).map(raw => ({
+      raw,
+      source: provenanceVariable(raw.source_variable_id, variables, labelsByVariable),
+      target: provenanceVariable(raw.target_variable_id, variables, labelsByVariable),
+    })),
+  }));
+  return { ...edge, rawIds: [...seen], sections: populatedSections,
+    rows: populatedSections.flatMap(section => section.rows) };
+}
+
+export function variableComparison(source, target, forwardIds, reverseIds, rawLinksById) {
+  const rows = [
+    ...forwardIds.map(id => ({ id, direction: "→" })),
+    ...reverseIds.map(id => ({ id, direction: "←" })),
+  ].map(({ id, direction }) => ({ ...rawLinksById.get(id), direction }))
+    .filter(link => link.raw_causal_link_id);
+  return { rows,
+    sourceLabel: source.display_label || source.concept_label || source.variable_id,
+    targetLabel: target.display_label || target.concept_label || target.variable_id,
+  };
+}
