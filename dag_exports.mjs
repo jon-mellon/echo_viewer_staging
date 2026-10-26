@@ -1,8 +1,8 @@
-import { PROJECT_FORMAT_VERSION, WORKING_MAP_FORMAT_VERSION } from "./app_contracts.mjs?v=d63e4b66e75f63fc";
-import { escapeHtml } from "./text_utils.mjs?v=d63e4b66e75f63fc";
-import { CONFOUNDER_STATUSES, confounderRows } from "./confounder_status.mjs?v=d63e4b66e75f63fc";
+import { PROJECT_FORMAT_VERSION, WORKING_MAP_FORMAT_VERSION } from "./app_contracts.mjs?v=b0db776905e82974";
+import { escapeHtml } from "./text_utils.mjs?v=b0db776905e82974";
+import { CONFOUNDER_STATUSES, confounderRows } from "./confounder_status.mjs?v=b0db776905e82974";
 
-/** @typedef {import("./app_contracts.mjs?v=d63e4b66e75f63fc").SerializedProjectPayload} SerializedProjectPayload */
+/** @typedef {import("./app_contracts.mjs?v=b0db776905e82974").SerializedProjectPayload} SerializedProjectPayload */
 
 // Pure export generation. The caller supplies a snapshot, metadata and timestamps.
 // Returned file records contain content only; fetching and downloading stay in the UI.

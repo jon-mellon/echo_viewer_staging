@@ -1,5 +1,5 @@
-import * as projectOps from "./dag_project.mjs?v=d63e4b66e75f63fc";
-import * as mapInteractions from "./map_interactions.mjs?v=d63e4b66e75f63fc";
+import * as projectOps from "./dag_project.mjs?v=b0db776905e82974";
+import * as mapInteractions from "./map_interactions.mjs?v=b0db776905e82974";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,

@@ -1,11 +1,12 @@
-import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=d63e4b66e75f63fc";
+import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=b0db776905e82974";
 import { evidenceManifestUrl, evidenceSnapshotIdFromManifestUrl, groupingSchemaUrl,
-  schemaPublicationId } from "./dag_data_config.mjs?v=d63e4b66e75f63fc";
+  schemaPublicationId } from "./dag_data_config.mjs?v=b0db776905e82974";
 import { browserV2ManifestLayout, browserV2ShardPath,
-  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=d63e4b66e75f63fc";
-import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=d63e4b66e75f63fc";
-import { loadPublishedSchema } from "./published_schema_loader.mjs?v=d63e4b66e75f63fc";
-import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=d63e4b66e75f63fc";
+  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=b0db776905e82974";
+import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=b0db776905e82974";
+import { loadPublishedSchema } from "./published_schema_loader.mjs?v=b0db776905e82974";
+import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=b0db776905e82974";
+import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=b0db776905e82974";
 
 // Reading many small remote Parquet shards incurs a separate metadata/range
 // round trip for each shard. The canonical snapshot is cheaper for wide groups.
@@ -93,7 +94,7 @@ export class ParquetManifestDagDataSource {
     this.onStatus("Starting query engine…");
     const engineStart = performance.now();
     const mainModule = new URL("./vendor/duckdb/duckdb-eh.wasm", import.meta.url).href;
-    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=d63e4b66e75f63fc", import.meta.url).href;
+    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=b0db776905e82974", import.meta.url).href;
     const worker = new Worker(mainWorker);
     const database = new duckdb.AsyncDuckDB(
       new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
@@ -242,6 +243,15 @@ export class ParquetManifestDagDataSource {
         WHERE raw_causal_link_id IN (${placeholders})`, batch));
     }
     return rows;
+  }
+
+  async loadPanelEvidence(rawLinkIds) {
+    try {
+      return await evidencePanelCatalog.load(evidenceSnapshotIdFromManifestUrl(this.manifestUrl), rawLinkIds);
+    } catch (error) {
+      console.warn("Evidence bundle unavailable; using snapshot retrieval.", error);
+      return null;
+    }
   }
 
   async loadRawLinkSupportByIds(rawLinkIds) {
