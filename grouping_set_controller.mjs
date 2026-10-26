@@ -1,15 +1,30 @@
-import * as projectOps from "./dag_project.mjs?v=46fb20f88edd1c0a";
-import { groupingSchemaUrl } from "./dag_data_config.mjs?v=46fb20f88edd1c0a";
-import { buildPermalink, CUSTOM_SCHEMA_INSTRUCTIONS, schemaMatchesProject } from "./dag_permalink.mjs?v=46fb20f88edd1c0a";
-import { writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=46fb20f88edd1c0a";
-import { makeZip } from "./dag_export_zip.mjs?v=46fb20f88edd1c0a";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=46fb20f88edd1c0a";
-import { createGroupingSetPresenter } from "./grouping_set_presenter.mjs?v=46fb20f88edd1c0a";
+import * as projectOps from "./dag_project.mjs?v=c072f4e9bc302b4b";
+import { groupingSchemaUrl } from "./dag_data_config.mjs?v=c072f4e9bc302b4b";
+import { buildPermalink, CUSTOM_SCHEMA_INSTRUCTIONS, schemaMatchesProject } from "./dag_permalink.mjs?v=c072f4e9bc302b4b";
+import { writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=c072f4e9bc302b4b";
+import { makeZip } from "./dag_export_zip.mjs?v=c072f4e9bc302b4b";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=c072f4e9bc302b4b";
+import { createGroupingSetPresenter } from "./grouping_set_presenter.mjs?v=c072f4e9bc302b4b";
 
 export function createGroupingSetController({ state, elements, publicationController, exportController,
   rejectedVariableEntries, rejectedVariableIdSet, applyProjectOperation, normalizeProjectDuplicateAssignments,
   groupById, nowIso }) {
   const presenter = createGroupingSetPresenter({ elements });
+  let canonicalMemberships = new WeakMap();
+  let membershipClusters = state.clusterOf;
+  function canonicalIds(ids) {
+    if (membershipClusters !== state.clusterOf) {
+      membershipClusters = state.clusterOf;
+      canonicalMemberships = new WeakMap();
+    }
+    let cached = canonicalMemberships.get(ids);
+    if (!cached || cached.original.length !== ids.length
+      || ids.some((id, index) => id !== cached.original[index])) {
+      cached = { original: [...ids], canonical: [...new Set(ids.map(id => state.clusterOf.get(id) || id))].sort() };
+      canonicalMemberships.set(ids, cached);
+    }
+    return [...cached.canonical];
+  }
   function active() {
     return (state.data.grouping_sets || []).find(set => set.grouping_set_id === state.project.active_grouping_set_id)
       || (state.data.grouping_sets || [])[0];
@@ -38,7 +53,7 @@ export function createGroupingSetController({ state, elements, publicationContro
     const sourceGroups = new Map((source.groups || []).map(group => [group.group_id, group]));
     const owners = new Map();
     const groups = state.project.groups.filter(group => group.variable_ids?.length).map(group => {
-      const variable_ids = [...new Set(group.variable_ids.map(id => state.clusterOf.get(id) || id))].sort();
+      const variable_ids = canonicalIds(group.variable_ids);
       for (const id of variable_ids) {
         const owner = owners.get(id);
         if (owner && owner !== group.group_id) throw new Error(`Canonical variable ${id} belongs to both ${owner} and ${group.group_id}.`);

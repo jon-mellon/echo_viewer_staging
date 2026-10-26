@@ -1,12 +1,12 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=46fb20f88edd1c0a";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=46fb20f88edd1c0a";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=46fb20f88edd1c0a";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=46fb20f88edd1c0a";
-import * as dagDisplay from "./dag_display.mjs?v=46fb20f88edd1c0a";
-import * as workflow from "./dag_workflow.mjs?v=46fb20f88edd1c0a";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=46fb20f88edd1c0a";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=46fb20f88edd1c0a";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=46fb20f88edd1c0a";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=c072f4e9bc302b4b";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=c072f4e9bc302b4b";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=c072f4e9bc302b4b";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=c072f4e9bc302b4b";
+import * as dagDisplay from "./dag_display.mjs?v=c072f4e9bc302b4b";
+import * as workflow from "./dag_workflow.mjs?v=c072f4e9bc302b4b";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=c072f4e9bc302b4b";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=c072f4e9bc302b4b";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=c072f4e9bc302b4b";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -48,6 +48,12 @@ function visOptionSignature(params = {}) {
 // vis-network's fit() defaults to maxZoomLevel: 1, leaving small DAGs surrounded
 // by empty canvas even when there is room to display them larger.
 export const DAG_FIT_OPTIONS = { animation: false, maxZoomLevel: Number.MAX_VALUE };
+
+export function isDagDisplayGroup(group) {
+  return group?.type !== "other"
+    && group?.group_id !== "other"
+    && String(group?.label || "").trim().toLowerCase() !== "other";
+}
 
 export function isDagFullyVisible(network, boxes, viewport) {
   if (!network || !boxes.length || !viewport.clientWidth || !viewport.clientHeight) return false;
@@ -207,7 +213,8 @@ function routedDagDataFromRoutes(groups, routes, layout) {
 
 function dagVisibleGroups() {
   const groups = dagGroups();
-  return groups.filter((group) => state.componentGroupIds.has(group.group_id));
+  return groups.filter((group) => state.componentGroupIds.has(group.group_id)
+    && isDagDisplayGroup(group));
 }
 
 function drawConfounderPathLanes(context) {
@@ -338,6 +345,13 @@ function highlightConfounderPaths(groupId) {
 let _dagRenderWorker = null;
 let _dagRenderRequest = 0;
 let _dagRenderedPromise = Promise.resolve();
+const _dagGeometryCache = new Map();
+
+function rememberGeometry(key, geometry) {
+  _dagGeometryCache.delete(key);
+  _dagGeometryCache.set(key, geometry);
+  if (_dagGeometryCache.size > 8) _dagGeometryCache.delete(_dagGeometryCache.keys().next().value);
+}
 
 function renderDag({ reuseGeometry = false } = {}) {
   let resolveRendered;
@@ -356,7 +370,8 @@ function renderDag({ reuseGeometry = false } = {}) {
     els.dagNetwork.style.visibility = "hidden";
   }
 
-  const links = state.visibleLinks.filter((link) => !link.is_target_relation);
+  const links = state.visibleLinks.filter((link) => !link.is_target_relation
+    && nextGroupIds.has(link.group_a) && nextGroupIds.has(link.group_b));
   if (reuseGeometry && !_dagRenderWorker && _visNetwork) {
     const reused = reuseDagGeometry(_dagGeometry, groups, links);
     if (reused) {
@@ -369,8 +384,9 @@ function renderDag({ reuseGeometry = false } = {}) {
   // Layout and obstacle-aware routing are pure but CPU intensive. Keep them off
   // the UI thread so the map and controls can paint immediately during startup.
   const input = {
-    groups,
-    links,
+    groups: groups.map(({ group_id, label }) => ({ group_id, label })),
+    links: links.map(({ edge_id, group_a, group_b, direction_type }) =>
+      ({ edge_id, group_a, group_b, direction_type })),
     centroids: groups.map(group => [group.group_id, groupMapCentroid(group)]),
     ivId: state.project?.iv_group_id,
     dvId: state.project?.dv_group_id,
@@ -388,17 +404,39 @@ function renderDag({ reuseGeometry = false } = {}) {
         ? `colliders:${state.confounderMaxPathLength}:bottlenecked:${state.excludeBottleneckedConfounders}:path-links:${state.hideIrrelevantConfounderLinks}`
         : "all",
   };
+  // Filter names do not affect geometry; the actual nodes, topology, anchors,
+  // centroids and viewport do. Cache those inputs without large memberships or
+  // evidence arrays, and always rebind routes to the current evidence objects.
+  const geometryKey = JSON.stringify({ ...input, viewSignature: undefined });
+  const cached = _dagGeometryCache.get(geometryKey);
+  if (cached) {
+    ++_dagRenderRequest;
+    _dagRenderWorker?.terminate();
+    _dagRenderWorker = null;
+    rememberGeometry(geometryKey, cached);
+    _dagGeometry = cached;
+    const reused = reuseDagGeometry(cached, groups, links);
+    applyDagRender(groups, reused.layout, reused.routes);
+    resolveRendered();
+    return;
+  }
+  function acceptGeometry(layout, routes) {
+    const linksById = new Map(links.map(link => [link.edge_id, link]));
+    const currentRoutes = routes.map(route => ({ ...route, link: linksById.get(route.link.edge_id) }));
+    _dagGeometry = { groupIds: groups.map(group => group.group_id), layout, routes: currentRoutes };
+    rememberGeometry(geometryKey, _dagGeometry);
+    applyDagRender(groups, layout, currentRoutes);
+  }
   const requestId = ++_dagRenderRequest;
   _dagRenderWorker?.terminate();
 
   if (typeof Worker === "undefined") {
     const { layout, routes } = computeDagRender(input);
-    _dagGeometry = { groupIds: groups.map(group => group.group_id), layout, routes };
-    applyDagRender(groups, layout, routes);
+    acceptGeometry(layout, routes);
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=46fb20f88edd1c0a", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=c072f4e9bc302b4b", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -413,8 +451,7 @@ function renderDag({ reuseGeometry = false } = {}) {
     };
     worker.terminate();
     if (_dagRenderWorker === worker) _dagRenderWorker = null;
-    _dagGeometry = { groupIds: groups.map(group => group.group_id), layout, routes: event.data.routes };
-    applyDagRender(groups, layout, event.data.routes);
+    acceptGeometry(layout, event.data.routes);
     resolveRendered();
   });
   worker.addEventListener("error", () => {
@@ -422,8 +459,7 @@ function renderDag({ reuseGeometry = false } = {}) {
     worker.terminate();
     if (_dagRenderWorker === worker) _dagRenderWorker = null;
     const { layout, routes } = computeDagRender(input);
-    _dagGeometry = { groupIds: groups.map(group => group.group_id), layout, routes };
-    applyDagRender(groups, layout, routes);
+    acceptGeometry(layout, routes);
     resolveRendered();
   }, { once: true });
   worker.postMessage({ requestId, input });
@@ -464,14 +500,23 @@ function applyDagRender(groups, layout, routes) {
 
     const changedNodes = nodeData.filter(node =>
       JSON.stringify(node) !== JSON.stringify(previousNodeData.get(node.id)));
-    if (changedNodes.length) _visNodes.update(changedNodes);
     const dropNodes = [...prevNodeIds].filter((id) => !nextNodeIds.has(id));
-    if (dropNodes.length) _visNodes.remove(dropNodes);
-
-    const nextEdgeIds = new Set(edgeData.map((e) => e.id));
-    _visEdges.update(edgeData);
-    const dropEdges = _visEdges.getIds().filter((id) => !nextEdgeIds.has(id));
-    if (dropEdges.length) _visEdges.remove(dropEdges);
+    if (nodeSetChanged && Math.max(prevNodeIds.size, nodeData.length) > 500
+      && changedNodes.length + dropNodes.length > Math.max(prevNodeIds.size, nodeData.length) / 2) {
+      // A large filter transition replaces most route bends. Bind the complete
+      // data once rather than repeatedly rebuilding adjacency as nodes and edges
+      // are updated and removed. Preserve the Network instance and its handlers.
+      _visNodes = new visApi.DataSet(nodeData);
+      _visEdges = new visApi.DataSet(edgeData);
+      _visNetwork.setData({ nodes: _visNodes, edges: _visEdges });
+    } else {
+      if (changedNodes.length) _visNodes.update(changedNodes);
+      if (dropNodes.length) _visNodes.remove(dropNodes);
+      const nextEdgeIds = new Set(edgeData.map((e) => e.id));
+      _visEdges.update(edgeData);
+      const dropEdges = _visEdges.getIds().filter((id) => !nextEdgeIds.has(id));
+      if (dropEdges.length) _visEdges.remove(dropEdges);
+    }
 
     const optionSignature = visOptionSignature(layout.params);
     if (optionSignature !== _visOptionSignature) {
@@ -526,6 +571,7 @@ function applyReusedDagRender(groups, layout, routes) {
   }
   if (changedNodes.length) _visNodes.update(changedNodes);
   _renderedSelectedEdgeId = state.selectedEdgeId;
+  els.dagNetwork.style.visibility = "";
   _visNetwork.redraw();
 }
 

@@ -1,4 +1,4 @@
-import { isPresentLink } from "./dag_link_aggregation.mjs?v=46fb20f88edd1c0a";
+import { isPresentLink } from "./dag_link_aggregation.mjs?v=c072f4e9bc302b4b";
 
 import {
   connectedComponentGraph,
@@ -9,7 +9,7 @@ import {
   filterGraphByLinkPairs,
   filterGraphLinks,
   filterGraphNodes,
-} from "./dag_graph.mjs?v=46fb20f88edd1c0a";
+} from "./dag_graph.mjs?v=c072f4e9bc302b4b";
 
 export function excludedForConnectivity(link) {
   return link.display_status === "excluded" && !link.is_target_relation;
@@ -27,6 +27,7 @@ export function deriveDagView({
   excludeSparseEdges = false,
   minimumEdgePapers = 2,
   rawLinksById = new Map(),
+  edgeSupportById = rawLinksById,
   filterByCausalRelevance = false,
   showConfoundersOnly = false,
   showCollidersOnly = false,
@@ -38,7 +39,7 @@ export function deriveDagView({
   const retainedLinks = excludeSparseEdges ? links.filter(link => {
     const ids = [...(link.a_to_b_raw_link_ids || []), ...(link.b_to_a_raw_link_ids || [])];
     const papers = new Set(ids.flatMap(id => {
-      const evidence = rawLinksById.get(id);
+      const evidence = edgeSupportById.get(id) || rawLinksById.get(id);
       return evidence?.paper_id && isPresentLink(evidence) ? [evidence.paper_id] : [];
     }));
     return papers.size >= minimumEdgePapers;

@@ -1,4 +1,4 @@
-import { aggregateGroupLinks, linkKey } from "./dag_link_aggregation.mjs?v=46fb20f88edd1c0a";
+import { aggregateGroupLinks, linkKey } from "./dag_link_aggregation.mjs?v=c072f4e9bc302b4b";
 
 export const COMPILED_DAG_FORMAT = "echo-compiled-dag-v1";
 export const DAG_COMPILER_VERSION = "1";
@@ -132,8 +132,9 @@ function membership(schema) {
  */
 export function incrementCompiledDag({ compiledDag, oldSchema, newSchema, incidentRawLinks, project = {} }) {
   const oldOwner = membership(oldSchema);
-  const newOwner = membership(newSchema);
-  const changed = new Set([...new Set([...oldOwner.keys(), ...newOwner.keys()])]
+  const sameGroups = oldSchema.groups === newSchema.groups;
+  const newOwner = sameGroups ? oldOwner : membership(newSchema);
+  const changed = sameGroups ? new Set() : new Set([...new Set([...oldOwner.keys(), ...newOwner.keys()])]
     .filter(id => oldOwner.get(id) !== newOwner.get(id)));
   const oldFindings = oldSchema.finding_decisions || {};
   const newFindings = newSchema.finding_decisions || {};
@@ -162,7 +163,12 @@ export function incrementCompiledDag({ compiledDag, oldSchema, newSchema, incide
       b_to_a_present_raw_link_ids: (edge.b_to_a_present_raw_link_ids || edge.b_to_a_raw_link_ids || []).filter(id => !incidentIds.has(id)),
     }];
   }));
-  const additions = fullCompileDag({ schema: newSchema, project, rawLinks: incident }).edges;
+  const incidentGroupIds = new Set(incident.flatMap(link => [
+    newOwner.get(link.source_variable_id), newOwner.get(link.target_variable_id),
+  ]).filter(Boolean));
+  const additionSchema = { ...newSchema,
+    groups: newSchema.groups.filter(group => incidentGroupIds.has(group.group_id)) };
+  const additions = fullCompileDag({ schema: additionSchema, project, rawLinks: incident }).edges;
   for (const addition of additions) {
     const current = edgesById.get(addition.edge_id);
     if (!current) edgesById.set(addition.edge_id, addition);

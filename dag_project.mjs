@@ -1,14 +1,14 @@
-import { rawLinksBetween } from "./dag_link_aggregation.mjs?v=46fb20f88edd1c0a";
+import { rawLinksBetween } from "./dag_link_aggregation.mjs?v=c072f4e9bc302b4b";
 
 // Project data operations. Callers supply timestamps/IDs and duplicate-cluster
 // members; no operation reads UI state, storage, the clock or the network.
 // Unchanged records are shared. Treat all returned data as read-only until the
 // UI adapter applies it; copying entire projects per variable would be wasteful.
 
-import * as visibility from "./variable_visibility.mjs?v=46fb20f88edd1c0a";
+import * as visibility from "./variable_visibility.mjs?v=c072f4e9bc302b4b";
 
-/** @typedef {import("./app_contracts.mjs?v=46fb20f88edd1c0a").Project} Project */
-/** @typedef {import("./app_contracts.mjs?v=46fb20f88edd1c0a").Group} Group */
+/** @typedef {import("./app_contracts.mjs?v=c072f4e9bc302b4b").Project} Project */
+/** @typedef {import("./app_contracts.mjs?v=c072f4e9bc302b4b").Group} Group */
 
 export function withoutGroupReviewStatus(group) {
   const { status, ...definition } = group;
@@ -174,10 +174,13 @@ export function normalizeDuplicateAssignments(project, clusterOf, clusterMembers
       if (!ownerByRep.has(repId)) ownerByRep.set(repId, group.group_id);
     }
   }
+  const repsByGroup = new Map();
+  for (const [repId, groupId] of ownerByRep) {
+    if (!repsByGroup.has(groupId)) repsByGroup.set(groupId, []);
+    repsByGroup.get(groupId).push(repId);
+  }
   for (const group of project.groups || []) {
-    const ownedReps = [...ownerByRep.entries()]
-      .filter(([, groupId]) => groupId === group.group_id)
-      .map(([repId]) => repId);
+    const ownedReps = repsByGroup.get(group.group_id) || [];
     group.variable_ids = [...new Set(ownedReps.flatMap((repId) => clusterMemberIds(repId)))];
     if (Array.isArray(group.seed_variable_ids)) {
       group.seed_variable_ids = [...new Set(

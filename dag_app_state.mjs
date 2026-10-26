@@ -1,13 +1,13 @@
 // @ts-check
 
-/** @typedef {import("./app_contracts.mjs?v=46fb20f88edd1c0a").DagAppState} DagAppState */
+/** @typedef {import("./app_contracts.mjs?v=c072f4e9bc302b4b").DagAppState} DagAppState */
 
 export function createDagAppState(interfaceMode = "classic") {
   return /** @type {DagAppState} */ ({
     interfaceMode,
     data: null,
     variables: [], variableById: new Map(), clusterOf: new Map(), clusterMembers: new Map(),
-    rawLinks: [], rawLinksById: new Map(), linkLookup: new Map(), similarityEdgeMap: new Map(),
+    rawLinks: [], rawLinksById: new Map(), edgeSupportById: new Map(), linkLookup: new Map(), similarityEdgeMap: new Map(),
     compiledDag: null, compiledDagValid: false,
     compiledDagUpdatePromise: null,
     publishedSchemaHydrating: false, publishedSchemaHydrated: true, publishedSchemaLoadFailed: false,

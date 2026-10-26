@@ -1,6 +1,6 @@
-import * as exportData from "./dag_exports.mjs?v=46fb20f88edd1c0a";
-import { makeZip } from "./dag_export_zip.mjs?v=46fb20f88edd1c0a";
-import { setSafeUrl } from "./dom_builder.mjs?v=46fb20f88edd1c0a";
+import * as exportData from "./dag_exports.mjs?v=c072f4e9bc302b4b";
+import { makeZip } from "./dag_export_zip.mjs?v=c072f4e9bc302b4b";
+import { setSafeUrl } from "./dom_builder.mjs?v=c072f4e9bc302b4b";
 
 export const MAX_REFERENCE_ENRICHMENTS = 24;
 
@@ -164,7 +164,25 @@ export function createDagExportController({
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
 
-  function downloadJson(payload, filename) {
+  async function downloadJson(payload, filename) {
+    if (typeof Worker !== "undefined") {
+      let worker;
+      try {
+        const blob = await new Promise((resolve, reject) => {
+          worker = new Worker(new URL("./json_export_worker.mjs?v=c072f4e9bc302b4b", import.meta.url), { type: "module" });
+          worker.onmessage = event => resolve(event.data);
+          worker.onerror = reject;
+          worker.onmessageerror = reject;
+          worker.postMessage(payload);
+        });
+        downloadBlob(blob, filename);
+        return;
+      } catch {
+        // Retain downloads where module workers are unavailable.
+      } finally {
+        worker?.terminate();
+      }
+    }
     downloadBlob(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }), filename);
   }
 
@@ -224,7 +242,7 @@ export function createDagExportController({
 
   function exportProject() {
     aggregateGroupLinks();
-    downloadJson({ ...projectPayload(), exported_at: nowIso() }, "dag_project.json");
+    return downloadJson({ ...projectPayload(), exported_at: nowIso() }, "dag_project.json");
   }
 
   function exportWorkingMap() {

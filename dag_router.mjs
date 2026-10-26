@@ -8,7 +8,8 @@ import {
   routeOverlapPenalty,
   segmentIntersectsExpandedBox,
   simplifyRoute,
-} from "./dag_routing_geometry.mjs?v=46fb20f88edd1c0a";
+  ParallelSegmentIndex,
+} from "./dag_routing_geometry.mjs?v=c072f4e9bc302b4b";
 
 const DEFAULT_CONFIG = {
   hardObstaclePadding: 10,
@@ -1523,11 +1524,7 @@ function fastRouteEdge(link, state) {
         };
       }
 
-      overlap = routeOverlapPenalty(
-        actual,
-        occupiedRoutes,
-        occupiedSegments,
-      );
+      overlap = occupiedSegments.penalty(actual, bestScore - geometryScore);
     }
 
     const score = geometryScore + overlap;
@@ -1798,7 +1795,7 @@ export function routeEdges(
     FAST_OVERLAP ? null : [];
 
   const occupiedSegments =
-    FAST_OVERLAP ? null : [];
+    FAST_OVERLAP ? null : new ParallelSegmentIndex();
 
   let routeCount = 0;
 
@@ -1887,10 +1884,7 @@ export function routeEdges(
         occupied,
       );
 
-      appendOverlapSegments(
-        occupiedSegments,
-        occupied,
-      );
+      occupiedSegments.addRoute(occupied);
     }
 
     routeCount += 1;

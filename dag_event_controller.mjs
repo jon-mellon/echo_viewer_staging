@@ -1,5 +1,5 @@
-import * as projectOps from "./dag_project.mjs?v=46fb20f88edd1c0a";
-import * as mapInteractions from "./map_interactions.mjs?v=46fb20f88edd1c0a";
+import * as projectOps from "./dag_project.mjs?v=c072f4e9bc302b4b";
+import * as mapInteractions from "./map_interactions.mjs?v=c072f4e9bc302b4b";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -9,7 +9,7 @@ export function createDagEventController({
   setWorkflowMode, renderGroupList, closeGroupEditor, discardGroupEditor, selectActiveAnchor,
   addTopNeighborsToActiveGroup, removeTopNeighborsFromActiveGroup, clearActiveGroupVariables,
   renderGroupSeedSearch, renderRejectedVariablesPanel, fitMap, applyProjectOperation,
-  saveProjectLocally, applyActiveGroupingSet, rebuildProject, exportGroupingFolder,
+  saveProjectLocally, applyActiveGroupingSet, rebuildProject, updateDagFilters, exportGroupingFolder,
   copyPermalink, loadDagData, invalidateMapCaches, zoomMap, canvasWidth,
   canvasHeight, toggleFullscreenPanel, renderMapToolbarToggles, clampNumber, setMapMode,
   undo, redo, renderActionHistory, renderDag, setFullscreenPanel,
@@ -188,13 +188,13 @@ function installHandlers() {
   });
   els.toggleSparseEdges.addEventListener("click", () => {
     state.excludeSparseEdges = !state.excludeSparseEdges;
-    rebuildProject();
+    updateDagFilters();
   });
   els.minimumEdgePapers.addEventListener("input", () => {
     const requested = Math.trunc(Number(els.minimumEdgePapers.value));
     if (!Number.isSafeInteger(requested) || requested < 1) return;
     state.minimumEdgePapers = requested;
-    rebuildProject();
+    updateDagFilters();
   });
   els.minimumEdgePapers.addEventListener("change", () => {
     els.minimumEdgePapers.value = String(state.minimumEdgePapers);

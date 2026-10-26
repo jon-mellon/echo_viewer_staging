@@ -1,7 +1,7 @@
 "use strict";
 
-import { computeDagLayout, dagNodeBoxes } from "./dag_layout.mjs?v=46fb20f88edd1c0a";
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=46fb20f88edd1c0a";
+import { computeDagLayout, dagNodeBoxes } from "./dag_layout.mjs?v=c072f4e9bc302b4b";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=c072f4e9bc302b4b";
 
 function nodeBounds(layout) {
   let left = Infinity, right = -Infinity, top = Infinity, bottom = -Infinity;
@@ -67,7 +67,8 @@ export function reuseDagGeometry(geometry, groups, links) {
   const routes = [];
   for (const link of links) {
     const route = routesById.get(link.edge_id);
-    if (!route) return null;
+    if (!route || route.link.group_a !== link.group_a || route.link.group_b !== link.group_b
+      || route.link.direction_type !== link.direction_type) return null;
     routes.push({ ...route, link });
   }
   return { layout: geometry.layout, routes };

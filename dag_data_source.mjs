@@ -1,14 +1,16 @@
-import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=46fb20f88edd1c0a";
+import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=c072f4e9bc302b4b";
 import { evidenceManifestUrl, evidenceSnapshotIdFromManifestUrl, groupingSchemaUrl,
-  schemaPublicationId } from "./dag_data_config.mjs?v=46fb20f88edd1c0a";
+  schemaPublicationId } from "./dag_data_config.mjs?v=c072f4e9bc302b4b";
 import { browserV2ManifestLayout, browserV2ShardPath,
-  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=46fb20f88edd1c0a";
-import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=46fb20f88edd1c0a";
-import { loadPublishedSchema } from "./published_schema_loader.mjs?v=46fb20f88edd1c0a";
+  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=c072f4e9bc302b4b";
+import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=c072f4e9bc302b4b";
+import { loadPublishedSchema } from "./published_schema_loader.mjs?v=c072f4e9bc302b4b";
+import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=c072f4e9bc302b4b";
 
 // Reading many small remote Parquet shards incurs a separate metadata/range
 // round trip for each shard. The canonical snapshot is cheaper for wide groups.
 const CANONICAL_READ_SHARD_THRESHOLD = 8;
+const RAW_LINK_QUERY_BATCH_SIZE = 2048;
 // This immutable evidence build's lookup has exactly one row for each index
 // 1..14284, with shard_id = floor((variable_index - 1) / 256). The fallback
 // below still reads the lookup for every other build.
@@ -78,6 +80,7 @@ export class ParquetManifestDagDataSource {
     performance.measure("echo:evidence:manifest", { start: manifestStart, end: performance.now() });
     this.manifestBaseUrl = manifestUrl;
     this.browserLayout = browserV2ManifestLayout(this.manifest);
+    const mapDownloads = this.prewarmMapFiles ? this.downloadMapFiles() : null;
     this.onStatus("Loading grouping schema…");
     if (!publicationId) {
       this.groupingSet = await loadGroupingSchema(this.schemaUrl);
@@ -90,7 +93,7 @@ export class ParquetManifestDagDataSource {
     this.onStatus("Starting query engine…");
     const engineStart = performance.now();
     const mainModule = new URL("./vendor/duckdb/duckdb-eh.wasm", import.meta.url).href;
-    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=46fb20f88edd1c0a", import.meta.url).href;
+    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=c072f4e9bc302b4b", import.meta.url).href;
     const worker = new Worker(mainWorker);
     const database = new duckdb.AsyncDuckDB(
       new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
@@ -100,8 +103,16 @@ export class ParquetManifestDagDataSource {
     this.connection = await database.connect();
     this.neighborConnection = await database.connect();
     performance.measure("echo:evidence:engine", { start: engineStart, end: performance.now() });
+    if (mapDownloads) {
+      for (const file of await mapDownloads) {
+        if (!file) continue;
+        await database.registerFileBuffer(file.name, file.bytes);
+        this.localParquetFiles ||= new Map();
+        this.localParquetFiles.set(file.url, file.name);
+      }
+    }
     const lookupStart = performance.now();
-    await this.loadBrowserShardLookup();
+    await this.ensureBrowserShardLookup(this.initialLookupIds ?? null);
     performance.measure("echo:evidence:lookup", { start: lookupStart, end: performance.now() });
     const validationStart = performance.now();
     validateBrowserV2EvidenceBinding({
@@ -134,7 +145,7 @@ export class ParquetManifestDagDataSource {
   }
 
   async loadVariableSearchRecords() {
-    await this.ensureEvidenceConnection();
+    await this.ensureEvidenceConnection({ variableIds: [] });
     const canonical = this.canonicalEvidenceRelationUrl("variable_occurrences");
     const urls = canonical ? [canonical] : this.browserUrls(this.browserLayout.variables);
     const quoted = urls.map(url => `'${url.replaceAll("'", "''")}'`).join(",");
@@ -142,9 +153,9 @@ export class ParquetManifestDagDataSource {
       raw_variable_text, paper_id, uoa, index FROM read_parquet([${quoted}]) ORDER BY index`);
   }
 
-  async loadVariableMetadata(variableIds, layoutSource = "") {
+  async loadVariableMetadata(variableIds, layoutSource = "", { mapOnly = false } = {}) {
     const start = performance.now();
-    await this.ensureEvidenceConnection();
+    await this.ensureEvidenceConnection({ variableIds });
     if (!variableIds?.length) return [];
     if (!this.browserShardIds(variableIds).length) return [];
     const layoutStart = performance.now();
@@ -157,17 +168,32 @@ export class ParquetManifestDagDataSource {
     const urls = (canonical ? [canonical] : this.browserUrls(this.browserLayout.variables, variableIds))
       .map(url => `'${url.replaceAll("'", "''")}'`).join(",");
     const queryStart = performance.now();
-    const rows = await queryRows(this.connection, `SELECT o.*, l.map_x, l.map_y
+    const columns = mapOnly ? "o.* EXCLUDE (field_preview_json, metadata_blob_json)" : "o.*";
+    const compactIds = variableIds.length > 32;
+    const requestedIds = compactIds ? "SELECT unnest(CAST(? AS JSON)::VARCHAR[])" : placeholders;
+    const rows = await queryRows(this.connection, `SELECT ${columns}, l.map_x, l.map_y
       FROM read_parquet([${urls}]) o JOIN variable_layouts l USING (variable_id)
-      WHERE l.layout_source = ? AND o.variable_id IN (${placeholders}) ORDER BY o.index`,
-    [selectedLayoutSource, ...variableIds]);
+      WHERE l.layout_source = ? AND o.variable_id IN (${requestedIds}) ORDER BY o.index`,
+    [selectedLayoutSource, ...(compactIds ? [JSON.stringify(variableIds)] : variableIds)]);
     performance.measure("echo:evidence:variables-query", { start: queryStart, end: performance.now() });
     performance.measure("echo:evidence:variables", { start, end: performance.now() });
     return rows;
   }
 
   async loadVariableProvenance(variableIds) {
-    await this.ensureEvidenceConnection();
+    if (!variableIds?.length) return [];
+    await this.initialize();
+    const snapshotId = evidenceSnapshotIdFromManifestUrl(this.manifestUrl);
+    if (SNAPSHOT_SEARCH_CATALOGS[snapshotId]) {
+      try {
+        await variableSearchCatalog.loadSnapshot(snapshotId);
+      } catch {
+        // A failed catalog download must not prevent evidence inspection.
+      }
+    }
+    const labels = variableSearchCatalog.conceptLabels(variableIds, snapshotId);
+    if (labels !== null) return labels;
+    await this.ensureEvidenceConnection({ variableIds });
     if (!variableIds?.length || !this.browserShardIds(variableIds).length) return [];
     const placeholders = variableIds.map(() => "?").join(",");
     const urls = this.browserUrls(this.browserLayout.variables, variableIds)
@@ -177,38 +203,61 @@ export class ParquetManifestDagDataSource {
   }
 
   async loadIncidentRawLinks(variableIds) {
-    await this.ensureEvidenceConnection();
+    await this.ensureEvidenceConnection({ variableIds });
     if (!variableIds?.length) return [];
     if (!this.browserShardIds(variableIds).length) return [];
     return this.queryBrowserIncidentLinks(variableIds);
   }
 
   async loadAllRawLinks() {
-    await this.ensureEvidenceConnection();
+    await this.ensureEvidenceConnection({ variableIds: [] });
     await this.ensureBrowserRelation("causal_link_occurrences");
     return queryRows(this.connection, "SELECT * FROM causal_link_occurrences");
   }
 
   async loadRawLinksByIds(rawLinkIds) {
-    await this.ensureEvidenceConnection();
+    await this.ensureEvidenceConnection({ variableIds: [] });
     if (!rawLinkIds?.length) return [];
-    const placeholders = rawLinkIds.map(() => "?").join(",");
     const canonicalUrl = this.canonicalEvidenceRelationUrl("causal_link_occurrences");
-    if (canonicalUrl) {
-      const url = canonicalUrl.replaceAll("'", "''");
-      return queryRows(this.connection, `SELECT * FROM read_parquet('${url}')
-        WHERE raw_causal_link_id IN (${placeholders})`, rawLinkIds);
+    if (!canonicalUrl) await this.ensureBrowserRelation("causal_link_occurrences");
+    const relation = canonicalUrl
+      ? `read_parquet('${canonicalUrl.replaceAll("'", "''")}')`
+      : "causal_link_occurrences";
+    // Bound both the WASM parameter buffer and result batches. A map can
+    // reference tens of thousands of findings; one giant query can exhaust
+    // DuckDB-WASM before any evidence is returned.
+    const rows = [];
+    const ids = [...new Set(rawLinkIds)];
+    for (let offset = 0; offset < ids.length; offset += RAW_LINK_QUERY_BATCH_SIZE) {
+      const batch = ids.slice(offset, offset + RAW_LINK_QUERY_BATCH_SIZE);
+      const placeholders = batch.map(() => "?").join(",");
+      rows.push(...await queryRows(this.connection, `SELECT * FROM ${relation}
+        WHERE raw_causal_link_id IN (${placeholders})`, batch));
     }
-    // Older browser manifests did not advertise their canonical snapshot.
-    // IDs carry no shard ownership, so those layouts must scan every source shard.
-    await this.ensureBrowserRelation("causal_link_occurrences");
-    return queryRows(this.connection, `SELECT * FROM causal_link_occurrences
-      WHERE raw_causal_link_id IN (${placeholders})`, rawLinkIds);
+    return rows;
+  }
+
+  async loadRawLinkSupportByIds(rawLinkIds) {
+    if (!rawLinkIds?.length) return [];
+    await this.ensureEvidenceConnection({ variableIds: [] });
+    const canonicalUrl = this.canonicalEvidenceRelationUrl("causal_link_occurrences");
+    if (!canonicalUrl) await this.ensureBrowserRelation("causal_link_occurrences");
+    const relation = canonicalUrl
+      ? `read_parquet('${canonicalUrl.replaceAll("'", "''")}')`
+      : "causal_link_occurrences";
+    // One scan of three columns avoids repeatedly scanning full evidence rows
+    // for a map-wide filter. Keep these partial records out of the detail cache.
+    const requested = new Set(rawLinkIds);
+    const columns = await queryRows(this.connection, `DESCRIBE SELECT * FROM ${relation}`);
+    const claim = columns.some(column => column.column_name === "causal_link_existence")
+      ? "causal_link_existence" : "NULL::VARCHAR AS causal_link_existence";
+    return (await queryRows(this.connection, `SELECT raw_causal_link_id, paper_id,
+      ${claim} FROM ${relation}`)).filter(row => requested.has(row.raw_causal_link_id));
   }
 
   async loadRawLinkEndpointsByIds(rawLinkIds) {
     if (!rawLinkIds?.length) return [];
-    await this.ensureEvidenceConnection();
+    await this.ensureEvidenceConnection({ variableIds: [] });
     const canonicalUrl = this.canonicalEvidenceRelationUrl("causal_link_occurrences");
     if (!canonicalUrl) await this.ensureBrowserRelation("causal_link_occurrences");
     const relation = canonicalUrl
@@ -222,7 +271,7 @@ export class ParquetManifestDagDataSource {
 
   async loadNeighbors(variableIds) {
     const start = performance.now();
-    await this.ensureEvidenceConnection();
+    await this.ensureEvidenceConnection({ variableIds });
     if (!variableIds?.length) return [];
     if (!this.browserShardIds(variableIds).length) return [];
     const placeholders = variableIds.map(() => "?").join(",");
@@ -238,9 +287,13 @@ export class ParquetManifestDagDataSource {
     return rows;
   }
 
-  async ensureEvidenceConnection() {
-    if (this.evidenceInitialization) return this.evidenceInitialization;
-    if (this.connection) return;
+  async ensureEvidenceConnection({ variableIds = null, prewarmMapFiles = false } = {}) {
+    if (prewarmMapFiles) this.prewarmMapFiles = true;
+    if (this.evidenceInitialization) {
+      await this.evidenceInitialization;
+      return this.ensureBrowserShardLookup(variableIds);
+    }
+    if (this.connection) return this.ensureBrowserShardLookup(variableIds);
     // A compiled publication intentionally deferred R2/DuckDB setup until detail
     // or editing asks for a narrowly filtered relation.
     this.evidenceInitialization = (async () => {
@@ -248,6 +301,7 @@ export class ParquetManifestDagDataSource {
       this.compiledPublishedLoad = null;
       this.skipCompiledOnce = true;
       this.lazyEvidenceInit = true;
+      this.initialLookupIds = variableIds;
       try {
         await this.initialize();
       } finally {
@@ -255,22 +309,66 @@ export class ParquetManifestDagDataSource {
         this.evidenceInitialization = null;
       }
     })();
-    return this.evidenceInitialization;
+    await this.evidenceInitialization;
+    return this.ensureBrowserShardLookup(variableIds);
   }
 
-  async loadBrowserShardLookup() {
+  async ensureBrowserShardLookup(variableIds = null) {
+    if (this.shardLookupComplete) return;
+    const ids = variableIds === null ? null : [...new Set(variableIds)];
+    if (ids?.every(id => this.shardLookupQueriedIds?.has(id))) return;
+    if (this.shardLookupLoading) {
+      await this.shardLookupLoading;
+      return this.ensureBrowserShardLookup(ids);
+    }
+    const pending = this.loadBrowserShardLookup(ids);
+    this.shardLookupLoading = pending;
+    try { await pending; }
+    finally { if (this.shardLookupLoading === pending) this.shardLookupLoading = null; }
+  }
+
+  async loadBrowserShardLookup(variableIds = null) {
     if (this.isContiguousShardSnapshot()) {
       this.contiguousShardMaxIndex = 14284;
+      this.shardLookupComplete = true;
       return;
     }
-    const url = new URL(this.browserLayout.lookup, this.manifestBaseUrl).href.replaceAll("'", "''");
-    if (this.browserLayout.lookup_key === "variable_id") {
-      const rows = await queryRows(this.connection, `SELECT variable_id, shard_id FROM read_parquet('${url}')`);
-      this.shardByVariableId = new Map(rows.map(row => [String(row.variable_id), Number(row.shard_id)]));
-      return;
+    const url = this.parquetFile(new URL(this.browserLayout.lookup, this.manifestBaseUrl).href).replaceAll("'", "''");
+    const byId = this.browserLayout.lookup_key === "variable_id";
+    const key = byId ? "variable_id" : "variable_index";
+    let table;
+    if (variableIds !== null) {
+      const keys = byId ? variableIds : variableIds.map(id => Number(String(id).match(/^v(\d+)$/)?.[1])).filter(Number.isFinite);
+      if (!keys.length) return;
+      const compactIds = keys.length > 32;
+      const requestedIds = compactIds ? `SELECT unnest(CAST(? AS JSON)::${byId ? 'VARCHAR' : 'BIGINT'}[])`
+        : keys.map(() => '?').join(',');
+      const statement = await this.connection.prepare(`SELECT ${key}, shard_id FROM read_parquet('${url}')
+        WHERE ${key} IN (${requestedIds})`);
+      try { table = await statement.query(...(compactIds ? [JSON.stringify(keys)] : keys)); }
+      finally { await statement.close(); }
+    } else table = await this.connection.query(`SELECT ${key}, shard_id FROM read_parquet('${url}')`);
+    const keys = table.getChild(key), shards = table.getChild("shard_id");
+    const lookup = new Map();
+    // Arrow row proxies/toJSON allocate an object per row. Read the two columns
+    // directly and yield while indexing large content-ID snapshots.
+    for (let start = 0; start < table.numRows; start += 2000) {
+      for (let i = start; i < Math.min(start + 2000, table.numRows); i++) {
+        lookup.set(byId ? String(keys.get(i)) : Number(keys.get(i)), Number(shards.get(i)));
+      }
+      if (start + 2000 < table.numRows) {
+        if (globalThis.scheduler?.yield) await globalThis.scheduler.yield();
+        else await new Promise(resolve => setTimeout(resolve, 0));
+      }
     }
-    const rows = await queryRows(this.connection, `SELECT variable_index, shard_id FROM read_parquet('${url}')`);
-    this.shardByVariableIndex = new Map(rows.map(row => [Number(row.variable_index), Number(row.shard_id)]));
+    const field = byId ? "shardByVariableId" : "shardByVariableIndex";
+    if (!this[field]) this[field] = lookup;
+    else for (const [id, shard] of lookup) this[field].set(id, shard);
+    if (variableIds === null) this.shardLookupComplete = true;
+    else {
+      this.shardLookupQueriedIds ||= new Set();
+      for (const id of variableIds) this.shardLookupQueriedIds.add(id);
+    }
   }
 
   async ensureVariableLayouts() {
@@ -283,7 +381,7 @@ export class ParquetManifestDagDataSource {
       if (!this.defaultVariableLayoutSource) throw new Error("Evidence snapshot has no default variable layout.");
       const legacyManifest = this.manifest.identity.legacy_manifest;
       const legacyBase = new URL(`/${legacyManifest}`, this.manifestBaseUrl);
-      const quote = url => new URL(url, legacyBase).href.replaceAll("'", "''");
+      const quote = url => this.parquetFile(new URL(url, legacyBase).href).replaceAll("'", "''");
       const viewStart = performance.now();
       await this.connection.query(`CREATE OR REPLACE VIEW variable_layouts AS
         SELECT * FROM read_parquet('${quote("variable_layouts.parquet")}')`);
@@ -303,12 +401,44 @@ export class ParquetManifestDagDataSource {
       this.buildMetadata = CONTIGUOUS_SHARD_METADATA;
       return this.buildMetadata;
     }
-    const url = this.canonicalEvidenceRelationUrl("build_metadata");
+    const url = this.parquetFile(this.canonicalEvidenceRelationUrl("build_metadata"));
     if (!url) throw new Error("Browser-v2 evidence manifest does not identify its build metadata.");
     const rows = await queryRows(this.connection,
       `SELECT metadata_json FROM read_parquet('${url.replaceAll("'", "''")}')`);
     this.buildMetadata = JSON.parse(rows[0]?.metadata_json || "{}");
     return this.buildMetadata;
+  }
+
+  parquetFile(url) {
+    return this.localParquetFiles?.get(url) || url;
+  }
+
+  async downloadMapFiles() {
+    // These immutable map prerequisites are small enough to fetch together
+    // during WASM startup. Verified buffers avoid serial remote Parquet footer
+    // and range requests. An unavailable prefetch retains the remote SQL path.
+    const lookupPath = this.browserLayout.lookup;
+    const plans = [
+      { kind: "lookup", url: new URL(lookupPath, this.manifestBaseUrl).href,
+        integrity: this.manifest.files?.[lookupPath] },
+      ...["build_metadata", "variable_layouts"].map(kind => ({ kind,
+        url: this.canonicalEvidenceRelationUrl(kind),
+        integrity: this.manifest.identity?.legacy_relation_integrity?.[kind] })),
+    ];
+    return Promise.all(plans.map(async ({ kind, url, integrity }) => {
+      if (!url || !Number.isInteger(integrity?.bytes) || integrity.bytes < 1
+        || integrity.bytes > 4 * 1024 * 1024 || !/^[0-9a-f]{64}$/i.test(integrity.sha256 || "")) return null;
+      try {
+        const response = await fetch(url, { cache: "force-cache" });
+        if (!response.ok) return null;
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        if (bytes.byteLength !== integrity.bytes) return null;
+        const hash = [...new Uint8Array(await crypto.subtle.digest("SHA-256", bytes))]
+          .map(value => value.toString(16).padStart(2, "0")).join("");
+        if (hash !== integrity.sha256.toLowerCase()) return null;
+        return { url, bytes, name: `echo-map-${this.manifest.evidence_snapshot}-${kind}.parquet` };
+      } catch { return null; }
+    }));
   }
 
   canonicalEvidenceRelationUrl(relation) {

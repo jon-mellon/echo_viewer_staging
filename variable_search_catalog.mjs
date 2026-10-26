@@ -27,7 +27,7 @@ export async function readSearchCatalogPayload(url, fetchImpl = globalThis.fetch
 
 function loadCatalogInWorker(url, snapshotId, onRecords) {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL("./variable_search_catalog_worker.mjs?v=46fb20f88edd1c0a", import.meta.url), { type: "module" });
+    const worker = new Worker(new URL("./variable_search_catalog_worker.mjs?v=c072f4e9bc302b4b", import.meta.url), { type: "module" });
     let payload;
     const fail = error => { worker.terminate(); reject(error); };
     worker.onerror = event => fail(new Error(event.message || "Could not load search catalog worker."));
@@ -118,6 +118,13 @@ export class StaticVariableSearchCatalog {
     for (const id of variableIds) if (!this.recordById?.has(id)) {
       throw new Error(`Search catalog does not cover schema member ${id}.`);
     }
+  }
+
+  conceptLabels(variableIds, snapshotId) {
+    if (this.status !== "ready" || this.snapshotId !== snapshotId) return null;
+    return [...new Set(variableIds)].map(id => this.recordById.get(id)).filter(Boolean)
+      .sort((a, b) => a[9] - b[9])
+      .map(row => ({ variable_id: row[0], concept_label: row[2], display_label: row[1] }));
   }
 
   searchVariables(query, limit = 20, { selectedUoa = null, uoaFilterEnabled = false,

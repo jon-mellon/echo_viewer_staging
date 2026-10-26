@@ -1,16 +1,16 @@
-import { supabase } from "./supabase_client.mjs?v=46fb20f88edd1c0a";
-import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=46fb20f88edd1c0a";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=46fb20f88edd1c0a";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=46fb20f88edd1c0a";
-import { canonicalFolderHash } from "./grouping_schema_writer.mjs?v=46fb20f88edd1c0a";
-import { buildPermalink } from "./dag_permalink.mjs?v=46fb20f88edd1c0a";
-import { deriveDagView } from "./dag_view.mjs?v=46fb20f88edd1c0a";
+import { supabase } from "./supabase_client.mjs?v=c072f4e9bc302b4b";
+import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=c072f4e9bc302b4b";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=c072f4e9bc302b4b";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=c072f4e9bc302b4b";
+import { canonicalFolderHash } from "./grouping_schema_writer.mjs?v=c072f4e9bc302b4b";
+import { buildPermalink } from "./dag_permalink.mjs?v=c072f4e9bc302b4b";
+import { deriveDagView } from "./dag_view.mjs?v=c072f4e9bc302b4b";
 import { COMPILED_DAG_PATH, sha256Hex, stableJsonBytes,
-  validateCompiledArtifact } from "./compiled_dag.mjs?v=46fb20f88edd1c0a";
+  validateCompiledArtifact } from "./compiled_dag.mjs?v=c072f4e9bc302b4b";
 
-export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=46fb20f88edd1c0a";
+export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=c072f4e9bc302b4b";
 import { publicSchemaBaseUrl as sharedPublicSchemaBaseUrl,
-  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=46fb20f88edd1c0a";
+  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=c072f4e9bc302b4b";
 
 export async function fetchPublishedFile(url, options, fetchImpl, sleep = ms => new Promise(resolve => setTimeout(resolve, ms))) {
   for (let attempt = 0; attempt < 5; attempt += 1) {
