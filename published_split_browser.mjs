@@ -1,6 +1,6 @@
-import { supabase } from "./supabase_client.mjs?v=c072f4e9bc302b4b";
-import { publicSchemaBaseUrl } from "./publication_access.mjs?v=c072f4e9bc302b4b";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=c072f4e9bc302b4b";
+import { supabase } from "./supabase_client.mjs?v=d63e4b66e75f63fc";
+import { publicSchemaBaseUrl } from "./publication_access.mjs?v=d63e4b66e75f63fc";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=d63e4b66e75f63fc";
 
 export async function browsePublishedSplits(sourceGroupIds, client = supabase) {
   if (!client) throw new Error("Supabase is not configured.");
