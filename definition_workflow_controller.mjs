@@ -1,11 +1,11 @@
-import * as projectOps from "./dag_project.mjs?v=ea42a7f899dc9b67";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=ea42a7f899dc9b67";
-import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=ea42a7f899dc9b67";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=ea42a7f899dc9b67";
-import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=ea42a7f899dc9b67";
+import * as projectOps from "./dag_project.mjs?v=0d59b76356791a33";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=0d59b76356791a33";
+import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=0d59b76356791a33";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=0d59b76356791a33";
+import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=0d59b76356791a33";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
-  invalidateMapCaches, renderAll, drawMap = () => {}, setMapMode, fitMap, groupById, persistProjectLocally,
+  invalidateMapCaches, renderAll, drawMap = () => {}, renderAssignmentCoverage = () => {}, setMapMode, fitMap, groupById, persistProjectLocally,
   visibleVariables, searchVariables, clusterDisplayVariable, expandToClusterMembers, nowIso,
   applyProjectOperation, takeSnapshot, addToUndoHistory, clean, normalized, truncate, resizeMap,
   hydrateVariableDetails = async () => {}, hydrateNeighbors = async () => {},
@@ -80,6 +80,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     // Definition steps change selection and map contents, not the project DAG.
     // The DAG is hidden until cancel/save, where a full render is performed.
     renderAll({ rebuild: false });
+    renderAssignmentCoverage();
     jevAssist.render();
     if (redrawMap) drawMap();
   };
@@ -164,7 +165,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     state.selectedVariableId = null;
     invalidateMapCaches();
     setMapMode("select");
-    renderAll();
+    renderAll({ rebuild: false, refreshView: true });
   }
 
   function definitionSources() {

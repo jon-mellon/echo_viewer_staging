@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=ea42a7f899dc9b67";
+import { h, replaceChildren } from "./dom_builder.mjs?v=0d59b76356791a33";
 
 export function createToolbarPresenter({ state, elements, groupById, visibleVariables,
   uoaMatches, clusterRep, rejectedVariableIdSet }) {

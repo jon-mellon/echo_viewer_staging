@@ -1,12 +1,12 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=ea42a7f899dc9b67";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=ea42a7f899dc9b67";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=ea42a7f899dc9b67";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=ea42a7f899dc9b67";
-import * as dagDisplay from "./dag_display.mjs?v=ea42a7f899dc9b67";
-import * as workflow from "./dag_workflow.mjs?v=ea42a7f899dc9b67";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=ea42a7f899dc9b67";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=ea42a7f899dc9b67";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=ea42a7f899dc9b67";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=0d59b76356791a33";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=0d59b76356791a33";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=0d59b76356791a33";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=0d59b76356791a33";
+import * as dagDisplay from "./dag_display.mjs?v=0d59b76356791a33";
+import * as workflow from "./dag_workflow.mjs?v=0d59b76356791a33";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=0d59b76356791a33";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=0d59b76356791a33";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=0d59b76356791a33";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -412,12 +412,21 @@ async function renderDag({ reuseGeometry = false } = {}) {
   const geometryKey = JSON.stringify({ ...input, viewSignature: undefined });
   const cached = _dagGeometryCache.get(geometryKey);
   if (cached) {
-    ++_dagRenderRequest;
+    const requestId = ++_dagRenderRequest;
     _dagRenderWorker?.terminate();
     _dagRenderWorker = null;
     rememberGeometry(geometryKey, cached);
     _dagGeometry = cached;
     const reused = reuseDagGeometry(cached, groups, links);
+    // Applying cached geometry can be substantial, and this branch runs in
+    // the filter's input handler. Let that handler finish before updating vis.
+    _dagApplyingRequest = requestId;
+    await new Promise(resolve => setTimeout(resolve, 0));
+    if (_dagApplyingRequest === requestId) _dagApplyingRequest = null;
+    if (requestId !== _dagRenderRequest) {
+      resolveRendered();
+      return;
+    }
     await applyDagRender(groups, reused.layout, reused.routes);
     resolveRendered();
     return;
@@ -438,7 +447,7 @@ async function renderDag({ reuseGeometry = false } = {}) {
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=ea42a7f899dc9b67", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=0d59b76356791a33", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -470,7 +479,8 @@ async function renderDag({ reuseGeometry = false } = {}) {
 async function applyDagRender(groups, layout, routes) {
   const requestId = _dagRenderRequest;
   const { nodeData, edgeData, edgeSegments } = routedDagDataFromRoutes(groups, routes, layout);
-  if (nodeData.length + edgeData.length > 1000) {
+  const largeUpdate = nodeData.length + edgeData.length > 300;
+  if (largeUpdate) {
     // Route conversion and network installation are separate large stages.
     // Give input a turn between them, and discard a superseded installation.
     _dagApplyingRequest = requestId;
@@ -528,6 +538,16 @@ async function applyDagRender(groups, layout, routes) {
     } else {
       if (changedNodes.length) _visNodes.update(changedNodes);
       if (dropNodes.length) _visNodes.remove(dropNodes);
+      if (largeUpdate) {
+        // Updating route nodes and installing their edges can each be costly.
+        // Keep the partial network hidden and let the browser handle input
+        // before adding edges; a newer render supersedes this one.
+        els.dagNetwork.style.visibility = "hidden";
+        _dagApplyingRequest = requestId;
+        await new Promise(resolve => setTimeout(resolve, 0));
+        if (_dagApplyingRequest === requestId) _dagApplyingRequest = null;
+        if (requestId !== _dagRenderRequest) return;
+      }
       const nextEdgeIds = new Set(edgeData.map((e) => e.id));
       _visEdges.update(edgeData);
       const dropEdges = _visEdges.getIds().filter((id) => !nextEdgeIds.has(id));
@@ -658,7 +678,7 @@ function attachDagNetworkHandlers(network) {
       }
       Object.assign(state, workflow.transition(state, { type: "review-group", groupId: id }));
       setMapMode("select");
-      renderAll();
+      renderAll({ rebuild: false, refreshView: true });
     },
     zoomToPoint(position) {
       network.moveTo({ position, scale: network.getScale() * 1.3 });

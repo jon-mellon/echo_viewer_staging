@@ -1,6 +1,6 @@
-import { attachGraphTouchGuard } from "./graph_touch.mjs?v=ea42a7f899dc9b67";
-import * as projectOps from "./dag_project.mjs?v=ea42a7f899dc9b67";
-import * as mapInteractions from "./map_interactions.mjs?v=ea42a7f899dc9b67";
+import { attachGraphTouchGuard } from "./graph_touch.mjs?v=0d59b76356791a33";
+import * as projectOps from "./dag_project.mjs?v=0d59b76356791a33";
+import * as mapInteractions from "./map_interactions.mjs?v=0d59b76356791a33";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -467,7 +467,7 @@ function installMapHandlers() {
           state.selectedVariableIds = new Set(selection.selectedVariableIds);
           state.comparisonVariableIds = selection.comparisonVariableIds;
         }
-        renderAll();
+        renderAll({ rebuild: false, refreshView: true });
       }
     }
     state.map.dragging = false;

@@ -1,9 +1,9 @@
-import * as projectOps from "./dag_project.mjs?v=ea42a7f899dc9b67";
-import { h, replaceChildren } from "./dom_builder.mjs?v=ea42a7f899dc9b67";
-import * as groupEditorModel from "./dag_group_editor.mjs?v=ea42a7f899dc9b67";
-import * as searchModel from "./dag_search.mjs?v=ea42a7f899dc9b67";
-import * as workflow from "./dag_workflow.mjs?v=ea42a7f899dc9b67";
-import { hydrateSearchResult } from "./variable_search_catalog.mjs?v=ea42a7f899dc9b67";
+import * as projectOps from "./dag_project.mjs?v=0d59b76356791a33";
+import { h, replaceChildren } from "./dom_builder.mjs?v=0d59b76356791a33";
+import * as groupEditorModel from "./dag_group_editor.mjs?v=0d59b76356791a33";
+import * as searchModel from "./dag_search.mjs?v=0d59b76356791a33";
+import * as workflow from "./dag_workflow.mjs?v=0d59b76356791a33";
+import { hydrateSearchResult } from "./variable_search_catalog.mjs?v=0d59b76356791a33";
 
 export function createDagGroupEditorController({
   state, elements: els, applyProjectOperation, groupById, takeSnapshot,
@@ -80,7 +80,8 @@ function assignGroupAsAnchor(side, sourceGroupId) {
   addDecision(`group_promoted_to_${side}`, { source_group_id: sourceGroupId, target_group_id: sourceGroupId });
   addToUndoHistory(`Use "${label}" as ${side.toUpperCase()}`, before, "anchors");
   fitMap(variableIds);
-  renderAll();
+  // Anchor roles do not change group membership or aggregated evidence links.
+  renderAll({ reuseLinks: true, reuseDagGeometry: true });
   notifyWhenAnchorsReady();
 }
 
@@ -128,7 +129,7 @@ function createCustomGroup() {
 function closeGroupEditor() {
   Object.assign(state, workflow.transition(state, { type: "close-editor" }));
   setMapMode("select");
-  renderAll();
+  renderAll({ rebuild: false, refreshView: true });
 }
 
 // ─── Group editor (right panel) ───────────────────────────────────────────────

@@ -1,10 +1,10 @@
-import * as mapCanvas from "./map_canvas_renderer.mjs?v=ea42a7f899dc9b67";
-import * as mapGeometry from "./map_geometry.mjs?v=ea42a7f899dc9b67";
-import * as mapInteractions from "./map_interactions.mjs?v=ea42a7f899dc9b67";
-import * as mapRenderModel from "./map_render_model.mjs?v=ea42a7f899dc9b67";
-import * as projectOps from "./dag_project.mjs?v=ea42a7f899dc9b67";
-import * as visibility from "./variable_visibility.mjs?v=ea42a7f899dc9b67";
-import { h, replaceChildren } from "./dom_builder.mjs?v=ea42a7f899dc9b67";
+import * as mapCanvas from "./map_canvas_renderer.mjs?v=0d59b76356791a33";
+import * as mapGeometry from "./map_geometry.mjs?v=0d59b76356791a33";
+import * as mapInteractions from "./map_interactions.mjs?v=0d59b76356791a33";
+import * as mapRenderModel from "./map_render_model.mjs?v=0d59b76356791a33";
+import * as projectOps from "./dag_project.mjs?v=0d59b76356791a33";
+import * as visibility from "./variable_visibility.mjs?v=0d59b76356791a33";
+import { h, replaceChildren } from "./dom_builder.mjs?v=0d59b76356791a33";
 
 export function createDagMapUiController({
   state, elements: els, beginDraw, canvasWidth, canvasHeight, worldToScreen, screenToWorld,
@@ -290,7 +290,7 @@ function applyBrush() {
     state.selectedVariableIds = new Set(selected);
     state.selectedVariableId = picked[picked.length - 1] || state.selectedVariableId;
     invalidateMapCaches();
-    renderAll();
+    renderAll({ rebuild: false, refreshView: true });
     return;
   }
   if (brush.action === "select_vars") {
@@ -300,7 +300,7 @@ function applyBrush() {
     }
     state.selectedVariableIds = new Set(picked);
     state.selectedVariableId = picked[picked.length - 1] || null;
-    renderAll();
+    renderAll({ rebuild: false, refreshView: true });
     return;
   }
   // Draw-to-seed: no group yet, drawing during DV/IV selection picks the enclosed
@@ -682,7 +682,7 @@ function renderMapContextMenu() {
       state.definitionDraft.new_variable_ids = [...selected];
       state.selectedVariableIds = new Set(selected);
       hideMapContextMenu();
-      renderAll();
+      renderAll({ rebuild: false, refreshView: true });
     });
     els.dagMapContextMenu.hidden = false;
     const position = mapInteractions.contextMenuPosition({ ...state.mapContextMenu, rect,

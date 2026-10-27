@@ -1,4 +1,4 @@
-import { isPresentLink } from "./dag_link_aggregation.mjs?v=ea42a7f899dc9b67";
+import { isPresentLink } from "./dag_link_aggregation.mjs?v=0d59b76356791a33";
 
 import {
   connectedComponentGraph,
@@ -9,7 +9,7 @@ import {
   filterGraphByLinkPairs,
   filterGraphLinks,
   filterGraphNodes,
-} from "./dag_graph.mjs?v=ea42a7f899dc9b67";
+} from "./dag_graph.mjs?v=0d59b76356791a33";
 
 export function excludedForConnectivity(link) {
   return link.display_status === "excluded" && !link.is_target_relation;
@@ -45,7 +45,6 @@ export function deriveDagView({
     return papers.size >= minimumEdgePapers;
   }) : links;
   const fullGraph = createGraph(groups.map((group) => group.group_id), retainedLinks);
-  const connectivityGraph = filterGraphLinks(fullGraph, (link) => !excludedForConnectivity(link));
   const traversableLink = (link) => !excludedForConnectivity(link);
   const diagnosticOptions = {
     ivId,
@@ -66,8 +65,7 @@ export function deriveDagView({
     exogeneityGraph.nodeIds.add(ivId);
     exogeneityGraph.metadata.pathIds.add(ivId);
   }
-  const componentGraph = connectedComponentGraph(connectivityGraph, ivId);
-  const canFilterFromIv = filterByCausalRelevance && connectivityGraph.nodeIds.has(ivId);
+  const canFilterFromIv = filterByCausalRelevance && fullGraph.nodeIds.has(ivId);
   const anchorsReady = fullGraph.nodeIds.has(ivId) && fullGraph.nodeIds.has(dvId) && ivId !== dvId;
 
   let selectedGraph;
@@ -75,7 +73,9 @@ export function deriveDagView({
   else if (showExclusionViolations && anchorsReady && instrumentId) selectedGraph = exclusionGraph;
   else if (showConfoundersOnly && anchorsReady) selectedGraph = confounderGraph;
   else if (showCollidersOnly && anchorsReady) selectedGraph = colliderGraph;
-  else selectedGraph = canFilterFromIv ? componentGraph : fullGraph;
+  else selectedGraph = canFilterFromIv
+    ? connectedComponentGraph(filterGraphLinks(fullGraph, traversableLink), ivId)
+    : fullGraph;
 
   const componentGroupIds = new Set(selectedGraph.nodeIds);
   let visibleGraph = filterGraphNodes(fullGraph, componentGroupIds);
