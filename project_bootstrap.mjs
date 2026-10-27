@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=e0be7beaa1a32f1e";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=e0be7beaa1a32f1e";
-import { applyPermalink, permalinkInput } from "./dag_permalink.mjs?v=e0be7beaa1a32f1e";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=e0be7beaa1a32f1e";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=e0be7beaa1a32f1e";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=e0be7beaa1a32f1e";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=e0be7beaa1a32f1e";
-import { validateGroupingSchema } from "./data_validation.mjs?v=e0be7beaa1a32f1e";
+import { dagDataSource } from "./dag_data_source.mjs?v=a65bc8c94346cf53";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=a65bc8c94346cf53";
+import { applyPermalink, permalinkInput } from "./dag_permalink.mjs?v=a65bc8c94346cf53";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=a65bc8c94346cf53";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=a65bc8c94346cf53";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=a65bc8c94346cf53";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=a65bc8c94346cf53";
+import { validateGroupingSchema } from "./data_validation.mjs?v=a65bc8c94346cf53";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   resizeMap, initializeProject, loadLatestSchemaGroups,
@@ -145,8 +145,8 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
     }
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     finishStartupLoading();
-    // The large variable catalog is loaded when someone searches for the
-    // first time. Group-label browsing does not need it at startup.
+    // Keep membership loading ahead of the search index; start warming the
+    // catalog after hydration so subsequent searches are ready during setup.
     if (state.data.load_published_schema) {
       const revision = state.compiledDagRevision || 0;
       const applyLoadedSchema = async (schema, complete = false) => {
@@ -177,6 +177,7 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
         state.publishedMembershipReadyGroups = new Set(schema.groups.map(group => group.group_id));
         state.publishedSchemaLoadFailed = false;
         await applyLoadedSchema(schema, true);
+        if (!state.project.iv_group_id || !state.project.dv_group_id) void loadVariableSearchCatalog();
         publicationController.setSchemaReady?.(true);
         void publicationController.refreshPublicationState?.();
         onReady();
@@ -188,6 +189,7 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
         console.error("Could not finish loading the published schema.", error);
       });
     } else {
+      if (!state.project.iv_group_id || !state.project.dv_group_id) void loadVariableSearchCatalog();
       onReady();
     }
   }

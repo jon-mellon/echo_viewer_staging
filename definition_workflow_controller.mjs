@@ -1,8 +1,8 @@
-import * as projectOps from "./dag_project.mjs?v=e0be7beaa1a32f1e";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=e0be7beaa1a32f1e";
-import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=e0be7beaa1a32f1e";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=e0be7beaa1a32f1e";
-import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=e0be7beaa1a32f1e";
+import * as projectOps from "./dag_project.mjs?v=a65bc8c94346cf53";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=a65bc8c94346cf53";
+import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=a65bc8c94346cf53";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=a65bc8c94346cf53";
+import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=a65bc8c94346cf53";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateMapCaches, renderAll, drawMap = () => {}, renderAssignmentCoverage = () => {}, setMapMode, fitMap, groupById, persistProjectLocally,
@@ -10,7 +10,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
   applyProjectOperation, takeSnapshot, addToUndoHistory, clean, normalized, truncate, resizeMap,
   hydrateVariableDetails = async () => {}, hydrateNeighbors = async () => {},
   prewarmEvidence = async () => {}, commitSchema = async () => {},
-  onCommitFailureRestored = () => {} }) {
+  onCommitFailureRestored = () => {}, onInstrumentReady = () => {} }) {
   let hydrationRevision = 0;
   const sourceHydrations = new Map();
   let lastBatch = null;
@@ -380,8 +380,10 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       state.selectedVariableIds.clear();
       state.activeGroupId = null;
       state.focusedGroupId = newGroupId;
-      state.phase = "build";
-      state.workflowMode = "group_review";
+      const initialAnchor = draft.mode !== "edit" && !state.changingAnchorSide;
+      state.phase = initialAnchor && draft.role === "iv" ? "select_dv"
+        : initialAnchor && draft.role === "dv" ? "select_instrument" : "build";
+      state.workflowMode = state.phase === "build" ? "group_review" : "setup";
       state.changingAnchorSide = null;
       invalidateMapCaches();
       addToUndoHistory(draft.mode === "edit" ? `Updated split "${draft.new_label}"`
@@ -389,6 +391,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
           : `Defined "${draft.new_label}" as ${draft.role.toUpperCase()}`, before);
       setMapMode("select");
       renderAll();
+      if (draft.role === "instrument") onInstrumentReady();
     } catch (error) {
       state.compiledDagRevision = (state.compiledDagRevision || 0) + 1;
       state.compiledDag = previousCompiledDag;

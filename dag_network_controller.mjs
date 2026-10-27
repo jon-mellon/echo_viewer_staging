@@ -1,12 +1,12 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=e0be7beaa1a32f1e";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=e0be7beaa1a32f1e";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=e0be7beaa1a32f1e";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=e0be7beaa1a32f1e";
-import * as dagDisplay from "./dag_display.mjs?v=e0be7beaa1a32f1e";
-import * as workflow from "./dag_workflow.mjs?v=e0be7beaa1a32f1e";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=e0be7beaa1a32f1e";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=e0be7beaa1a32f1e";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=e0be7beaa1a32f1e";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=a65bc8c94346cf53";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=a65bc8c94346cf53";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=a65bc8c94346cf53";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=a65bc8c94346cf53";
+import * as dagDisplay from "./dag_display.mjs?v=a65bc8c94346cf53";
+import * as workflow from "./dag_workflow.mjs?v=a65bc8c94346cf53";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=a65bc8c94346cf53";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=a65bc8c94346cf53";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=a65bc8c94346cf53";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -364,7 +364,8 @@ async function renderDag({ reuseGeometry = false } = {}) {
       || (state.publishedSchemaHydrating && Number(group?.member_count) > 0));
   };
   if (state.interfaceMode === "dag2"
-    && (!hasAnchor(state.project?.iv_group_id) || !hasAnchor(state.project?.dv_group_id))) return;
+    && (!hasAnchor(state.project?.iv_group_id) || !hasAnchor(state.project?.dv_group_id)
+      || (state.phase === "select_instrument" && !state.changingAnchorSide))) return;
   let resolveRendered;
   _dagRenderedPromise = new Promise(resolve => { resolveRendered = resolve; });
   clearLogicalDagEdgeHover();
@@ -456,7 +457,7 @@ async function renderDag({ reuseGeometry = false } = {}) {
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=e0be7beaa1a32f1e", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=a65bc8c94346cf53", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;

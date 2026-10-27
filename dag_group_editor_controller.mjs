@@ -1,9 +1,9 @@
-import * as projectOps from "./dag_project.mjs?v=e0be7beaa1a32f1e";
-import { h, replaceChildren } from "./dom_builder.mjs?v=e0be7beaa1a32f1e";
-import * as groupEditorModel from "./dag_group_editor.mjs?v=e0be7beaa1a32f1e";
-import * as searchModel from "./dag_search.mjs?v=e0be7beaa1a32f1e";
-import * as workflow from "./dag_workflow.mjs?v=e0be7beaa1a32f1e";
-import { hydrateSearchResult } from "./variable_search_catalog.mjs?v=e0be7beaa1a32f1e";
+import * as projectOps from "./dag_project.mjs?v=a65bc8c94346cf53";
+import { h, replaceChildren } from "./dom_builder.mjs?v=a65bc8c94346cf53";
+import * as groupEditorModel from "./dag_group_editor.mjs?v=a65bc8c94346cf53";
+import * as searchModel from "./dag_search.mjs?v=a65bc8c94346cf53";
+import * as workflow from "./dag_workflow.mjs?v=a65bc8c94346cf53";
+import { hydrateSearchResult } from "./variable_search_catalog.mjs?v=a65bc8c94346cf53";
 
 export function createDagGroupEditorController({
   state, elements: els, applyProjectOperation, groupById, takeSnapshot,
@@ -15,7 +15,7 @@ export function createDagGroupEditorController({
   beginEditor = () => {},
 }) {
 function notifyWhenAnchorsReady() {
-  if (state.interfaceMode !== "dag2") return;
+  if (state.interfaceMode !== "dag2" || state.phase === "select_instrument") return;
   const iv = groupById(state.project?.iv_group_id);
   const dv = groupById(state.project?.dv_group_id);
   if (iv?.variable_ids?.length && dv?.variable_ids?.length) onAnchorsReady();
