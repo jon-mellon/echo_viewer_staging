@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=efcc58597f520706";
-import { jevRunId, loadJevRun, latestJevRun, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=efcc58597f520706";
-import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=efcc58597f520706";
-export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=efcc58597f520706";
+import { h, replaceChildren } from "./dom_builder.mjs?v=f486cd5850e1f201";
+import { jevRunId, loadJevRun, latestJevRun, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=f486cd5850e1f201";
+import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=f486cd5850e1f201";
+export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=f486cd5850e1f201";
 
 const OAUTH_PENDING_KEY = "echo-openrouter-pkce-v1";
 const OAUTH_DRAFT_KEY = "echo-openrouter-definition-draft-v1";
@@ -355,7 +355,7 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
     const description = String(draft?.ai_description || "").trim();
     if (active && description) void restoreForDraft().catch(() => {});
     const canRun = active && key && !cappedKeyStatus(keyInfo) && !busy && description
-      && draft.eligible_variable_ids?.length;
+      && [...description].length >= 20 && draft.eligible_variable_ids?.length;
     els.definitionAiRun.disabled = activePhase === "test" ? false : !canRun;
     const testSaved = completedCount("test");
     const fullSaved = completedCount("full");
@@ -522,7 +522,7 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
     const draft = getDraft();
     if (!draft || draft.step !== "partition" || !key || busy || !draft.eligible_variable_ids?.length) return;
     const description = String(draft.ai_description || "").trim();
-    if (!description) return;
+    if ([...description].length < 20) return;
     const revision = ++runRevision;
     busy = true;
     activePhase = "test";

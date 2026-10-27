@@ -1,8 +1,8 @@
-import * as projectOps from "./dag_project.mjs?v=efcc58597f520706";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=efcc58597f520706";
-import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=efcc58597f520706";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=efcc58597f520706";
-import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=efcc58597f520706";
+import * as projectOps from "./dag_project.mjs?v=f486cd5850e1f201";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=f486cd5850e1f201";
+import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=f486cd5850e1f201";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=f486cd5850e1f201";
+import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=f486cd5850e1f201";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateMapCaches, renderAll, drawMap = () => {}, setMapMode, fitMap, groupById, persistProjectLocally,
@@ -175,7 +175,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
   async function continueDefinition() {
     const draft = state.definitionDraft;
     const sources = definitionSources();
-    if (!draft || !state.definitionMethod || !sources.length) return;
+    if (!draft || draft.details_loading || !state.definitionMethod || !sources.length) return;
     lastBatch = null;
     const revision = ++hydrationRevision;
     draft.source_snapshot = sources.map(group => ({ group_id: group.group_id, label: group.label,
@@ -186,7 +186,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     draft.reviewed_variable_ids = [];
     draft.residual_labels = Object.fromEntries(sources.map(group =>
       [group.group_id, `Other: ${group.label || group.group_id}`]));
-    draft.step = "partition";
+    draft.details_loading = true;
     state.selectedVariableIds.clear();
     presenter.setContinueLoading();
     try {
@@ -194,13 +194,15 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
         || hydrateVariableDetails(source.variable_ids)));
     } catch (error) {
       if (revision === hydrationRevision && state.definitionDraft === draft) {
-        draft.step = "sources";
+        draft.details_loading = false;
         renderDefinition();
         presenter.showLoadError(error);
       }
       return;
     }
     if (revision !== hydrationRevision || state.definitionDraft !== draft) return;
+    draft.details_loading = false;
+    draft.step = "partition";
     invalidateMapCaches();
     setMapMode("select");
     renderDraft();
@@ -338,7 +340,9 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     draft.new_label = clean(draft.new_label);
     draft.new_description = clean(draft.new_description || "");
     if ([...draft.new_description].length < 20) {
-      showSaveError(new Error("Write a description of at least 20 characters."));
+      showSaveError(new Error("Group definition must be at least 20 characters. Please add more detail."));
+      els.definitionNewDescription.setAttribute("aria-invalid", "true");
+      els.definitionNewDescription.focus();
       return;
     }
     draft.residual_labels = Object.fromEntries(Object.entries(draft.residual_labels)
@@ -468,6 +472,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     });
     els.definitionNewDescription.addEventListener("input", () => {
       if (state.definitionDraft) state.definitionDraft.new_description = els.definitionNewDescription.value;
+      presenter.clearDescriptionValidation();
       persistProjectLocally();
     });
     els.definitionSave.addEventListener("click", saveDefinition);

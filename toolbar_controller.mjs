@@ -1,15 +1,15 @@
-import { createToolbarPresenter } from "./toolbar_presenter.mjs?v=efcc58597f520706";
+import { createToolbarPresenter } from "./toolbar_presenter.mjs?v=f486cd5850e1f201";
 
 export function createToolbarController({ state, elements, dagGroups, groupById, visibleVariables,
   uoaMatches, clusterRep, rejectedVariableIdSet }) {
   const presenter = createToolbarPresenter({ state, elements, groupById, visibleVariables,
     uoaMatches, clusterRep, rejectedVariableIdSet });
 
-  function render() {
+  function render(options) {
     const visibleGroupIds = new Set(dagGroups().map(group => group.group_id));
     const anchorsReady = visibleGroupIds.has(state.project?.iv_group_id)
       && visibleGroupIds.has(state.project?.dv_group_id);
-    presenter.render(anchorsReady);
+    presenter.render(anchorsReady, options);
   }
 
   return { render, assignmentCoverage: presenter.assignmentCoverage,

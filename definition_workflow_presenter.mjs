@@ -1,6 +1,6 @@
-import * as searchModel from "./dag_search.mjs?v=efcc58597f520706";
-import { reviewTerms } from "./definition_batch_review.mjs?v=efcc58597f520706";
-import { h, replaceChildren } from "./dom_builder.mjs?v=efcc58597f520706";
+import * as searchModel from "./dag_search.mjs?v=f486cd5850e1f201";
+import { reviewTerms } from "./definition_batch_review.mjs?v=f486cd5850e1f201";
+import { h, replaceChildren } from "./dom_builder.mjs?v=f486cd5850e1f201";
 
 export function createDefinitionWorkflowPresenter({ state, elements: els, normalized, clusterRep, truncate,
   definitionSources, definitionResidualIds, definitionCanReview, searchVariables, visibleVariables,
@@ -225,6 +225,11 @@ export function createDefinitionWorkflowPresenter({ state, elements: els, normal
     els.definitionValidation.textContent = error?.message || String(error);
   }
 
+  function clearDescriptionValidation() {
+    els.definitionNewDescription.removeAttribute("aria-invalid");
+    els.definitionValidation.textContent = "Enter at least 20 characters for the group definition.";
+  }
+
   function setContinueLoading() {
     els.definitionContinue.disabled = true;
     els.definitionContinue.textContent = "Loading selected variables…";
@@ -240,6 +245,6 @@ export function createDefinitionWorkflowPresenter({ state, elements: els, normal
       ? `AI ${mode === "test" ? "sample" : "full"} preview only · ${ids.length} suggested for new` : "";
   }
 
-  return { render, showValidationError, setContinueLoading, showLoadError,
+  return { render, showValidationError, clearDescriptionValidation, setContinueLoading, showLoadError,
     setJevPreviewStatus, selectedTermIds: () => [...currentTermIds], changeTermPage };
 }

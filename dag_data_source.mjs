@@ -1,12 +1,15 @@
-import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=efcc58597f520706";
+import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=f486cd5850e1f201";
 import { evidenceManifestUrl, evidenceSnapshotIdFromManifestUrl, groupingSchemaUrl,
-  schemaPublicationId } from "./dag_data_config.mjs?v=efcc58597f520706";
+  schemaPublicationId } from "./dag_data_config.mjs?v=f486cd5850e1f201";
 import { browserV2ManifestLayout, browserV2ShardPath,
-  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=efcc58597f520706";
-import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=efcc58597f520706";
-import { loadPublishedSchema } from "./published_schema_loader.mjs?v=efcc58597f520706";
-import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=efcc58597f520706";
-import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=efcc58597f520706";
+  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=f486cd5850e1f201";
+import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=f486cd5850e1f201";
+import { loadPublishedSchema } from "./published_schema_loader.mjs?v=f486cd5850e1f201";
+import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=f486cd5850e1f201";
+import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=f486cd5850e1f201";
+import { variableMapCatalog } from "./variable_map_catalog.mjs?v=f486cd5850e1f201";
+import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=f486cd5850e1f201";
+import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=f486cd5850e1f201";
 
 // Reading many small remote Parquet shards incurs a separate metadata/range
 // round trip for each shard. The canonical snapshot is cheaper for wide groups.
@@ -94,7 +97,7 @@ export class ParquetManifestDagDataSource {
     this.onStatus("Starting query engine…");
     const engineStart = performance.now();
     const mainModule = new URL("./vendor/duckdb/duckdb-eh.wasm", import.meta.url).href;
-    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=efcc58597f520706", import.meta.url).href;
+    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=f486cd5850e1f201", import.meta.url).href;
     const worker = new Worker(mainWorker);
     const database = new duckdb.AsyncDuckDB(
       new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
@@ -156,6 +159,18 @@ export class ParquetManifestDagDataSource {
 
   async loadVariableMetadata(variableIds, layoutSource = "", { mapOnly = false } = {}) {
     const start = performance.now();
+    if (mapOnly && variableIds?.length) {
+      try {
+        const payload = await variableMapCatalog.load(evidenceSnapshotIdFromManifestUrl(this.manifestUrl), variableIds, layoutSource);
+        if (payload) {
+          this.defaultVariableLayoutSource ||= payload.layout_source;
+          performance.measure("echo:evidence:variables", { start, end: performance.now() });
+          // Callers annotate records with neighbor state. Keep the shared cache
+          // immutable and separate from those per-view records.
+          return payload.variables.map(row => ({ ...row }));
+        }
+      } catch (error) { console.warn("Variable map bundle unavailable; using snapshot retrieval.", error); }
+    }
     await this.ensureEvidenceConnection({ variableIds });
     if (!variableIds?.length) return [];
     if (!this.browserShardIds(variableIds).length) return [];
@@ -203,7 +218,24 @@ export class ParquetManifestDagDataSource {
       FROM read_parquet([${urls}]) WHERE variable_id IN (${placeholders})`, variableIds);
   }
 
+  async prewarmVariableMap(layoutSource = "") {
+    this.prewarmMapFiles = true;
+    try {
+      const snapshot = evidenceSnapshotIdFromManifestUrl(this.manifestUrl);
+      const ready = Boolean(await variableMapCatalog.prepare(snapshot, layoutSource));
+      if (ready) void variableNeighborCatalog.prepare(snapshot).catch(() => {});
+      if (ready) void variableIncidentCatalog.prepare(snapshot).catch(() => {});
+      return ready;
+    } catch { return false; }
+  }
+
   async loadIncidentRawLinks(variableIds) {
+    if (variableIds?.length) {
+      try {
+        const rows = await variableIncidentCatalog.load(evidenceSnapshotIdFromManifestUrl(this.manifestUrl), variableIds);
+        if (rows) return rows;
+      } catch (error) { console.warn("Incident bundle unavailable; using snapshot retrieval.", error); }
+    }
     await this.ensureEvidenceConnection({ variableIds });
     if (!variableIds?.length) return [];
     if (!this.browserShardIds(variableIds).length) return [];
@@ -288,6 +320,15 @@ export class ParquetManifestDagDataSource {
 
   async loadNeighbors(variableIds) {
     const start = performance.now();
+    if (variableIds?.length) {
+      try {
+        const rows = await variableNeighborCatalog.load(evidenceSnapshotIdFromManifestUrl(this.manifestUrl), variableIds);
+        if (rows) {
+          performance.measure("echo:evidence:neighbors", { start, end: performance.now() });
+          return rows;
+        }
+      } catch (error) { console.warn("Neighbor bundle unavailable; using snapshot retrieval.", error); }
+    }
     await this.ensureEvidenceConnection({ variableIds });
     if (!variableIds?.length) return [];
     if (!this.browserShardIds(variableIds).length) return [];

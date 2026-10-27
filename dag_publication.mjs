@@ -1,8 +1,8 @@
-import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=efcc58597f520706";
-import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=efcc58597f520706";
-import { setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=efcc58597f520706";
-import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=efcc58597f520706";
-export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=efcc58597f520706";
+import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=f486cd5850e1f201";
+import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=f486cd5850e1f201";
+import { setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=f486cd5850e1f201";
+import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=f486cd5850e1f201";
+export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=f486cd5850e1f201";
 
 function showStatus(element, message, isError = false) {
   element.textContent = message;
