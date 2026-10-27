@@ -1,5 +1,6 @@
-import * as projectOps from "./dag_project.mjs?v=b0db776905e82974";
-import * as mapInteractions from "./map_interactions.mjs?v=b0db776905e82974";
+import { attachGraphTouchGuard } from "./graph_touch.mjs?v=efcc58597f520706";
+import * as projectOps from "./dag_project.mjs?v=efcc58597f520706";
+import * as mapInteractions from "./map_interactions.mjs?v=efcc58597f520706";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -276,6 +277,7 @@ function installHandlers() {
 
 function installMapHandlers() {
   const canvas = state.map.canvas;
+  attachGraphTouchGuard(canvas);
   const touchPoints = new Map();
   const pinchedPointers = new Set();
   let pinch = null;

@@ -1,5 +1,5 @@
 // Owns cross-feature shell layout: fullscreen focus and draggable panel sizes.
-import { DAG_FIT_OPTIONS } from "./dag_network_controller.mjs?v=b0db776905e82974";
+import { DAG_FIT_OPTIONS } from "./dag_network_controller.mjs?v=efcc58597f520706";
 export function createDagShellController({ state, elements, resizeMap, fitMap, renderDag, getNetwork, isDagFullyVisible, dismissEvidencePane }) {
   let showInstalledMobilePanel = null;
 
@@ -53,6 +53,7 @@ export function createDagShellController({ state, elements, resizeMap, fitMap, r
   }
 
   function setFullscreen(panel) {
+    const previousPanel = state.fullscreenPanel;
     state.fullscreenPanel = panel;
     document.body.classList.toggle("focus-variable-map", panel === "variable-map");
     document.body.classList.toggle("focus-dag", panel === "dag");
@@ -63,9 +64,13 @@ export function createDagShellController({ state, elements, resizeMap, fitMap, r
     elements.fullscreenDag.setAttribute("aria-pressed", panel === "dag" ? "true" : "false");
     elements.fullscreenDag.textContent = panel === "dag" ? "Exit full screen" : "Full screen DAG";
     requestAnimationFrame(() => {
-      resizeMap();
-      if (panel !== "dag") fitMap();
-      renderDag();
+      if (panel === "variable-map" || previousPanel === "variable-map") {
+        resizeMap();
+        fitMap();
+      }
+      const network = getNetwork();
+      if (network) network.setSize("100%", "100%");
+      else renderDag();
       setTimeout(() => getNetwork()?.fit(DAG_FIT_OPTIONS), 100);
     });
   }

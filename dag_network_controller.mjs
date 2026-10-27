@@ -1,12 +1,12 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=b0db776905e82974";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=b0db776905e82974";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=b0db776905e82974";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=b0db776905e82974";
-import * as dagDisplay from "./dag_display.mjs?v=b0db776905e82974";
-import * as workflow from "./dag_workflow.mjs?v=b0db776905e82974";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=b0db776905e82974";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=b0db776905e82974";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=b0db776905e82974";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=efcc58597f520706";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=efcc58597f520706";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=efcc58597f520706";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=efcc58597f520706";
+import * as dagDisplay from "./dag_display.mjs?v=efcc58597f520706";
+import * as workflow from "./dag_workflow.mjs?v=efcc58597f520706";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=efcc58597f520706";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=efcc58597f520706";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=efcc58597f520706";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -175,7 +175,8 @@ function refreshEdgeSelection({ redraw = true } = {}) {
     state.selectedEdgeId, state.project?.links || [], edgeVisualData);
   _renderedSelectedEdgeId = state.selectedEdgeId;
   if (updates.length) _visEdges.update(updates);
-  if (updates.length && redraw) _visNetwork?.redraw();
+  // DataSet updates already request a frame from vis. A synchronous redraw here
+  // duplicates that paint inside the selection event.
 }
 
 function routedDagData(groups, links, layout) {
@@ -436,7 +437,7 @@ function renderDag({ reuseGeometry = false } = {}) {
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=b0db776905e82974", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=efcc58597f520706", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -498,11 +499,16 @@ function applyDagRender(groups, layout, routes) {
       prevNodeIds.size !== nextNodeIds.size ||
       [...nextNodeIds].some((id) => !prevNodeIds.has(id));
 
-    const changedNodes = nodeData.filter(node =>
+    const maximumNodes = Math.max(prevNodeIds.size, nodeData.length);
+    // A large count change guarantees that most nodes are added or removed.
+    // Avoid serializing every route bend merely to rediscover that fact.
+    const replaceMostNodes = nodeSetChanged && maximumNodes > 500
+      && Math.abs(prevNodeIds.size - nodeData.length) > maximumNodes / 2;
+    const changedNodes = replaceMostNodes ? [] : nodeData.filter(node =>
       JSON.stringify(node) !== JSON.stringify(previousNodeData.get(node.id)));
     const dropNodes = [...prevNodeIds].filter((id) => !nextNodeIds.has(id));
-    if (nodeSetChanged && Math.max(prevNodeIds.size, nodeData.length) > 500
-      && changedNodes.length + dropNodes.length > Math.max(prevNodeIds.size, nodeData.length) / 2) {
+    if (replaceMostNodes || (nodeSetChanged && maximumNodes > 500
+      && changedNodes.length + dropNodes.length > maximumNodes / 2)) {
       // A large filter transition replaces most route bends. Bind the complete
       // data once rather than repeatedly rebuilding adjacency as nodes and edges
       // are updated and removed. Preserve the Network instance and its handlers.
@@ -572,7 +578,7 @@ function applyReusedDagRender(groups, layout, routes) {
   if (changedNodes.length) _visNodes.update(changedNodes);
   _renderedSelectedEdgeId = state.selectedEdgeId;
   els.dagNetwork.style.visibility = "";
-  _visNetwork.redraw();
+  // DataSet additions/removals/updates schedule their own coalesced paint.
 }
 
 function dagBounds() {

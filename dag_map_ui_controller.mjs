@@ -1,10 +1,10 @@
-import * as mapCanvas from "./map_canvas_renderer.mjs?v=b0db776905e82974";
-import * as mapGeometry from "./map_geometry.mjs?v=b0db776905e82974";
-import * as mapInteractions from "./map_interactions.mjs?v=b0db776905e82974";
-import * as mapRenderModel from "./map_render_model.mjs?v=b0db776905e82974";
-import * as projectOps from "./dag_project.mjs?v=b0db776905e82974";
-import * as visibility from "./variable_visibility.mjs?v=b0db776905e82974";
-import { h, replaceChildren } from "./dom_builder.mjs?v=b0db776905e82974";
+import * as mapCanvas from "./map_canvas_renderer.mjs?v=efcc58597f520706";
+import * as mapGeometry from "./map_geometry.mjs?v=efcc58597f520706";
+import * as mapInteractions from "./map_interactions.mjs?v=efcc58597f520706";
+import * as mapRenderModel from "./map_render_model.mjs?v=efcc58597f520706";
+import * as projectOps from "./dag_project.mjs?v=efcc58597f520706";
+import * as visibility from "./variable_visibility.mjs?v=efcc58597f520706";
+import { h, replaceChildren } from "./dom_builder.mjs?v=efcc58597f520706";
 
 export function createDagMapUiController({
   state, elements: els, beginDraw, canvasWidth, canvasHeight, worldToScreen, screenToWorld,

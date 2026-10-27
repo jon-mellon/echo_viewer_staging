@@ -1,12 +1,12 @@
-import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=b0db776905e82974";
+import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=efcc58597f520706";
 import { evidenceManifestUrl, evidenceSnapshotIdFromManifestUrl, groupingSchemaUrl,
-  schemaPublicationId } from "./dag_data_config.mjs?v=b0db776905e82974";
+  schemaPublicationId } from "./dag_data_config.mjs?v=efcc58597f520706";
 import { browserV2ManifestLayout, browserV2ShardPath,
-  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=b0db776905e82974";
-import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=b0db776905e82974";
-import { loadPublishedSchema } from "./published_schema_loader.mjs?v=b0db776905e82974";
-import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=b0db776905e82974";
-import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=b0db776905e82974";
+  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=efcc58597f520706";
+import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=efcc58597f520706";
+import { loadPublishedSchema } from "./published_schema_loader.mjs?v=efcc58597f520706";
+import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=efcc58597f520706";
+import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=efcc58597f520706";
 
 // Reading many small remote Parquet shards incurs a separate metadata/range
 // round trip for each shard. The canonical snapshot is cheaper for wide groups.
@@ -94,7 +94,7 @@ export class ParquetManifestDagDataSource {
     this.onStatus("Starting query engine…");
     const engineStart = performance.now();
     const mainModule = new URL("./vendor/duckdb/duckdb-eh.wasm", import.meta.url).href;
-    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=b0db776905e82974", import.meta.url).href;
+    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=efcc58597f520706", import.meta.url).href;
     const worker = new Worker(mainWorker);
     const database = new duckdb.AsyncDuckDB(
       new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
