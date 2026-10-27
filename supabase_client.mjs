@@ -1,5 +1,5 @@
-import { createClient } from "./vendor/supabase.mjs?v=d3a2d844dbf5c519";
-import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./supabase_config.mjs?v=d3a2d844dbf5c519";
+import { createClient } from "./vendor/supabase.mjs?v=f9436efabe62f9c2";
+import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./supabase_config.mjs?v=f9436efabe62f9c2";
 
 export function hasSupabaseConfig() {
   return Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
