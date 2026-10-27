@@ -1,9 +1,9 @@
-import * as projectOps from "./dag_project.mjs?v=e25b94283eb10543";
-import { h, replaceChildren } from "./dom_builder.mjs?v=e25b94283eb10543";
-import * as groupEditorModel from "./dag_group_editor.mjs?v=e25b94283eb10543";
-import * as searchModel from "./dag_search.mjs?v=e25b94283eb10543";
-import * as workflow from "./dag_workflow.mjs?v=e25b94283eb10543";
-import { hydrateSearchResult } from "./variable_search_catalog.mjs?v=e25b94283eb10543";
+import * as projectOps from "./dag_project.mjs?v=b6534444770ab42a";
+import { h, replaceChildren } from "./dom_builder.mjs?v=b6534444770ab42a";
+import * as groupEditorModel from "./dag_group_editor.mjs?v=b6534444770ab42a";
+import * as searchModel from "./dag_search.mjs?v=b6534444770ab42a";
+import * as workflow from "./dag_workflow.mjs?v=b6534444770ab42a";
+import { hydrateSearchResult } from "./variable_search_catalog.mjs?v=b6534444770ab42a";
 
 export function createDagGroupEditorController({
   state, elements: els, applyProjectOperation, groupById, takeSnapshot,

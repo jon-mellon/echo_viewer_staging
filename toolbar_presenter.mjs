@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=e25b94283eb10543";
+import { h, replaceChildren } from "./dom_builder.mjs?v=b6534444770ab42a";
 
 export function createToolbarPresenter({ state, elements, groupById, visibleVariables,
   uoaMatches, clusterRep, rejectedVariableIdSet }) {
@@ -55,8 +55,13 @@ export function createToolbarPresenter({ state, elements, groupById, visibleVari
       elements.diagnosticOverlapKey.hidden = !showKey;
       elements.diagnosticOverlapKey.classList.toggle("collider-key", state.showConfoundersOnly);
       elements.diagnosticOverlapKey.classList.toggle("confounder-key", state.showCollidersOnly);
-      elements.diagnosticOverlapKey.textContent = state.showConfoundersOnly
-        ? "Purple outline: also a collider" : "Red outline: also a confounder";
+      replaceChildren(elements.diagnosticOverlapKey,
+        h("span", { className: "diagnostic-key-item" },
+          h("span", { className: "diagnostic-key-swatch diagnostic-key-fill", attrs: { "aria-hidden": "true" } }),
+          state.showConfoundersOnly ? "Confounder" : "Collider"),
+        h("span", { className: "diagnostic-key-item" },
+          h("span", { className: "diagnostic-key-swatch diagnostic-key-outline", attrs: { "aria-hidden": "true" } }),
+          state.showConfoundersOnly ? "Also a collider" : "Also a confounder"));
     }
     const confounderCount = state.confounderGroupIds?.size || 0;
     const instrumentReady = anchorsReady && Boolean(state.project?.instrument_group_id)

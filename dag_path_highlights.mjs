@@ -1,12 +1,12 @@
-import { expandBox, pointInsideBox, simplifyRoute } from "./dag_routing_geometry.mjs?v=e25b94283eb10543";
-import { pairKey, pathPairKeys } from "./edge_keys.mjs?v=e25b94283eb10543";
-export { pathPairKeys } from "./edge_keys.mjs?v=e25b94283eb10543";
+import { expandBox, pointInsideBox, simplifyRoute } from "./dag_routing_geometry.mjs?v=b6534444770ab42a";
+import { pairKey, pathPairKeys } from "./edge_keys.mjs?v=b6534444770ab42a";
+export { pathPairKeys } from "./edge_keys.mjs?v=b6534444770ab42a";
 
 const EDGE_PALETTE = {
   iv: { color: "#d32f2f", shadow: "rgba(211,47,47,0.34)" },
   dv: { color: "#1976d2", shadow: "rgba(25,118,210,0.34)" },
   shared: { color: "#d18b08", shadow: "rgba(209,139,8,0.38)" },
-  exclusion: { color: "#7c3aed", shadow: "rgba(124,58,237,0.38)" },
+  exclusion: { color: "#176b80", shadow: "rgba(23,107,128,0.38)" },
 };
 
 export function addPathDirectionTargets(targetsByPair, path = []) {

@@ -1,4 +1,4 @@
-import { isPresentLink } from "./dag_link_aggregation.mjs?v=e25b94283eb10543";
+import { isPresentLink } from "./dag_link_aggregation.mjs?v=b6534444770ab42a";
 
 import {
   connectedComponentGraph,
@@ -9,7 +9,7 @@ import {
   filterGraphByLinkPairs,
   filterGraphLinks,
   filterGraphNodes,
-} from "./dag_graph.mjs?v=e25b94283eb10543";
+} from "./dag_graph.mjs?v=b6534444770ab42a";
 
 export function excludedForConnectivity(link) {
   return link.display_status === "excluded" && !link.is_target_relation;
