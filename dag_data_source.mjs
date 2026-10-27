@@ -1,15 +1,15 @@
-import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=8f6bf80bf6a5b64e";
+import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=e0be7beaa1a32f1e";
 import { evidenceManifestUrl, evidenceSnapshotIdFromManifestUrl, groupingSchemaUrl,
-  schemaPublicationId } from "./dag_data_config.mjs?v=8f6bf80bf6a5b64e";
+  schemaPublicationId } from "./dag_data_config.mjs?v=e0be7beaa1a32f1e";
 import { browserV2ManifestLayout, browserV2ShardPath,
-  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=8f6bf80bf6a5b64e";
-import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=8f6bf80bf6a5b64e";
-import { loadPublishedSchema } from "./published_schema_loader.mjs?v=8f6bf80bf6a5b64e";
-import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=8f6bf80bf6a5b64e";
-import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=8f6bf80bf6a5b64e";
-import { variableMapCatalog } from "./variable_map_catalog.mjs?v=8f6bf80bf6a5b64e";
-import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=8f6bf80bf6a5b64e";
-import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=8f6bf80bf6a5b64e";
+  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=e0be7beaa1a32f1e";
+import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=e0be7beaa1a32f1e";
+import { loadPublishedSchema } from "./published_schema_loader.mjs?v=e0be7beaa1a32f1e";
+import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=e0be7beaa1a32f1e";
+import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=e0be7beaa1a32f1e";
+import { variableMapCatalog } from "./variable_map_catalog.mjs?v=e0be7beaa1a32f1e";
+import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=e0be7beaa1a32f1e";
+import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=e0be7beaa1a32f1e";
 
 // Reading many small remote Parquet shards incurs a separate metadata/range
 // round trip for each shard. The canonical snapshot is cheaper for wide groups.
@@ -97,7 +97,7 @@ export class ParquetManifestDagDataSource {
     this.onStatus("Starting query engine…");
     const engineStart = performance.now();
     const mainModule = new URL("./vendor/duckdb/duckdb-eh.wasm", import.meta.url).href;
-    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=8f6bf80bf6a5b64e", import.meta.url).href;
+    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=e0be7beaa1a32f1e", import.meta.url).href;
     const worker = new Worker(mainWorker);
     const database = new duckdb.AsyncDuckDB(
       new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),

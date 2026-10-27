@@ -1,16 +1,16 @@
-import { supabase } from "./supabase_client.mjs?v=8f6bf80bf6a5b64e";
-import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=8f6bf80bf6a5b64e";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=8f6bf80bf6a5b64e";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=8f6bf80bf6a5b64e";
-import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=8f6bf80bf6a5b64e";
-import { buildPermalink } from "./dag_permalink.mjs?v=8f6bf80bf6a5b64e";
-import { deriveDagView } from "./dag_view.mjs?v=8f6bf80bf6a5b64e";
+import { supabase } from "./supabase_client.mjs?v=e0be7beaa1a32f1e";
+import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=e0be7beaa1a32f1e";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=e0be7beaa1a32f1e";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=e0be7beaa1a32f1e";
+import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=e0be7beaa1a32f1e";
+import { buildPermalink } from "./dag_permalink.mjs?v=e0be7beaa1a32f1e";
+import { deriveDagView } from "./dag_view.mjs?v=e0be7beaa1a32f1e";
 import { COMPILED_DAG_PATH, sha256Hex, stableJsonBytes,
-  validateCompiledArtifact } from "./compiled_dag.mjs?v=8f6bf80bf6a5b64e";
+  validateCompiledArtifact } from "./compiled_dag.mjs?v=e0be7beaa1a32f1e";
 
-export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=8f6bf80bf6a5b64e";
+export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=e0be7beaa1a32f1e";
 import { publicSchemaBaseUrl as sharedPublicSchemaBaseUrl,
-  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=8f6bf80bf6a5b64e";
+  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=e0be7beaa1a32f1e";
 
 export async function fetchPublishedFile(url, options, fetchImpl, sleep = ms => new Promise(resolve => setTimeout(resolve, ms))) {
   for (let attempt = 0; attempt < 5; attempt += 1) {
