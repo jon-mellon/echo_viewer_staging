@@ -1,6 +1,6 @@
-import * as searchModel from "./dag_search.mjs?v=e10625ec44197c84";
-import { reviewTerms } from "./definition_batch_review.mjs?v=e10625ec44197c84";
-import { h, replaceChildren } from "./dom_builder.mjs?v=e10625ec44197c84";
+import * as searchModel from "./dag_search.mjs?v=e25b94283eb10543";
+import { reviewTerms } from "./definition_batch_review.mjs?v=e25b94283eb10543";
+import { h, replaceChildren } from "./dom_builder.mjs?v=e25b94283eb10543";
 
 export function createDefinitionWorkflowPresenter({ state, elements: els, normalized, clusterRep, truncate,
   definitionSources, definitionResidualIds, definitionCanReview, searchVariables, visibleVariables,
