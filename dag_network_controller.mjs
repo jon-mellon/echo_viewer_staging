@@ -1,12 +1,12 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=0d59b76356791a33";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=0d59b76356791a33";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=0d59b76356791a33";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=0d59b76356791a33";
-import * as dagDisplay from "./dag_display.mjs?v=0d59b76356791a33";
-import * as workflow from "./dag_workflow.mjs?v=0d59b76356791a33";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=0d59b76356791a33";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=0d59b76356791a33";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=0d59b76356791a33";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=389c170b66588749";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=389c170b66588749";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=389c170b66588749";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=389c170b66588749";
+import * as dagDisplay from "./dag_display.mjs?v=389c170b66588749";
+import * as workflow from "./dag_workflow.mjs?v=389c170b66588749";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=389c170b66588749";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=389c170b66588749";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=389c170b66588749";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -447,7 +447,7 @@ async function renderDag({ reuseGeometry = false } = {}) {
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=0d59b76356791a33", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=389c170b66588749", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -644,6 +644,20 @@ function minimumDagScale() {
     Math.max(1, els.dagNetwork.clientHeight - 68) / Math.max(1, height), 1);
 }
 
+function fitDag() {
+  const boxes = dagBounds()?.boxes;
+  const width = els.dagNetwork.clientWidth, height = els.dagNetwork.clientHeight;
+  if (!_visNetwork || !boxes?.length || !width || !height) return;
+  const left = Math.min(...boxes.map(box => box.left));
+  const right = Math.max(...boxes.map(box => box.right));
+  const top = Math.min(...boxes.map(box => box.top));
+  const bottom = Math.max(...boxes.map(box => box.bottom));
+  const padding = 16;
+  const scale = Math.min(Math.max(1, width - 2 * padding) / Math.max(1, right - left),
+    Math.max(1, height - 2 * padding) / Math.max(1, bottom - top));
+  _visNetwork.moveTo({ position: { x: (left + right) / 2, y: (top + bottom) / 2 }, scale, animation: false });
+}
+
 let detachDagInteractions = null;
 
 function attachDagNetworkHandlers(network) {
@@ -709,7 +723,7 @@ function edgeHoverText(link) {
     getPathLaneSegments: () => _dagPathLaneSegments,
     zoomIn: () => _visNetwork?.moveTo({ scale: _visNetwork.getScale() * 1.3 }),
     zoomOut: () => _visNetwork?.moveTo({ scale: Math.max(minimumDagScale(), _visNetwork.getScale() / 1.3) }),
-    fit: () => _visNetwork?.fit(DAG_FIT_OPTIONS),
+    fit: fitDag,
     redraw: () => _visNetwork?.redraw(),
   };
 }

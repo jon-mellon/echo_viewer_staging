@@ -1,6 +1,6 @@
-import { attachGraphTouchGuard } from "./graph_touch.mjs?v=0d59b76356791a33";
-import * as projectOps from "./dag_project.mjs?v=0d59b76356791a33";
-import * as mapInteractions from "./map_interactions.mjs?v=0d59b76356791a33";
+import { attachGraphTouchGuard } from "./graph_touch.mjs?v=389c170b66588749";
+import * as projectOps from "./dag_project.mjs?v=389c170b66588749";
+import * as mapInteractions from "./map_interactions.mjs?v=389c170b66588749";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -121,8 +121,8 @@ function installHandlers() {
       els.variableLayoutSelect.disabled = false;
     }
   });
-  els.dagZoomIn.addEventListener("click", () => zoomMap(canvasWidth() / 2, canvasHeight() / 2, 1.12));
-  els.dagZoomOut.addEventListener("click", () => zoomMap(canvasWidth() / 2, canvasHeight() / 2, 1 / 1.12));
+  els.dagZoomIn.addEventListener("click", () => zoomMap(canvasWidth() / 2, canvasHeight() / 2, 1.12, true));
+  els.dagZoomOut.addEventListener("click", () => zoomMap(canvasWidth() / 2, canvasHeight() / 2, 1 / 1.12, true));
   els.dagFitView.addEventListener("click", () => fitMap());
   els.dagFitAll.addEventListener("click", () => fitMap(null, { all: true }));
   els.fullscreenVariableMap.addEventListener("click", () => toggleFullscreenPanel("variable-map"));
