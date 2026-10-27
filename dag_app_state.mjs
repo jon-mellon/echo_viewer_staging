@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @typedef {import("./app_contracts.mjs?v=f486cd5850e1f201").DagAppState} DagAppState */
+/** @typedef {import("./app_contracts.mjs?v=ea42a7f899dc9b67").DagAppState} DagAppState */
 
 export function createDagAppState(interfaceMode = "classic") {
   return /** @type {DagAppState} */ ({
