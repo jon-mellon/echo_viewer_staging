@@ -1,9 +1,9 @@
-import * as projectOps from "./dag_project.mjs?v=389c170b66588749";
-import { h, replaceChildren } from "./dom_builder.mjs?v=389c170b66588749";
-import * as groupEditorModel from "./dag_group_editor.mjs?v=389c170b66588749";
-import * as searchModel from "./dag_search.mjs?v=389c170b66588749";
-import * as workflow from "./dag_workflow.mjs?v=389c170b66588749";
-import { hydrateSearchResult } from "./variable_search_catalog.mjs?v=389c170b66588749";
+import * as projectOps from "./dag_project.mjs?v=e10625ec44197c84";
+import { h, replaceChildren } from "./dom_builder.mjs?v=e10625ec44197c84";
+import * as groupEditorModel from "./dag_group_editor.mjs?v=e10625ec44197c84";
+import * as searchModel from "./dag_search.mjs?v=e10625ec44197c84";
+import * as workflow from "./dag_workflow.mjs?v=e10625ec44197c84";
+import { hydrateSearchResult } from "./variable_search_catalog.mjs?v=e10625ec44197c84";
 
 export function createDagGroupEditorController({
   state, elements: els, applyProjectOperation, groupById, takeSnapshot,
@@ -176,7 +176,7 @@ function renderGroupEditor() {
 }
 
 // In-editor search to add any variable (its whole duplicate cluster) to the open group.
-// Available for every group — including IV/DV, which is how "Change IV/DV" lets a user
+// Available for every group — including Ind var/Dep var, which is how "Change Ind var/Dep var" lets a user
 // swap the anchor variable without restarting Setup.
 function renderGroupSeedSearch() {
   if (!els.groupSeedInput) return;

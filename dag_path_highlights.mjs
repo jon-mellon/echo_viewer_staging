@@ -1,6 +1,6 @@
-import { expandBox, pointInsideBox, simplifyRoute } from "./dag_routing_geometry.mjs?v=389c170b66588749";
-import { pairKey, pathPairKeys } from "./edge_keys.mjs?v=389c170b66588749";
-export { pathPairKeys } from "./edge_keys.mjs?v=389c170b66588749";
+import { expandBox, pointInsideBox, simplifyRoute } from "./dag_routing_geometry.mjs?v=e10625ec44197c84";
+import { pairKey, pathPairKeys } from "./edge_keys.mjs?v=e10625ec44197c84";
+export { pathPairKeys } from "./edge_keys.mjs?v=e10625ec44197c84";
 
 const EDGE_PALETTE = {
   iv: { color: "#d32f2f", shadow: "rgba(211,47,47,0.34)" },
@@ -101,10 +101,10 @@ export function buildPathHighlightModel({
         from: { ...(arrows?.from || {}), enabled: false },
       },
       shadow: false,
-      title: `${edge.title || ""}\n${role === "exclusion" ? "Instrument-to-DV exclusion path"
-        : role === "iv" ? `Path to ${showExogeneity ? "instrument" : "IV"}`
-          : role === "dv" ? "Path to DV"
-            : `Shared segment of ${showExogeneity ? "instrument" : "IV"} and DV paths`}`.trim(),
+      title: `${edge.title || ""}\n${role === "exclusion" ? "Instrument-to-Dep var exclusion path"
+        : role === "iv" ? `Path to ${showExogeneity ? "instrument" : "Ind var"}`
+          : role === "dv" ? "Path to Dep var"
+            : `Shared segment of ${showExogeneity ? "instrument" : "Ind var"} and Dep var paths`}`.trim(),
     });
   }
 

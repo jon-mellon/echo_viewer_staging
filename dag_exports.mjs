@@ -1,8 +1,8 @@
-import { PROJECT_FORMAT_VERSION, WORKING_MAP_FORMAT_VERSION } from "./app_contracts.mjs?v=389c170b66588749";
-import { escapeHtml } from "./text_utils.mjs?v=389c170b66588749";
-import { CONFOUNDER_STATUSES, confounderRows } from "./confounder_status.mjs?v=389c170b66588749";
+import { PROJECT_FORMAT_VERSION, WORKING_MAP_FORMAT_VERSION } from "./app_contracts.mjs?v=e10625ec44197c84";
+import { escapeHtml } from "./text_utils.mjs?v=e10625ec44197c84";
+import { CONFOUNDER_STATUSES, confounderRows } from "./confounder_status.mjs?v=e10625ec44197c84";
 
-/** @typedef {import("./app_contracts.mjs?v=389c170b66588749").SerializedProjectPayload} SerializedProjectPayload */
+/** @typedef {import("./app_contracts.mjs?v=e10625ec44197c84").SerializedProjectPayload} SerializedProjectPayload */
 
 // Pure export generation. The caller supplies a snapshot, metadata and timestamps.
 // Returned file records contain content only; fetching and downloading stay in the UI.
@@ -295,8 +295,8 @@ export function buildMarkdownFiles(input, { bibText, keyMap }, svgStr = null, gr
     `link-citations: true`,
     `---`,
     ``,
-    `**IV:** ${ivLabel}  `,
-    `**DV:** ${dvLabel}`,
+    `**Ind var:** ${ivLabel}  `,
+    `**Dep var:** ${dvLabel}`,
     ...(instrumentLabel ? [`**Instrument:** ${instrumentLabel}`] : []),
     ``,
     `*Constructed with DAG Builder [@${METHOD_BIB_KEY}].*`,
@@ -369,8 +369,8 @@ export function buildLatexFiles(input, { bibText, keyMap }, svgStr = null, graph
     `\\begin{document}`,
     `\\maketitle`,
     ``,
-    `\\noindent\\textbf{IV:} ${texEscape(ivLabel)}\\\\`,
-    `\\textbf{DV:} ${texEscape(dvLabel)}`,
+    `\\noindent\\textbf{Ind var:} ${texEscape(ivLabel)}\\\\`,
+    `\\textbf{Dep var:} ${texEscape(dvLabel)}`,
     ...(instrumentLabel ? [`\\textbf{Instrument:} ${texEscape(instrumentLabel)}`] : []),
     ``,
     `This causal map was constructed using the DAG Builder method \\citep{${METHOD_BIB_KEY}}.`,

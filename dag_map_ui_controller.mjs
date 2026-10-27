@@ -1,10 +1,10 @@
-import * as mapCanvas from "./map_canvas_renderer.mjs?v=389c170b66588749";
-import * as mapGeometry from "./map_geometry.mjs?v=389c170b66588749";
-import * as mapInteractions from "./map_interactions.mjs?v=389c170b66588749";
-import * as mapRenderModel from "./map_render_model.mjs?v=389c170b66588749";
-import * as projectOps from "./dag_project.mjs?v=389c170b66588749";
-import * as visibility from "./variable_visibility.mjs?v=389c170b66588749";
-import { h, replaceChildren } from "./dom_builder.mjs?v=389c170b66588749";
+import * as mapCanvas from "./map_canvas_renderer.mjs?v=e10625ec44197c84";
+import * as mapGeometry from "./map_geometry.mjs?v=e10625ec44197c84";
+import * as mapInteractions from "./map_interactions.mjs?v=e10625ec44197c84";
+import * as mapRenderModel from "./map_render_model.mjs?v=e10625ec44197c84";
+import * as projectOps from "./dag_project.mjs?v=e10625ec44197c84";
+import * as visibility from "./variable_visibility.mjs?v=e10625ec44197c84";
+import { h, replaceChildren } from "./dom_builder.mjs?v=e10625ec44197c84";
 
 export function createDagMapUiController({
   state, elements: els, beginDraw, canvasWidth, canvasHeight, worldToScreen, screenToWorld,
@@ -303,7 +303,7 @@ function applyBrush() {
     renderAll({ rebuild: false, refreshView: true });
     return;
   }
-  // Draw-to-seed: no group yet, drawing during DV/IV selection picks the enclosed
+  // Draw-to-seed: no group yet, drawing during Dep var/Ind var selection picks the enclosed
   // variables as the seed set and opens the target group.
   if (!group && isSeedSelectionPhase() && brush.action !== "remove") {
     const side = state.phase === "select_dv" ? "dv" : "iv";
