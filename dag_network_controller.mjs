@@ -1,12 +1,12 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=b8ae251259941a45";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=b8ae251259941a45";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=b8ae251259941a45";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=b8ae251259941a45";
-import * as dagDisplay from "./dag_display.mjs?v=b8ae251259941a45";
-import * as workflow from "./dag_workflow.mjs?v=b8ae251259941a45";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=b8ae251259941a45";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=b8ae251259941a45";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=b8ae251259941a45";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=795cf06fc5e000ad";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=795cf06fc5e000ad";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=795cf06fc5e000ad";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=795cf06fc5e000ad";
+import * as dagDisplay from "./dag_display.mjs?v=795cf06fc5e000ad";
+import * as workflow from "./dag_workflow.mjs?v=795cf06fc5e000ad";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=795cf06fc5e000ad";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=795cf06fc5e000ad";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=795cf06fc5e000ad";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -82,6 +82,7 @@ let _visNodes = null;
 let _visEdges = null;
 let _dagLayoutSignature = "";
 let _visOptionSignature = "";
+const DAG_INSTALL_SLICE = 1000;
 let _dagGeometry = null;
 let _dagBoundsCache = null;
 let _dagEdgeSegments = new Map();
@@ -457,7 +458,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=b8ae251259941a45", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=795cf06fc5e000ad", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -542,9 +543,26 @@ async function applyDagRender(groups, layout, routes) {
       // A large filter transition replaces most route bends. Bind the complete
       // data once rather than repeatedly rebuilding adjacency as nodes and edges
       // are updated and removed. Preserve the Network instance and its handlers.
-      _visNodes = new visApi.DataSet(nodeData);
-      _visEdges = new visApi.DataSet(edgeData);
+      // Install it in slices with a turn for input between them: one bind of thousands of route bends and edges is a
+      // single task of a second or more on a phone.
+      els.dagNetwork.style.visibility = "hidden";
+      _visNodes = new visApi.DataSet();
+      _visEdges = new visApi.DataSet();
       _visNetwork.setData({ nodes: _visNodes, edges: _visEdges });
+      _dagApplyingRequest = requestId;
+      for (const [dataSet, rows] of [[_visNodes, nodeData], [_visEdges, edgeData]]) {
+        for (let at = 0; at < rows.length; at += DAG_INSTALL_SLICE) {
+          await new Promise(resolve => setTimeout(resolve, 0));
+          if (requestId !== _dagRenderRequest) {
+            if (_dagApplyingRequest === requestId) _dagApplyingRequest = null;
+            // The network holds a partial install: forget what it holds so the next render rewrites all of it.
+            _dagNodeDataById = new Map();
+            return;
+          }
+          dataSet.add(rows.slice(at, at + DAG_INSTALL_SLICE));
+        }
+      }
+      if (_dagApplyingRequest === requestId) _dagApplyingRequest = null;
     } else {
       if (changedNodes.length) _visNodes.update(changedNodes);
       if (dropNodes.length) _visNodes.remove(dropNodes);
