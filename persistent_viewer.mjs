@@ -1,7 +1,7 @@
-import { buildPermalink } from "./dag_permalink.mjs?v=0b7d87a8b7467f00";
-import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=0b7d87a8b7467f00";
-import { validateGroupingSchema } from "./data_validation.mjs?v=0b7d87a8b7467f00";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=0b7d87a8b7467f00";
+import { buildPermalink } from "./dag_permalink.mjs?v=47be8470b55413d6";
+import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=47be8470b55413d6";
+import { validateGroupingSchema } from "./data_validation.mjs?v=47be8470b55413d6";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=47be8470b55413d6";
 
 export function createPersistentViewer({ state, getSchema, getViewport = () => {},
   status = () => {}, onDiscard = () => {} }) {
