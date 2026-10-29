@@ -1,5 +1,5 @@
 // Canvas effects only: callers supply geometry, styles and point models.
-import { worldToScreen as projectPoint } from "./map_geometry.mjs?v=263da6885700e434";
+import { worldToScreen as projectPoint } from "./map_geometry.mjs?v=0b7d87a8b7467f00";
 
 const voronoiPathCache = new WeakMap();
 
