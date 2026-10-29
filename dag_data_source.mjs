@@ -1,15 +1,15 @@
-import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=6893083a1d3d49bf";
+import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=cbd4cff039e2f906";
 import { evidenceManifestUrl, evidenceSnapshotIdFromManifestUrl, groupingSchemaUrl,
-  schemaPublicationId } from "./dag_data_config.mjs?v=6893083a1d3d49bf";
+  schemaPublicationId } from "./dag_data_config.mjs?v=cbd4cff039e2f906";
 import { browserV2ManifestLayout, browserV2ShardPath,
-  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=6893083a1d3d49bf";
-import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=6893083a1d3d49bf";
-import { loadPublishedSchema } from "./published_schema_loader.mjs?v=6893083a1d3d49bf";
-import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=6893083a1d3d49bf";
-import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=6893083a1d3d49bf";
-import { variableMapCatalog } from "./variable_map_catalog.mjs?v=6893083a1d3d49bf";
-import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=6893083a1d3d49bf";
-import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=6893083a1d3d49bf";
+  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=cbd4cff039e2f906";
+import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=cbd4cff039e2f906";
+import { loadPublishedSchema } from "./published_schema_loader.mjs?v=cbd4cff039e2f906";
+import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=cbd4cff039e2f906";
+import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=cbd4cff039e2f906";
+import { variableMapCatalog } from "./variable_map_catalog.mjs?v=cbd4cff039e2f906";
+import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=cbd4cff039e2f906";
+import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=cbd4cff039e2f906";
 
 // Reading many small remote Parquet shards incurs a separate metadata/range
 // round trip for each shard. The canonical snapshot is cheaper for wide groups.
@@ -97,7 +97,7 @@ export class ParquetManifestDagDataSource {
     this.onStatus("Starting query engine…");
     const engineStart = performance.now();
     const mainModule = new URL("./vendor/duckdb/duckdb-eh.wasm", import.meta.url).href;
-    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=6893083a1d3d49bf", import.meta.url).href;
+    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=cbd4cff039e2f906", import.meta.url).href;
     const worker = new Worker(mainWorker);
     const database = new duckdb.AsyncDuckDB(
       new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
@@ -153,8 +153,16 @@ export class ParquetManifestDagDataSource {
     const canonical = this.canonicalEvidenceRelationUrl("variable_occurrences");
     const urls = canonical ? [canonical] : this.browserUrls(this.browserLayout.variables);
     const quoted = urls.map(url => `'${url.replaceAll("'", "''")}'`).join(",");
-    return queryRows(this.connection, `SELECT variable_id, display_label, concept_label,
+    const result = await this.connection.query(`SELECT variable_id, display_label, concept_label,
       raw_variable_text, paper_id, uoa, index FROM read_parquet([${quoted}]) ORDER BY index`);
+    const rows = [];
+    // Arrow materialization of a large snapshot can monopolize the UI thread.
+    // Yield between record batches while preserving the query's stable order.
+    for (const batch of result.batches) {
+      rows.push(...plainRows(batch));
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    return rows;
   }
 
   async loadVariableMetadata(variableIds, layoutSource = "", { mapOnly = false } = {}) {

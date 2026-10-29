@@ -1,4 +1,4 @@
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=6893083a1d3d49bf";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=cbd4cff039e2f906";
 
 export function studyDesignEdgeData(groups, project) {
   const groupIds = new Set(groups.map(group => group.group_id));

@@ -1,5 +1,5 @@
-import * as mapGeometry from "./map_geometry.mjs?v=6893083a1d3d49bf";
-import * as mapInteractions from "./map_interactions.mjs?v=6893083a1d3d49bf";
+import * as mapGeometry from "./map_geometry.mjs?v=cbd4cff039e2f906";
+import * as mapInteractions from "./map_interactions.mjs?v=cbd4cff039e2f906";
 
 function extent(variables) {
   let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;

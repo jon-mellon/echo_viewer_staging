@@ -14,6 +14,15 @@ export function variableSearchPayload(variables, snapshotId) {
       normalize(v.display_label || v.concept_label), normalize(v.concept_label), Number(v.index)]) };
 }
 
+async function variableSearchPayloadInBatches(variables, snapshotId) {
+  const records = [];
+  for (let start = 0; start < variables.length; start += 1000) {
+    records.push(...variableSearchPayload(variables.slice(start, start + 1000), snapshotId).records);
+    if (start + 1000 < variables.length) await new Promise(resolve => setTimeout(resolve, 0));
+  }
+  return { format: "echo-variable-search-v1", evidence_snapshot: snapshotId, records };
+}
+
 const normalize = value => String(value ?? "").trim().toLowerCase();
 
 export async function readSearchCatalogPayload(url, fetchImpl = globalThis.fetch) {
@@ -27,7 +36,7 @@ export async function readSearchCatalogPayload(url, fetchImpl = globalThis.fetch
 
 function loadCatalogInWorker(url, snapshotId, onRecords) {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL("./variable_search_catalog_worker.mjs?v=6893083a1d3d49bf", import.meta.url), { type: "module" });
+    const worker = new Worker(new URL("./variable_search_catalog_worker.mjs?v=cbd4cff039e2f906", import.meta.url), { type: "module" });
     let payload;
     const fail = error => { worker.terminate(); reject(error); };
     worker.onerror = event => fail(new Error(event.message || "Could not load search catalog worker."));
@@ -64,7 +73,7 @@ export class StaticVariableSearchCatalog {
     const staticAvailable = url && typeof DecompressionStream === "function";
     const loadPayload = staticAvailable
       ? (typeof Worker === "function" && fetchImpl === globalThis.fetch ? onRecords => loadCatalogInWorker(url, snapshotId, onRecords) : null)
-      : async () => variableSearchPayload(await loadRecords(), snapshotId);
+      : async () => variableSearchPayloadInBatches(await loadRecords(), snapshotId);
     return this.load(staticAvailable ? url : "", fetchImpl, loadPayload);
   }
 
