@@ -1,8 +1,8 @@
-import * as projectOps from "./dag_project.mjs?v=47be8470b55413d6";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=47be8470b55413d6";
-import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=47be8470b55413d6";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=47be8470b55413d6";
-import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=47be8470b55413d6";
+import * as projectOps from "./dag_project.mjs?v=42b4955b6f29c325";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=42b4955b6f29c325";
+import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=42b4955b6f29c325";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=42b4955b6f29c325";
+import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=42b4955b6f29c325";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateMapCaches, renderAll, drawMap = () => {}, renderAssignmentCoverage = () => {}, setMapMode, fitMap, groupById, persistProjectLocally,
@@ -380,6 +380,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       state.selectedVariableIds.clear();
       state.activeGroupId = null;
       state.focusedGroupId = newGroupId;
+      if (draft.role === "candidate") state.pendingVariablePanelGroupId = newGroupId;
       const initialAnchor = draft.mode !== "edit" && !state.changingAnchorSide;
       state.phase = initialAnchor && draft.role === "iv" ? "select_dv"
         : initialAnchor && draft.role === "dv" ? "select_instrument" : "build";
