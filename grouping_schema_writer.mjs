@@ -1,5 +1,5 @@
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=3a136b08236c0a94";
-export { GROUPING_FORMAT_VERSION } from "./app_contracts.mjs?v=3a136b08236c0a94";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=10e0e8bdaca3913e";
+export { GROUPING_FORMAT_VERSION } from "./app_contracts.mjs?v=10e0e8bdaca3913e";
 const SCHEMA_KEYS = ["schema_version", "grouping_set_id", "label", "description"];
 const REJECTED_COLUMNS = [
   "variable_id", "member_variable_ids", "label", "reason", "flagged_at", "previous_group_ids",

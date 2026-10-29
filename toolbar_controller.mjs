@@ -1,4 +1,4 @@
-import { createToolbarPresenter } from "./toolbar_presenter.mjs?v=3a136b08236c0a94";
+import { createToolbarPresenter } from "./toolbar_presenter.mjs?v=10e0e8bdaca3913e";
 
 export function createToolbarController({ state, elements, dagGroups, groupById, visibleVariables,
   uoaMatches, clusterRep, rejectedVariableIdSet }) {

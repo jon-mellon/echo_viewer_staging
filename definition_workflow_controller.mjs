@@ -1,8 +1,8 @@
-import * as projectOps from "./dag_project.mjs?v=3a136b08236c0a94";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=3a136b08236c0a94";
-import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=3a136b08236c0a94";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=3a136b08236c0a94";
-import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=3a136b08236c0a94";
+import * as projectOps from "./dag_project.mjs?v=10e0e8bdaca3913e";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=10e0e8bdaca3913e";
+import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=10e0e8bdaca3913e";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=10e0e8bdaca3913e";
+import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=10e0e8bdaca3913e";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateMapCaches, renderAll, drawMap = () => {}, renderAssignmentCoverage = () => {}, setMapMode, fitMap, groupById, persistProjectLocally, getReturnUrl = () => location.href,
@@ -493,6 +493,9 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       }) : null;
     const draft = oauthDraft || state.definitionDraft || checkpointDraft;
     if (!draft || !["sources", "partition"].includes(draft.step) || !Array.isArray(draft.eligible_variable_ids)) return;
+    // A source-step draft is resumed here only when it belongs to the OAuth
+    // handoff. Startup may otherwise race with a newly opened manual draft.
+    if (draft.step === "sources" && !oauthDraft) return;
     state.definitionMethod = "jev";
     if (!draft.source_snapshot?.every(snap => {
       const current = groupById(snap.group_id);
