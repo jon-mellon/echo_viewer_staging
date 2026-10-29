@@ -1,4 +1,4 @@
-import { isPresentLink } from "./dag_link_aggregation.mjs?v=c897c54973154016";
+import { isPresentLink } from "./dag_link_aggregation.mjs?v=bd330dceb5c2fe8a";
 
 import {
   connectedComponentGraph,
@@ -9,7 +9,7 @@ import {
   filterGraphByLinkPairs,
   filterGraphLinks,
   filterGraphNodes,
-} from "./dag_graph.mjs?v=c897c54973154016";
+} from "./dag_graph.mjs?v=bd330dceb5c2fe8a";
 
 export function excludedForConnectivity(link) {
   return link.display_status === "excluded" && !link.is_target_relation;
@@ -59,7 +59,9 @@ export function deriveDagView({
     traversableLink,
   };
   const cacheKey = !excludeSparseEdges && JSON.stringify([
-    [...fullGraph.nodeIds], retainedLinks, ivId, dvId, instrumentId,
+    [...fullGraph.nodeIds], retainedLinks.map(link => [link.group_a, link.group_b,
+      link.direction_type, link.display_status, Boolean(link.is_target_relation)]),
+    ivId, dvId, instrumentId,
     maxPathLength, exclusionMaxPathLength, excludeBottlenecked,
   ]);
   let diagnostics = cacheKey && diagnosticCache?.key === cacheKey ? diagnosticCache.value : null;
