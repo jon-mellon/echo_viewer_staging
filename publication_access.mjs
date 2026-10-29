@@ -1,4 +1,4 @@
-import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=bd330dceb5c2fe8a";
+import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=6893083a1d3d49bf";
 
 export function publicSchemaBaseUrl(client, storagePrefix) {
   const { data } = client.storage.from(PUBLISHED_SCHEMA_BUCKET).getPublicUrl(`${storagePrefix}/manifest.json`);
