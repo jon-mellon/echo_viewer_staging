@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=cbd4cff039e2f906">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=b8ae251259941a45">
   </head>
   <body class="dag-body dag2-mode viewer-loading password-locked">
     <div id="passwordGate" class="password-gate" role="dialog" aria-modal="true" aria-labelledby="passwordGateTitle">
@@ -416,12 +416,11 @@
         <!-- DAG workspace — shown when no group is open -->
         <section id="dagWorkspaceSection" class="panel-section dag-workspace">
           <div class="dag-ws-header section-title">
-            <h2 id="dagViewTitle">Unfiltered</h2>
+            <h2 id="dagViewTitle">Working map</h2>
             <div class="dag-ws-controls">
               <details class="filter-dropdown">
                 <summary class="toolbar-button">Filters</summary>
                 <div class="filter-dropdown-panel" aria-label="Diagram filters">
-              <button id="showUnfiltered" class="toolbar-button" type="button" aria-pressed="false" title="Show all groups without a confounder or collider filter">Unfiltered</button>
               <button id="toggleConfoundersOnly" class="toolbar-button" type="button" aria-pressed="false" title="Show the Ind var, Dep var, and groups that could point into both; bidirectional edges count in either direction">Confounders</button>
               <button id="toggleCollidersOnly" class="toolbar-button" type="button" aria-pressed="false" title="Show the Ind var, Dep var, and groups that both could point into; bidirectional edges count in either direction">Colliders</button>
               <button id="toggleExclusionViolations" class="toolbar-button" type="button" aria-pressed="false" hidden>Exclusion restriction violations</button>
@@ -500,8 +499,8 @@
       <button class="mobile-panel-tab" type="button" data-mobile-panel="dag" aria-pressed="false">Map</button>
     </nav>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/password_gate.js?v=cbd4cff039e2f906"></script>
-    <script src="/echo_viewer_staging/visjs-min.js?v=cbd4cff039e2f906"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=cbd4cff039e2f906"></script>
+    <script src="/echo_viewer_staging/password_gate.js?v=b8ae251259941a45"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=b8ae251259941a45"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=b8ae251259941a45"></script>
   </body>
 </html>

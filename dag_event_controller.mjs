@@ -1,6 +1,6 @@
-import { attachGraphTouchGuard } from "./graph_touch.mjs?v=cbd4cff039e2f906";
-import * as projectOps from "./dag_project.mjs?v=cbd4cff039e2f906";
-import * as mapInteractions from "./map_interactions.mjs?v=cbd4cff039e2f906";
+import { attachGraphTouchGuard } from "./graph_touch.mjs?v=b8ae251259941a45";
+import * as projectOps from "./dag_project.mjs?v=b8ae251259941a45";
+import * as mapInteractions from "./map_interactions.mjs?v=b8ae251259941a45";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -135,13 +135,6 @@ function installHandlers() {
     state.showGroupLabels = !state.showGroupLabels;
     renderMapToolbarToggles();
     drawMap();
-  });
-  els.showUnfiltered.addEventListener("click", () => {
-    state.showExclusionViolations = false;
-    state.showExogeneity = false;
-    state.showConfoundersOnly = false;
-    state.showCollidersOnly = false;
-    updateDagFilters();
   });
   els.toggleConfoundersOnly.addEventListener("click", () => {
     state.showExclusionViolations = false;

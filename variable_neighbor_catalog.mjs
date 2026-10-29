@@ -1,4 +1,4 @@
-import { EvidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=cbd4cff039e2f906";
+import { EvidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=b8ae251259941a45";
 
 export const VARIABLE_NEIGHBOR_BINDINGS = Object.freeze({
   "f7666b4f9c4537c3ecfef0e9dc096f00650040e4bd1b2360eea64c1d5fba3f7b": {

@@ -1,12 +1,12 @@
-import { withoutGroupReviewStatus, replaceSchemaGroups, normalizeDuplicateAssignments } from "./dag_project.mjs?v=cbd4cff039e2f906";
-import { missingAnchorWorkflow, restoreWorkflowMode } from "./dag_workflow.mjs?v=cbd4cff039e2f906";
-import { PROJECT_FORMAT_VERSION } from "./app_contracts.mjs?v=cbd4cff039e2f906";
-import { validateProjectPayload } from "./data_validation.mjs?v=cbd4cff039e2f906";
-export { restoreWorkflowMode } from "./dag_workflow.mjs?v=cbd4cff039e2f906";
+import { withoutGroupReviewStatus, replaceSchemaGroups, normalizeDuplicateAssignments } from "./dag_project.mjs?v=b8ae251259941a45";
+import { missingAnchorWorkflow, restoreWorkflowMode } from "./dag_workflow.mjs?v=b8ae251259941a45";
+import { PROJECT_FORMAT_VERSION } from "./app_contracts.mjs?v=b8ae251259941a45";
+import { validateProjectPayload } from "./data_validation.mjs?v=b8ae251259941a45";
+export { restoreWorkflowMode } from "./dag_workflow.mjs?v=b8ae251259941a45";
 
-/** @typedef {import("./app_contracts.mjs?v=cbd4cff039e2f906").Project} Project */
-/** @typedef {import("./app_contracts.mjs?v=cbd4cff039e2f906").SerializedProjectPayload} SerializedProjectPayload */
-/** @typedef {import("./app_contracts.mjs?v=cbd4cff039e2f906").GroupingSchema} GroupingSchema */
+/** @typedef {import("./app_contracts.mjs?v=b8ae251259941a45").Project} Project */
+/** @typedef {import("./app_contracts.mjs?v=b8ae251259941a45").SerializedProjectPayload} SerializedProjectPayload */
+/** @typedef {import("./app_contracts.mjs?v=b8ae251259941a45").GroupingSchema} GroupingSchema */
 
 export function applyCurrentSchema(loaded, schema, clusterOf, clusterMembers) {
   if (!schema) return loaded;
