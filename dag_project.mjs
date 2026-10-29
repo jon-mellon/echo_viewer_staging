@@ -1,14 +1,14 @@
-import { rawLinksBetween } from "./dag_link_aggregation.mjs?v=42b4955b6f29c325";
+import { rawLinksBetween } from "./dag_link_aggregation.mjs?v=c897c54973154016";
 
 // Project data operations. Callers supply timestamps/IDs and duplicate-cluster
 // members; no operation reads UI state, storage, the clock or the network.
 // Unchanged records are shared. Treat all returned data as read-only until the
 // UI adapter applies it; copying entire projects per variable would be wasteful.
 
-import * as visibility from "./variable_visibility.mjs?v=42b4955b6f29c325";
+import * as visibility from "./variable_visibility.mjs?v=c897c54973154016";
 
-/** @typedef {import("./app_contracts.mjs?v=42b4955b6f29c325").Project} Project */
-/** @typedef {import("./app_contracts.mjs?v=42b4955b6f29c325").Group} Group */
+/** @typedef {import("./app_contracts.mjs?v=c897c54973154016").Project} Project */
+/** @typedef {import("./app_contracts.mjs?v=c897c54973154016").Group} Group */
 
 export function withoutGroupReviewStatus(group) {
   const { status, ...definition } = group;

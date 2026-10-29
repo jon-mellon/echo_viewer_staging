@@ -1,7 +1,7 @@
-import { confounderPathNodeRole } from "./dag_graph.mjs?v=42b4955b6f29c325";
-import { wrapDagLabel } from "./dag_layout.mjs?v=42b4955b6f29c325";
-import { directedGroupLabels } from "./dag_exports.mjs?v=42b4955b6f29c325";
-import { escapeHtml } from "./text_utils.mjs?v=42b4955b6f29c325";
+import { confounderPathNodeRole } from "./dag_graph.mjs?v=c897c54973154016";
+import { wrapDagLabel } from "./dag_layout.mjs?v=c897c54973154016";
+import { directedGroupLabels } from "./dag_exports.mjs?v=c897c54973154016";
+import { escapeHtml } from "./text_utils.mjs?v=c897c54973154016";
 
 // Display records only: no renderer, DOM or viewer-state access.
 export function visNodeData(group, layoutPoint, layoutParams = {}, view) {
