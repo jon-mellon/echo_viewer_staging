@@ -1,8 +1,8 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=ef81198e4afa81e3";
-import * as groupListModel from "./dag_group_list.mjs?v=ef81198e4afa81e3";
-import * as searchModel from "./dag_search.mjs?v=ef81198e4afa81e3";
-import * as workflow from "./dag_workflow.mjs?v=ef81198e4afa81e3";
-import { h, replaceChildren } from "./dom_builder.mjs?v=ef81198e4afa81e3";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=c2c0c5cb2c65d838";
+import * as groupListModel from "./dag_group_list.mjs?v=c2c0c5cb2c65d838";
+import * as searchModel from "./dag_search.mjs?v=c2c0c5cb2c65d838";
+import * as workflow from "./dag_workflow.mjs?v=c2c0c5cb2c65d838";
+import { h, replaceChildren } from "./dom_builder.mjs?v=c2c0c5cb2c65d838";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);

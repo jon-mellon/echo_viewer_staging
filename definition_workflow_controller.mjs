@@ -1,12 +1,13 @@
-import * as projectOps from "./dag_project.mjs?v=ef81198e4afa81e3";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=ef81198e4afa81e3";
-import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=ef81198e4afa81e3";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=ef81198e4afa81e3";
-import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=ef81198e4afa81e3";
+import * as projectOps from "./dag_project.mjs?v=c2c0c5cb2c65d838";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=c2c0c5cb2c65d838";
+import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=c2c0c5cb2c65d838";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=c2c0c5cb2c65d838";
+import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=c2c0c5cb2c65d838";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateMapCaches, renderAll, drawMap = () => {}, renderAssignmentCoverage = () => {}, setMapMode, fitMap, groupById, persistProjectLocally, getReturnUrl = () => location.href,
-  visibleVariables, searchVariables, clusterDisplayVariable, expandToClusterMembers, nowIso,
+  visibleVariables, searchVariables, searchSourceGroups = groups => groups.map((group, index) => ({ group, index, variableMatch: "" })),
+  clusterDisplayVariable, expandToClusterMembers, nowIso,
   applyProjectOperation, takeSnapshot, addToUndoHistory, clean, normalized, truncate, resizeMap,
   hydrateVariableDetails = async () => {}, hydrateNeighbors = async () => {},
   prewarmEvidence = async () => {}, commitSchema = async () => {},
@@ -518,7 +519,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
 
   const presenter = createDefinitionWorkflowPresenter({
     state, elements: els, normalized, clusterRep, truncate, definitionSources,
-    definitionResidualIds, definitionCanReview, searchVariables, visibleVariables,
+    definitionResidualIds, definitionCanReview, searchVariables, searchSourceGroups, visibleVariables,
     clusterDisplayVariable, definitionNeighbors,
     resizeMap, fitMap, onSourceSelection: setSourceSelection,
     onToggleVariable: toggleDefinitionVariable, onResidualLabel: setResidualLabel,

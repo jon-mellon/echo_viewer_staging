@@ -1,8 +1,8 @@
-import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=ef81198e4afa81e3";
-import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=ef81198e4afa81e3";
-import { setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=ef81198e4afa81e3";
-import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=ef81198e4afa81e3";
-export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=ef81198e4afa81e3";
+import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=c2c0c5cb2c65d838";
+import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=c2c0c5cb2c65d838";
+import { setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=c2c0c5cb2c65d838";
+import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=c2c0c5cb2c65d838";
+export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=c2c0c5cb2c65d838";
 
 function showStatus(element, message, isError = false) {
   element.textContent = message;
