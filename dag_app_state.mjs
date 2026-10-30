@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @typedef {import("./app_contracts.mjs?v=0acb3c5474c9fe88").DagAppState} DagAppState */
+/** @typedef {import("./app_contracts.mjs?v=5334b6af8f92a599").DagAppState} DagAppState */
 
 // There is no unfiltered diagram: when no diagnostic view is on, the confounders view is. Every rebuild path normalizes
 // through this, so the heading, toolbar and graph always describe the same view.
@@ -11,9 +11,19 @@ export function ensureDiagnosticFilter(state) {
   return true;
 }
 
+// The causes and consequences views each keep their own focus and settings, so
+// switching between the three tasks never loses work.
+export function createExploreState() {
+  return {
+    causes: { focusId: null, depth: 1, minPapers: 2 },
+    consequences: { focusId: null, depth: 1, minPapers: 2 },
+  };
+}
+
 export function createDagAppState(interfaceMode = "classic") {
   return /** @type {DagAppState} */ ({
     interfaceMode,
+    task: null, explore: createExploreState(),
     data: null,
     variables: [], variableById: new Map(), clusterOf: new Map(), clusterMembers: new Map(),
     rawLinks: [], rawLinksById: new Map(), edgeSupportById: new Map(), linkLookup: new Map(), similarityEdgeMap: new Map(),

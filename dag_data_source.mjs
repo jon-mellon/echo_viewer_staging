@@ -1,15 +1,15 @@
-import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=0acb3c5474c9fe88";
+import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=5334b6af8f92a599";
 import { evidenceManifestUrl, evidenceSnapshotIdFromManifestUrl, groupingSchemaUrl,
-  schemaPublicationId } from "./dag_data_config.mjs?v=0acb3c5474c9fe88";
+  schemaPublicationId } from "./dag_data_config.mjs?v=5334b6af8f92a599";
 import { browserV2ManifestLayout, browserV2ShardPath,
-  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=0acb3c5474c9fe88";
-import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=0acb3c5474c9fe88";
-import { loadPublishedSchema } from "./published_schema_loader.mjs?v=0acb3c5474c9fe88";
-import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=0acb3c5474c9fe88";
-import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=0acb3c5474c9fe88";
-import { variableMapCatalog } from "./variable_map_catalog.mjs?v=0acb3c5474c9fe88";
-import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=0acb3c5474c9fe88";
-import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=0acb3c5474c9fe88";
+  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=5334b6af8f92a599";
+import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=5334b6af8f92a599";
+import { loadPublishedSchema } from "./published_schema_loader.mjs?v=5334b6af8f92a599";
+import { variableSearchCatalog, SNAPSHOT_SEARCH_CATALOGS } from "./variable_search_catalog.mjs?v=5334b6af8f92a599";
+import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=5334b6af8f92a599";
+import { variableMapCatalog } from "./variable_map_catalog.mjs?v=5334b6af8f92a599";
+import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=5334b6af8f92a599";
+import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=5334b6af8f92a599";
 
 // Reading many small remote Parquet shards incurs a separate metadata/range
 // round trip for each shard. The canonical snapshot is cheaper for wide groups.
@@ -97,7 +97,7 @@ export class ParquetManifestDagDataSource {
     this.onStatus("Starting query engine…");
     const engineStart = performance.now();
     const mainModule = new URL("./vendor/duckdb/duckdb-eh.wasm", import.meta.url).href;
-    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=0acb3c5474c9fe88", import.meta.url).href;
+    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=5334b6af8f92a599", import.meta.url).href;
     const worker = new Worker(mainWorker);
     const database = new duckdb.AsyncDuckDB(
       new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
@@ -313,8 +313,26 @@ export class ParquetManifestDagDataSource {
     const columns = await queryRows(this.connection, `DESCRIBE SELECT * FROM ${relation}`);
     const claim = columns.some(column => column.column_name === "causal_link_existence")
       ? "causal_link_existence" : "NULL::VARCHAR AS causal_link_existence";
-    return (await queryRows(this.connection, `SELECT raw_causal_link_id, paper_id,
-      ${claim} FROM ${relation}`)).filter(row => requested.has(row.raw_causal_link_id));
+    // Read the three columns directly, yielding between slices: building a
+    // full row object per finding blocked the page for most of a second on
+    // phones, and these records serve every group link at once.
+    const table = await this.connection.query(`SELECT raw_causal_link_id, paper_id,
+      ${claim} FROM ${relation}`);
+    const ids = table.getChild("raw_causal_link_id"), papers = table.getChild("paper_id");
+    const claims = table.getChild("causal_link_existence");
+    const rows = [];
+    let sliceStart = performance.now();
+    for (let index = 0; index < table.numRows; index++) {
+      const id = ids.get(index);
+      if (requested.has(id)) {
+        rows.push({ raw_causal_link_id: id, paper_id: papers.get(index), causal_link_existence: claims.get(index) });
+      }
+      if ((index & 1023) === 1023 && performance.now() - sliceStart > 8) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+        sliceStart = performance.now();
+      }
+    }
+    return rows;
   }
 
   async loadRawLinkEndpointsByIds(rawLinkIds) {

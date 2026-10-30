@@ -1,7 +1,7 @@
-import { buildPermalink } from "./dag_permalink.mjs?v=0acb3c5474c9fe88";
-import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=0acb3c5474c9fe88";
-import { validateGroupingSchema } from "./data_validation.mjs?v=0acb3c5474c9fe88";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=0acb3c5474c9fe88";
+import { buildPermalink } from "./dag_permalink.mjs?v=5334b6af8f92a599";
+import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=5334b6af8f92a599";
+import { validateGroupingSchema } from "./data_validation.mjs?v=5334b6af8f92a599";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=5334b6af8f92a599";
 
 export function createPersistentViewer({ state, getSchema, getViewport = () => {},
   status = () => {}, onDiscard = () => {} }) {
@@ -20,6 +20,8 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
   const sessionTitle = () => {
     const groups = state.project?.groups || [];
     const label = id => groups.find(group => group.group_id === id)?.label || "";
+    const explore = state.explore?.[state.task];
+    if (explore?.focusId) return `${state.task === "causes" ? "Causes" : "Consequences"} of ${label(explore.focusId) || explore.focusId}`;
     const iv = label(state.project?.iv_group_id), dv = label(state.project?.dv_group_id);
     return iv && dv ? `${iv} → ${dv}` : iv ? `${iv} → select outcome` : "New view";
   };

@@ -1,46 +1,48 @@
 "use strict";
 
-import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=0acb3c5474c9fe88";
+import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=5334b6af8f92a599";
 import { aggregateGroupLinks as deriveGroupLinks, rawLinksBetween as lookupRawLinks,
-  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=0acb3c5474c9fe88";
+  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=5334b6af8f92a599";
 
-import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=0acb3c5474c9fe88";
-import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=0acb3c5474c9fe88";
-import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=0acb3c5474c9fe88";
-import * as mapGeometry from "/echo_viewer_staging/map_geometry.mjs?v=0acb3c5474c9fe88";
-import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=0acb3c5474c9fe88";
-import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=0acb3c5474c9fe88";
-import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=0acb3c5474c9fe88";
-import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=0acb3c5474c9fe88";
-import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=0acb3c5474c9fe88";
-import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=0acb3c5474c9fe88";
-import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=0acb3c5474c9fe88";
-import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=0acb3c5474c9fe88";
-import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=0acb3c5474c9fe88";
-import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=0acb3c5474c9fe88";
-import { createDagMapViewController } from "/echo_viewer_staging/dag_map_view_controller.mjs?v=0acb3c5474c9fe88";
-import { createDagMapUiController } from "/echo_viewer_staging/dag_map_ui_controller.mjs?v=0acb3c5474c9fe88";
-import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=0acb3c5474c9fe88";
-import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=0acb3c5474c9fe88";
-import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=0acb3c5474c9fe88";
-import { createDagNetworkController } from "/echo_viewer_staging/dag_network_controller.mjs?v=0acb3c5474c9fe88";
-import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=0acb3c5474c9fe88";
-import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=0acb3c5474c9fe88";
-import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=0acb3c5474c9fe88";
-import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=0acb3c5474c9fe88";
-import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=0acb3c5474c9fe88";
-import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=0acb3c5474c9fe88";
-import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=0acb3c5474c9fe88";
-import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=0acb3c5474c9fe88";
-import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=0acb3c5474c9fe88";
-import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=0acb3c5474c9fe88";
-import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=0acb3c5474c9fe88";
-import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=0acb3c5474c9fe88";
-import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=0acb3c5474c9fe88";
-import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=0acb3c5474c9fe88";
-import { CONFOUNDER_STATUSES, confounderRows } from "/echo_viewer_staging/confounder_status.mjs?v=0acb3c5474c9fe88";
-import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=0acb3c5474c9fe88";
-import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=0acb3c5474c9fe88";
+import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=5334b6af8f92a599";
+import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=5334b6af8f92a599";
+import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=5334b6af8f92a599";
+import * as mapGeometry from "/echo_viewer_staging/map_geometry.mjs?v=5334b6af8f92a599";
+import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=5334b6af8f92a599";
+import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=5334b6af8f92a599";
+import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=5334b6af8f92a599";
+import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=5334b6af8f92a599";
+import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=5334b6af8f92a599";
+import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=5334b6af8f92a599";
+import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=5334b6af8f92a599";
+import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=5334b6af8f92a599";
+import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=5334b6af8f92a599";
+import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=5334b6af8f92a599";
+import { createDagMapViewController } from "/echo_viewer_staging/dag_map_view_controller.mjs?v=5334b6af8f92a599";
+import { createDagMapUiController } from "/echo_viewer_staging/dag_map_ui_controller.mjs?v=5334b6af8f92a599";
+import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=5334b6af8f92a599";
+import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=5334b6af8f92a599";
+import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=5334b6af8f92a599";
+import { createDagNetworkController } from "/echo_viewer_staging/dag_network_controller.mjs?v=5334b6af8f92a599";
+import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=5334b6af8f92a599";
+import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=5334b6af8f92a599";
+import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=5334b6af8f92a599";
+import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=5334b6af8f92a599";
+import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=5334b6af8f92a599";
+import { directionalPaperCounter } from "/echo_viewer_staging/causal_neighborhood.mjs?v=5334b6af8f92a599";
+import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=5334b6af8f92a599";
+import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=5334b6af8f92a599";
+import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=5334b6af8f92a599";
+import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=5334b6af8f92a599";
+import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=5334b6af8f92a599";
+import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=5334b6af8f92a599";
+import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=5334b6af8f92a599";
+import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=5334b6af8f92a599";
+import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=5334b6af8f92a599";
+import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=5334b6af8f92a599";
+import { CONFOUNDER_STATUSES, confounderRows } from "/echo_viewer_staging/confounder_status.mjs?v=5334b6af8f92a599";
+import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=5334b6af8f92a599";
+import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=5334b6af8f92a599";
 
 
 const ROLE_LABELS = {
@@ -461,6 +463,7 @@ const renderCoordinator = createRenderCoordinator({
 
 function renderAll(options) {
   renderCoordinator.renderAll(options);
+  taskViews.render();
   persistentViewer.viewerChanged();
 }
 
@@ -721,8 +724,24 @@ function searchDefinitionSourceGroups(groups, query, limit = 60) {
     state.variableSearchStatus === "ready" ? variableSearchCatalog : null, limit);
 }
 
-async function loadVariableSearchCatalog() {
-  if (state.variableSearchStatus === "loading" || state.variableSearchStatus === "ready") return;
+const exploreSearchIndex = new searchModel.AnchorGroupSearchIndex();
+function searchExploreGroups(groups, query, limit = 200) {
+  if (normalized(query) && state.variableSearchStatus === "idle") void loadVariableSearchCatalog();
+  return exploreSearchIndex.searchGroups(groups, state.project.groups, query, state.variableById,
+    state.variableSearchStatus === "ready" ? variableSearchCatalog : null, limit);
+}
+
+// Callers may wait on an in-flight load (later preloads queue behind it).
+let variableSearchCatalogLoad = null;
+function loadVariableSearchCatalog() {
+  if (state.variableSearchStatus === "loading" || state.variableSearchStatus === "ready") {
+    return variableSearchCatalogLoad || Promise.resolve();
+  }
+  variableSearchCatalogLoad = startVariableSearchCatalogLoad();
+  return variableSearchCatalogLoad;
+}
+
+async function startVariableSearchCatalogLoad() {
   state.variableSearchStatus = "loading";
   state.variableSearchError = null;
   try {
@@ -740,6 +759,7 @@ async function loadVariableSearchCatalog() {
   renderSearch("dv");
   renderSetupGroupPicker("instrument");
   if (state.definitionDraft?.step === "sources") renderDefinition();
+  taskViews.render();
 }
 
 function groupedVariableIds(excludeGroupId = null) {
@@ -1115,6 +1135,13 @@ const persistentViewer = createPersistentViewer({
   onDiscard: invalidateMapCaches,
 });
 
+const taskViews = createTaskViews({
+  state, searchGroups: searchExploreGroups, searchStatus: () => state.variableSearchStatus,
+  paperSupport: linkPaperSupport, loadPaperSupport: () => void loadLinkSupport(),
+  onChange: () => persistentViewer.viewerChanged(), flushUrl: () => persistentViewer.flushUrl(),
+});
+taskViews.install();
+
 function exportLocalDraft() {
   const schema = currentWorkingGroupingSchema();
   const payload = makeDraftExport({
@@ -1252,29 +1279,66 @@ function hasAnyMapping(sourceIds, targetIds) {
   return rawLinksBetween(sourceIds, targetIds).length > 0;
 }
 
-let sparseEdgeEvidencePromise = null;
+// Per-finding paper support for every group link. The sparse-edge filter and
+// the causes and consequences views both count papers from these records.
+let linkSupportPromise = null;
+let linkSupportFailed = false;
+let sparseWaitingForSupport = false;
+function missingLinkSupportIds() {
+  return [...new Set((state.project?.links || []).flatMap(link =>
+    [...(link.a_to_b_raw_link_ids || []), ...(link.b_to_a_raw_link_ids || [])]))]
+    .filter(id => !state.edgeSupportById.has(id) && !state.rawLinksById.has(id));
+}
+function loadLinkSupport() {
+  if (linkSupportPromise) return linkSupportPromise;
+  const missing = missingLinkSupportIds();
+  if (!missing.length) return Promise.resolve(true);
+  const supportCache = state.edgeSupportById;
+  linkSupportPromise = dagDataSource.loadRawLinkSupportByIds(missing).then(rows => {
+    if (state.edgeSupportById !== supportCache) return false;
+    const returned = new Set(rows.map(row => row.raw_causal_link_id));
+    if (missing.some(id => !returned.has(id))) {
+      throw new Error("Some sparse edge evidence is unavailable in this snapshot");
+    }
+    for (const row of rows) state.edgeSupportById.set(row.raw_causal_link_id, row);
+    linkSupportFailed = false;
+    return true;
+  }).catch(error => {
+    if (state.edgeSupportById === supportCache) {
+      linkSupportFailed = true;
+      console.error("Could not load sparse edge evidence", error);
+    }
+    return false;
+  }).finally(() => {
+    linkSupportPromise = null;
+    taskViews.render();
+  });
+  return linkSupportPromise;
+}
+// Checking completeness scans every finding ID, so remember a complete result
+// until the links or the support records change.
+let linkSupportComplete = { links: null, support: null, size: -1 };
+function linkPaperSupport() {
+  if (linkSupportFailed) return { status: "failed", papersFor: directionalPaperCounter() };
+  const links = state.project?.links, support = state.edgeSupportById;
+  const known = linkSupportComplete.links === links && linkSupportComplete.support === support
+    && linkSupportComplete.size === support.size;
+  if (!known) {
+    if (missingLinkSupportIds().length) return { status: "loading", papersFor: null };
+    linkSupportComplete = { links, support, size: support.size };
+  }
+  return { status: "ready", papersFor: directionalPaperCounter(state.edgeSupportById, state.rawLinksById),
+    cacheKey: state.edgeSupportById };
+}
+
 function computeVisibleLinks() {
   ensureDiagnosticFilter(state);
-  const missingSparseEvidence = state.excludeSparseEdges
-    ? [...new Set((state.project?.links || []).flatMap(link =>
-      [...(link.a_to_b_raw_link_ids || []), ...(link.b_to_a_raw_link_ids || [])]))]
-      .filter(id => !state.edgeSupportById.has(id) && !state.rawLinksById.has(id)) : [];
-  if (missingSparseEvidence.length && !sparseEdgeEvidencePromise) {
-    const supportCache = state.edgeSupportById;
-    sparseEdgeEvidencePromise = dagDataSource.loadRawLinkSupportByIds(missingSparseEvidence).then(rows => {
-      if (state.edgeSupportById !== supportCache) return;
-      const returned = new Set(rows.map(row => row.raw_causal_link_id));
-      if (missingSparseEvidence.some(id => !returned.has(id))) {
-        throw new Error("Some sparse edge evidence is unavailable in this snapshot");
-      }
-      for (const row of rows) state.edgeSupportById.set(row.raw_causal_link_id, row);
-    }).catch(error => {
-      if (state.edgeSupportById === supportCache) {
-        state.excludeSparseEdges = false;
-        console.error("Could not load sparse edge evidence", error);
-      }
-    }).finally(() => {
-      sparseEdgeEvidencePromise = null;
+  const missingSparseEvidence = state.excludeSparseEdges ? missingLinkSupportIds() : [];
+  if (missingSparseEvidence.length && !sparseWaitingForSupport) {
+    sparseWaitingForSupport = true;
+    void loadLinkSupport().then(loaded => {
+      sparseWaitingForSupport = false;
+      if (!loaded && linkSupportFailed) state.excludeSparseEdges = false;
       updateDagFilters();
     });
   }
@@ -1976,6 +2040,15 @@ const projectBootstrap = createProjectBootstrap({
   renderAll, constrainMapTransform, drawMap, fitMap, dagNetworkController,
   buildDuplicateClusters, linkKey, pairKey, loadVariableSearchCatalog,
   onLocalSchemaLoaded: record => persistentViewer.setLoadedRecord(record),
+  // Paper support for causes and consequences, loaded once the catalog and query
+  // engine are ready, but only from the start page or those views.
+  onPreloadsDone: () => {
+    if (globalThis.navigator?.connection?.saveData) return;
+    if (state.task && state.task !== "causes" && state.task !== "consequences") return;
+    const start = () => void loadLinkSupport();
+    if (typeof globalThis.requestIdleCallback === "function") globalThis.requestIdleCallback(start, { timeout: 5000 });
+    else setTimeout(start, 1000);
+  },
   onReady: () => {
     persistentViewer.start();
     void definitionWorkflowController.resumeAfterOAuth();
@@ -2029,5 +2102,5 @@ init().catch((error) => {
     h("main", { className: "panel-section" }, h("h1", { textContent: missing ? "Local schema unavailable" : "Echo could not open this view" }),
       h("p", { textContent: error?.message || error }),
       missing ? h("label", { textContent: "Import draft" }, input) : null,
-      missing ? h("a", { href: "/?new=1", textContent: "Start new view" }) : null));
+      missing ? h("a", { href: "?new=1", textContent: "Start new view" }) : null));
 });
