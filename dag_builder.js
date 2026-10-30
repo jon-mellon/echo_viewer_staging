@@ -1,48 +1,48 @@
 "use strict";
 
-import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=5334b6af8f92a599";
+import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=882ff3c99c44c1f2";
 import { aggregateGroupLinks as deriveGroupLinks, rawLinksBetween as lookupRawLinks,
-  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=5334b6af8f92a599";
+  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=882ff3c99c44c1f2";
 
-import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=5334b6af8f92a599";
-import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=5334b6af8f92a599";
-import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=5334b6af8f92a599";
-import * as mapGeometry from "/echo_viewer_staging/map_geometry.mjs?v=5334b6af8f92a599";
-import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=5334b6af8f92a599";
-import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=5334b6af8f92a599";
-import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=5334b6af8f92a599";
-import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=5334b6af8f92a599";
-import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=5334b6af8f92a599";
-import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=5334b6af8f92a599";
-import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=5334b6af8f92a599";
-import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=5334b6af8f92a599";
-import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=5334b6af8f92a599";
-import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=5334b6af8f92a599";
-import { createDagMapViewController } from "/echo_viewer_staging/dag_map_view_controller.mjs?v=5334b6af8f92a599";
-import { createDagMapUiController } from "/echo_viewer_staging/dag_map_ui_controller.mjs?v=5334b6af8f92a599";
-import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=5334b6af8f92a599";
-import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=5334b6af8f92a599";
-import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=5334b6af8f92a599";
-import { createDagNetworkController } from "/echo_viewer_staging/dag_network_controller.mjs?v=5334b6af8f92a599";
-import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=5334b6af8f92a599";
-import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=5334b6af8f92a599";
-import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=5334b6af8f92a599";
-import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=5334b6af8f92a599";
-import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=5334b6af8f92a599";
-import { directionalPaperCounter } from "/echo_viewer_staging/causal_neighborhood.mjs?v=5334b6af8f92a599";
-import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=5334b6af8f92a599";
-import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=5334b6af8f92a599";
-import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=5334b6af8f92a599";
-import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=5334b6af8f92a599";
-import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=5334b6af8f92a599";
-import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=5334b6af8f92a599";
-import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=5334b6af8f92a599";
-import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=5334b6af8f92a599";
-import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=5334b6af8f92a599";
-import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=5334b6af8f92a599";
-import { CONFOUNDER_STATUSES, confounderRows } from "/echo_viewer_staging/confounder_status.mjs?v=5334b6af8f92a599";
-import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=5334b6af8f92a599";
-import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=5334b6af8f92a599";
+import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=882ff3c99c44c1f2";
+import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=882ff3c99c44c1f2";
+import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=882ff3c99c44c1f2";
+import * as mapGeometry from "/echo_viewer_staging/map_geometry.mjs?v=882ff3c99c44c1f2";
+import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=882ff3c99c44c1f2";
+import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=882ff3c99c44c1f2";
+import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=882ff3c99c44c1f2";
+import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=882ff3c99c44c1f2";
+import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=882ff3c99c44c1f2";
+import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=882ff3c99c44c1f2";
+import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=882ff3c99c44c1f2";
+import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=882ff3c99c44c1f2";
+import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=882ff3c99c44c1f2";
+import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=882ff3c99c44c1f2";
+import { createDagMapViewController } from "/echo_viewer_staging/dag_map_view_controller.mjs?v=882ff3c99c44c1f2";
+import { createDagMapUiController } from "/echo_viewer_staging/dag_map_ui_controller.mjs?v=882ff3c99c44c1f2";
+import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=882ff3c99c44c1f2";
+import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=882ff3c99c44c1f2";
+import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=882ff3c99c44c1f2";
+import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=882ff3c99c44c1f2";
+import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=882ff3c99c44c1f2";
+import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=882ff3c99c44c1f2";
+import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=882ff3c99c44c1f2";
+import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=882ff3c99c44c1f2";
+import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=882ff3c99c44c1f2";
+import { directionalPaperCounter } from "/echo_viewer_staging/causal_neighborhood.mjs?v=882ff3c99c44c1f2";
+import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=882ff3c99c44c1f2";
+import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=882ff3c99c44c1f2";
+import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=882ff3c99c44c1f2";
+import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=882ff3c99c44c1f2";
+import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=882ff3c99c44c1f2";
+import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=882ff3c99c44c1f2";
+import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=882ff3c99c44c1f2";
+import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=882ff3c99c44c1f2";
+import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=882ff3c99c44c1f2";
+import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=882ff3c99c44c1f2";
+import { CONFOUNDER_STATUSES, confounderRows } from "/echo_viewer_staging/confounder_status.mjs?v=882ff3c99c44c1f2";
+import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=882ff3c99c44c1f2";
+import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=882ff3c99c44c1f2";
 
 
 const ROLE_LABELS = {
@@ -164,6 +164,7 @@ function initElements() {
     "groupSeedInput", "groupSeedResults",
     "includedVariables", "neighborSuggestions",
     // Right: DAG workspace
+    "focusSearchBlock", "focusInput", "focusInputLabel", "focusGroupPicker", "focusPickerCancel",
     "dagWorkspaceSection", "dagNetwork", "dagViewTitle", "diagnosticOverlapKey", "confounderConfig", "confounderDisclosure", "confounderSummary", "confounderStatusList",
     "dagSvgZoomIn", "dagSvgZoomOut", "dagSvgFit", "fullscreenDag",
     "edgeInspector", "provenancePanel", "closeEvidencePane",
@@ -473,6 +474,7 @@ function rebuildProject(options) {
 
 function updateDagFilters() {
   renderCoordinator.updateDagFilters();
+  taskViews.render();
   persistentViewer.viewerChanged();
 }
 
@@ -499,6 +501,7 @@ function renderAnchorBar() {
 }
 
 function changeAnchor(side) {
+  if (taskViews.exploring()) { taskViews.changeFocus(); return; }
   const gid = side === "dv" ? state.project?.dv_group_id
     : side === "instrument" ? state.project?.instrument_group_id : state.project?.iv_group_id;
   const group = groupById(gid);
@@ -758,6 +761,7 @@ async function startVariableSearchCatalogLoad() {
   renderSearch("iv");
   renderSearch("dv");
   renderSetupGroupPicker("instrument");
+  setupGroupController.renderFocusPicker();
   if (state.definitionDraft?.step === "sources") renderDefinition();
   taskViews.render();
 }
@@ -1123,8 +1127,11 @@ const persistentViewer = createPersistentViewer({
   getSchema: currentWorkingGroupingSchema,
   getViewport: () => {
     const network = dagNetworkController.getNetwork();
-    state.dagViewport = network
-      ? { scale: network.getScale(), position: network.getViewPosition() } : null;
+    // An empty or unsized graph reports a meaningless scale; saving it would
+    // make a reopened link zoom to nothing.
+    const scale = network?.getScale();
+    state.dagViewport = network && Number.isFinite(scale) && scale > 0 && scale < 1e4
+      ? { scale, position: network.getViewPosition() } : null;
   },
   status: message => {
     if (els.localSaveStatus) els.localSaveStatus.textContent = message;
@@ -1138,6 +1145,14 @@ const persistentViewer = createPersistentViewer({
 const taskViews = createTaskViews({
   state, searchGroups: searchExploreGroups, searchStatus: () => state.variableSearchStatus,
   paperSupport: linkPaperSupport, loadPaperSupport: () => void loadLinkSupport(),
+  isDisplayGroup: isDagDisplayGroup,
+  // A new variable redraws the chrome (anchor bar, picker) and the graph.
+  onExploreChange: () => renderAll({ reuseLinks: true }),
+  onFocusPicking: () => renderAll({ rebuild: false }),
+  onPickerInput: () => setupGroupController.renderFocusPicker(),
+  // Each task shows its own graph, so rebuild it from the project's links.
+  onTaskChange: () => { dismissEvidenceForTask(); renderAll({ reuseLinks: true }); },
+  openEvidence: edgeId => { inspectDagEdge(edgeId); shellController.showMobilePanel("dag"); },
   onChange: () => persistentViewer.viewerChanged(), flushUrl: () => persistentViewer.flushUrl(),
 });
 taskViews.install();
@@ -1311,7 +1326,9 @@ function loadLinkSupport() {
     return false;
   }).finally(() => {
     linkSupportPromise = null;
-    taskViews.render();
+    // The graph of an explore view waits on these counts, so redraw it now.
+    if (taskViews.exploring()) updateDagFilters();
+    else taskViews.render();
   });
   return linkSupportPromise;
 }
@@ -1331,7 +1348,26 @@ function linkPaperSupport() {
     cacheKey: state.edgeSupportById };
 }
 
+// Causes and consequences draw one variable's neighborhood through the same
+// graph and evidence pane as Identify; the diagnostics belong to Identify.
+function computeExploreLinks() {
+  const { graph } = taskViews.neighborhood();
+  state.componentGroupIds = graph.groupIds;
+  state.visibleLinks = graph.links;
+  state.exploreLayout = graph.layout;
+  for (const key of ["confounderGroupIds", "confounderPathGroupIds", "bottleneckedConfounderIds",
+    "colliderGroupIds", "colliderPathGroupIds", "bottleneckedColliderIds", "exclusionViolationIds",
+    "exclusionPathIds", "exclusionLinkPairKeys", "exogeneityGroupIds", "exogeneityPathGroupIds",
+    "exogeneityLinkPairKeys", "bottleneckedExogeneityIds", "confounderLinkPairKeys", "colliderLinkPairKeys"]) {
+    state[key] = new Set();
+  }
+  for (const key of ["confounderPathsByGroup", "colliderPathsByGroup", "exclusionPathsByGroup", "exogeneityPathsByGroup"]) {
+    state[key] = new Map();
+  }
+}
+
 function computeVisibleLinks() {
+  if (taskViews.exploring()) { computeExploreLinks(); return; }
   ensureDiagnosticFilter(state);
   const missingSparseEvidence = state.excludeSparseEdges ? missingLinkSupportIds() : [];
   if (missingSparseEvidence.length && !sparseWaitingForSupport) {
@@ -1489,7 +1525,13 @@ function highlightConfounderPaths(id) { return dagNetworkController.highlightCon
 function clearConfounderPathHover() { return dagNetworkController.clearConfounderPathHover(); }
 function clearLogicalDagEdgeHover() { return dagNetworkController.clearLogicalDagEdgeHover(); }
 function renderDag(options) { return dagNetworkController.renderDag(options); }
-function refreshDagEdgeSelection(options) { return dagNetworkController.refreshEdgeSelection(options); }
+function refreshDagEdgeSelection(options) {
+  const refreshed = dagNetworkController.refreshEdgeSelection(options);
+  taskViews.refreshSelection();
+  // The open link is part of the permalink, however it was selected.
+  persistentViewer.viewerChanged();
+  return refreshed;
+}
 function minimumDagScale() { return dagNetworkController.minimumDagScale(); }
 
 // ─── Edge inspector + provenance ──────────────────────────────────────────────
@@ -1584,6 +1626,19 @@ function renderSelectedEdge() {
     pendingEdgeEvidencePromise = load;
   }
   renderSelectedEdgePanels();
+}
+
+// The open evidence is per task; clear what the old task showed so the pane
+// matches the new task's selection (restored by the task views).
+function dismissEvidenceForTask() {
+  inspectorController.clearPendingExclude();
+  state.selectedVariableIds.clear();
+  state.comparisonVariableIds = [];
+  if (!state.selectedEdgeId) {
+    els.edgeInspector.hidden = true;
+    els.provenancePanel.hidden = true;
+    els.closeEvidencePane.hidden = true;
+  }
 }
 
 function dismissEvidencePane() {
@@ -1883,6 +1938,8 @@ const setupGroupController = createDagSetupGroupController({
   roleLabels: ROLE_LABELS, dagProjectView, startDefinition, startEditSplit,
   canEditSplit: group => Boolean(projectOps.editableSplitContext(state.project, group)),
   searchAnchorGroups, beginEditor: () => persistentViewer.beginEditor(),
+  exploreFocus: () => taskViews.focus(), searchFocusGroups: query => taskViews.searchFocusGroups(query),
+  onChooseFocus: groupId => taskViews.chooseFocus(groupId),
   loadConceptLabels: ids => dagDataSource.loadVariableProvenance(ids),
   loadVisibleLinkEndpoints: ids => dagDataSource.loadRawLinkEndpointsByIds(ids),
   excludeConcept: excludeGroupConcept,

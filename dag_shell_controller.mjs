@@ -1,5 +1,5 @@
 // Owns cross-feature shell layout: fullscreen focus and draggable panel sizes.
-import { DAG_FIT_OPTIONS } from "./dag_network_controller.mjs?v=5334b6af8f92a599";
+import { DAG_FIT_OPTIONS } from "./dag_network_controller.mjs?v=882ff3c99c44c1f2";
 export function createDagShellController({ state, elements, resizeMap, fitMap, renderDag, getNetwork, isDagFullyVisible, dismissEvidencePane }) {
   let showInstalledMobilePanel = null;
 
