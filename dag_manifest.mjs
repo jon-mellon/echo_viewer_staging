@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @typedef {import("./app_contracts.mjs?v=c2c0c5cb2c65d838").EvidenceManifestFile} EvidenceManifestFile */
+/** @typedef {import("./app_contracts.mjs?v=0acb3c5474c9fe88").EvidenceManifestFile} EvidenceManifestFile */
 
 const SQL_IDENTIFIER = /^[A-Za-z_][A-Za-z0-9_]*$/;
 

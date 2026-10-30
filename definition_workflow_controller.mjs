@@ -1,8 +1,8 @@
-import * as projectOps from "./dag_project.mjs?v=c2c0c5cb2c65d838";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=c2c0c5cb2c65d838";
-import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=c2c0c5cb2c65d838";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=c2c0c5cb2c65d838";
-import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=c2c0c5cb2c65d838";
+import * as projectOps from "./dag_project.mjs?v=0acb3c5474c9fe88";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=0acb3c5474c9fe88";
+import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=0acb3c5474c9fe88";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=0acb3c5474c9fe88";
+import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=0acb3c5474c9fe88";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateMapCaches, renderAll, drawMap = () => {}, renderAssignmentCoverage = () => {}, setMapMode, fitMap, groupById, persistProjectLocally, getReturnUrl = () => location.href,
@@ -548,6 +548,9 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       draft.new_description = description;
       draft.reviewed_variable_ids = [...draft.eligible_variable_ids];
       state.selectedVariableIds = new Set(ids);
+      // Skip the manual draft; it can still be reached with Back. A split with
+      // no leftover in some source cannot be reviewed, so stay to fix that.
+      if (definitionCanReview()) draft.step = "review";
       invalidateMapCaches();
       persistProjectLocally();
       renderDraft({ redrawMap: true });
