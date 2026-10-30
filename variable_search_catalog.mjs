@@ -4,6 +4,7 @@ export const VARIABLE_SEARCH_CATALOG_URL = "/echo_viewer_staging/variable-search
 export const SNAPSHOT_SEARCH_CATALOGS = Object.freeze({
   "99a8fd29ae81a1852ed181a62df01b989b99b536848bbf59f65a0ce8ea6871c0": "/echo_viewer_staging/search-catalogs/99a8fd29ae81a1852ed181a62df01b989b99b536848bbf59f65a0ce8ea6871c0.json.gz",
   "f7666b4f9c4537c3ecfef0e9dc096f00650040e4bd1b2360eea64c1d5fba3f7b": "/echo_viewer_staging/search-catalogs/f7666b4f9c4537c3ecfef0e9dc096f00650040e4bd1b2360eea64c1d5fba3f7b.json.gz",
+  "8bf2706808428e59109baa285690135cdbe066e26d97a7d820c9935fc3881849": "/echo_viewer_staging/search-catalogs/8bf2706808428e59109baa285690135cdbe066e26d97a7d820c9935fc3881849.json.gz",
 });
 
 export function variableSearchPayload(variables, snapshotId) {
@@ -36,7 +37,7 @@ export async function readSearchCatalogPayload(url, fetchImpl = globalThis.fetch
 
 function loadCatalogInWorker(url, snapshotId, onRecords) {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL("./variable_search_catalog_worker.mjs?v=10e0e8bdaca3913e", import.meta.url), { type: "module" });
+    const worker = new Worker(new URL("./variable_search_catalog_worker.mjs?v=ef81198e4afa81e3", import.meta.url), { type: "module" });
     let payload;
     const fail = error => { worker.terminate(); reject(error); };
     worker.onerror = event => fail(new Error(event.message || "Could not load search catalog worker."));

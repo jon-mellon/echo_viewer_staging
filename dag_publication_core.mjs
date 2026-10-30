@@ -1,10 +1,10 @@
-import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=10e0e8bdaca3913e";
-import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=10e0e8bdaca3913e";
-import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=10e0e8bdaca3913e";
-import { ensureAnonymousPublicationUser } from "./dag_anonymous_auth.mjs?v=10e0e8bdaca3913e";
+import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=ef81198e4afa81e3";
+import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=ef81198e4afa81e3";
+import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=ef81198e4afa81e3";
+import { ensureAnonymousPublicationUser } from "./dag_anonymous_auth.mjs?v=ef81198e4afa81e3";
 import { createCompiledArtifacts, evidenceSnapshotForSchema, fullCompileDag,
-  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=10e0e8bdaca3913e";
-import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=10e0e8bdaca3913e";
+  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=ef81198e4afa81e3";
+import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=ef81198e4afa81e3";
 
 export const CANONICAL_BASELINE_ID = "a0118906-2366-4cc8-8809-bafdf3860c23";
 export const CANONICAL_BASELINE_HASH = "0afd5f28c1b5456c47cfba84467bea1d62c6dc923a5851281a98d461f60066b4";

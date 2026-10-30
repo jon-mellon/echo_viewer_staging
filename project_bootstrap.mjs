@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=10e0e8bdaca3913e";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=10e0e8bdaca3913e";
-import { applyPermalink, permalinkInput } from "./dag_permalink.mjs?v=10e0e8bdaca3913e";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=10e0e8bdaca3913e";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=10e0e8bdaca3913e";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=10e0e8bdaca3913e";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=10e0e8bdaca3913e";
-import { validateGroupingSchema } from "./data_validation.mjs?v=10e0e8bdaca3913e";
+import { dagDataSource } from "./dag_data_source.mjs?v=ef81198e4afa81e3";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=ef81198e4afa81e3";
+import { applyPermalink, permalinkInput } from "./dag_permalink.mjs?v=ef81198e4afa81e3";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=ef81198e4afa81e3";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=ef81198e4afa81e3";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=ef81198e4afa81e3";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=ef81198e4afa81e3";
+import { validateGroupingSchema } from "./data_validation.mjs?v=ef81198e4afa81e3";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   resizeMap, initializeProject, loadLatestSchemaGroups,
@@ -145,6 +145,16 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
     }
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     finishStartupLoading();
+    // The first evidence panel otherwise pays for query-engine startup (WASM
+    // instantiation and snapshot validation, over a second). Start it once the
+    // schema work is done, in idle time, unless the snapshot has evidence bundles
+    // (which never need it) or the user asked to save data.
+    const prewarmEvidenceEngine = () => {
+      if (globalThis.navigator?.connection?.saveData || dagDataSource.hasEvidencePanelBundles()) return;
+      const start = () => void dagDataSource.ensureEvidenceConnection({ variableIds: [] }).catch(() => {});
+      if (typeof globalThis.requestIdleCallback === "function") globalThis.requestIdleCallback(start, { timeout: 5000 });
+      else setTimeout(start, 1000);
+    };
     // Keep membership loading ahead of the search index; start warming the
     // catalog after hydration so subsequent searches are ready during setup.
     if (state.data.load_published_schema) {
@@ -181,16 +191,19 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
         publicationController.setSchemaReady?.(true);
         void publicationController.refreshPublicationState?.();
         onReady();
+        prewarmEvidenceEngine();
       }).catch(error => {
         if ((state.compiledDagRevision || 0) !== revision) return;
         state.publishedSchemaHydrating = false;
         state.publishedSchemaLoadFailed = true;
         publicationController.setSchemaLoadFailed?.();
         console.error("Could not finish loading the published schema.", error);
+        prewarmEvidenceEngine();
       });
     } else {
       if (!state.project.iv_group_id || !state.project.dv_group_id) void loadVariableSearchCatalog();
       onReady();
+      prewarmEvidenceEngine();
     }
   }
 

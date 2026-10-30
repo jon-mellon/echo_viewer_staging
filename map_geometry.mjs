@@ -1,6 +1,6 @@
 "use strict";
 
-import { Delaunay } from "./vendor/d3-delaunay.mjs?v=10e0e8bdaca3913e";
+import { Delaunay } from "./vendor/d3-delaunay.mjs?v=ef81198e4afa81e3";
 
 export function worldToScreen(x, y, transform) {
   return { x: x * transform.scale + transform.tx, y: y * transform.scale + transform.ty };
