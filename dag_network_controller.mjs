@@ -1,12 +1,12 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=c9960e2b851f6355";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=c9960e2b851f6355";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=c9960e2b851f6355";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=c9960e2b851f6355";
-import * as dagDisplay from "./dag_display.mjs?v=c9960e2b851f6355";
-import * as workflow from "./dag_workflow.mjs?v=c9960e2b851f6355";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=c9960e2b851f6355";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=c9960e2b851f6355";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=c9960e2b851f6355";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=6c90fda780fd344c";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=6c90fda780fd344c";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=6c90fda780fd344c";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=6c90fda780fd344c";
+import * as dagDisplay from "./dag_display.mjs?v=6c90fda780fd344c";
+import * as workflow from "./dag_workflow.mjs?v=6c90fda780fd344c";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=6c90fda780fd344c";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=6c90fda780fd344c";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=6c90fda780fd344c";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -471,7 +471,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=c9960e2b851f6355", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=6c90fda780fd344c", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
