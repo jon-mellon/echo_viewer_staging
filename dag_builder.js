@@ -1,48 +1,48 @@
 "use strict";
 
-import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=882ff3c99c44c1f2";
+import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=c9960e2b851f6355";
 import { aggregateGroupLinks as deriveGroupLinks, rawLinksBetween as lookupRawLinks,
-  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=882ff3c99c44c1f2";
+  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=c9960e2b851f6355";
 
-import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=882ff3c99c44c1f2";
-import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=882ff3c99c44c1f2";
-import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=882ff3c99c44c1f2";
-import * as mapGeometry from "/echo_viewer_staging/map_geometry.mjs?v=882ff3c99c44c1f2";
-import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=882ff3c99c44c1f2";
-import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=882ff3c99c44c1f2";
-import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=882ff3c99c44c1f2";
-import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=882ff3c99c44c1f2";
-import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=882ff3c99c44c1f2";
-import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=882ff3c99c44c1f2";
-import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=882ff3c99c44c1f2";
-import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=882ff3c99c44c1f2";
-import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=882ff3c99c44c1f2";
-import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=882ff3c99c44c1f2";
-import { createDagMapViewController } from "/echo_viewer_staging/dag_map_view_controller.mjs?v=882ff3c99c44c1f2";
-import { createDagMapUiController } from "/echo_viewer_staging/dag_map_ui_controller.mjs?v=882ff3c99c44c1f2";
-import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=882ff3c99c44c1f2";
-import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=882ff3c99c44c1f2";
-import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=882ff3c99c44c1f2";
-import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=882ff3c99c44c1f2";
-import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=882ff3c99c44c1f2";
-import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=882ff3c99c44c1f2";
-import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=882ff3c99c44c1f2";
-import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=882ff3c99c44c1f2";
-import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=882ff3c99c44c1f2";
-import { directionalPaperCounter } from "/echo_viewer_staging/causal_neighborhood.mjs?v=882ff3c99c44c1f2";
-import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=882ff3c99c44c1f2";
-import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=882ff3c99c44c1f2";
-import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=882ff3c99c44c1f2";
-import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=882ff3c99c44c1f2";
-import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=882ff3c99c44c1f2";
-import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=882ff3c99c44c1f2";
-import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=882ff3c99c44c1f2";
-import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=882ff3c99c44c1f2";
-import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=882ff3c99c44c1f2";
-import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=882ff3c99c44c1f2";
-import { CONFOUNDER_STATUSES, confounderRows } from "/echo_viewer_staging/confounder_status.mjs?v=882ff3c99c44c1f2";
-import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=882ff3c99c44c1f2";
-import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=882ff3c99c44c1f2";
+import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=c9960e2b851f6355";
+import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=c9960e2b851f6355";
+import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=c9960e2b851f6355";
+import * as mapGeometry from "/echo_viewer_staging/map_geometry.mjs?v=c9960e2b851f6355";
+import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=c9960e2b851f6355";
+import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=c9960e2b851f6355";
+import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=c9960e2b851f6355";
+import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=c9960e2b851f6355";
+import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=c9960e2b851f6355";
+import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=c9960e2b851f6355";
+import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=c9960e2b851f6355";
+import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=c9960e2b851f6355";
+import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=c9960e2b851f6355";
+import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=c9960e2b851f6355";
+import { createDagMapViewController } from "/echo_viewer_staging/dag_map_view_controller.mjs?v=c9960e2b851f6355";
+import { createDagMapUiController } from "/echo_viewer_staging/dag_map_ui_controller.mjs?v=c9960e2b851f6355";
+import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=c9960e2b851f6355";
+import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=c9960e2b851f6355";
+import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=c9960e2b851f6355";
+import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=c9960e2b851f6355";
+import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=c9960e2b851f6355";
+import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=c9960e2b851f6355";
+import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=c9960e2b851f6355";
+import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=c9960e2b851f6355";
+import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=c9960e2b851f6355";
+import { directionalPaperCounter } from "/echo_viewer_staging/causal_neighborhood.mjs?v=c9960e2b851f6355";
+import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=c9960e2b851f6355";
+import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=c9960e2b851f6355";
+import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=c9960e2b851f6355";
+import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=c9960e2b851f6355";
+import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=c9960e2b851f6355";
+import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=c9960e2b851f6355";
+import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=c9960e2b851f6355";
+import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=c9960e2b851f6355";
+import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=c9960e2b851f6355";
+import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=c9960e2b851f6355";
+import { CONFOUNDER_STATUSES, confounderRows } from "/echo_viewer_staging/confounder_status.mjs?v=c9960e2b851f6355";
+import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=c9960e2b851f6355";
+import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=c9960e2b851f6355";
 
 
 const ROLE_LABELS = {
@@ -470,6 +470,12 @@ function renderAll(options) {
 
 function rebuildProject(options) {
   renderCoordinator.rebuildProject(options);
+}
+
+function renderExploreFocus() {
+  renderAnchorBar();
+  setupGroupController.renderFocusPicker();
+  updateDagFilters();
 }
 
 function updateDagFilters() {
@@ -1146,12 +1152,18 @@ const taskViews = createTaskViews({
   state, searchGroups: searchExploreGroups, searchStatus: () => state.variableSearchStatus,
   paperSupport: linkPaperSupport, loadPaperSupport: () => void loadLinkSupport(),
   isDisplayGroup: isDagDisplayGroup,
-  // A new variable redraws the chrome (anchor bar, picker) and the graph.
-  onExploreChange: () => renderAll({ reuseLinks: true }),
-  onFocusPicking: () => renderAll({ rebuild: false }),
+  // A new variable updates the anchor bar, picker and graph, like a distance change,
+  // instead of re-rendering all of Identify's setup.
+  onExploreChange: () => renderExploreFocus(),
+  onFocusPicking: () => { renderAnchorBar(); setupGroupController.renderFocusPicker(); taskViews.render(); },
   onPickerInput: () => setupGroupController.renderFocusPicker(),
   // Each task shows its own graph, so rebuild it from the project's links.
-  onTaskChange: () => { dismissEvidenceForTask(); renderAll({ reuseLinks: true }); },
+  // Between causes and consequences only the anchor bar, picker and graph change.
+  onTaskChange: ({ previous, task }) => {
+    dismissEvidenceForTask();
+    const bothExplore = [previous, task].every(name => name === "causes" || name === "consequences");
+    if (bothExplore) renderExploreFocus(); else renderAll({ reuseLinks: true });
+  },
   openEvidence: edgeId => { inspectDagEdge(edgeId); shellController.showMobilePanel("dag"); },
   onChange: () => persistentViewer.viewerChanged(), flushUrl: () => persistentViewer.flushUrl(),
 });
@@ -1204,6 +1216,8 @@ function createDensityCandidateGroup() {
 // ─── Candidate queue ──────────────────────────────────────────────────────────
 
 function buildCandidateQueue() {
+  // Only Identify's setup uses the queue; it is rebuilt when switching back.
+  if (taskViews.exploring()) return;
   state.candidateQueue = candidates.buildCandidateQueue(state.project, candidateInputs());
 }
 
@@ -1329,6 +1343,7 @@ function loadLinkSupport() {
     // The graph of an explore view waits on these counts, so redraw it now.
     if (taskViews.exploring()) updateDagFilters();
     else taskViews.render();
+    void taskViews.warmCounts();
   });
   return linkSupportPromise;
 }
@@ -1814,6 +1829,8 @@ function scheduleSettledMapDraw(delayMs = 100) {
 }
 
 function drawMap(options) {
+  // The variable map is not shown in the causes and consequences views.
+  if (taskViews.exploring()) return undefined;
   const result = mapUiController.drawMap(options);
   persistentViewer.viewerChanged(true);
   return result;
@@ -2102,7 +2119,7 @@ const projectBootstrap = createProjectBootstrap({
   onPreloadsDone: () => {
     if (globalThis.navigator?.connection?.saveData) return;
     if (state.task && state.task !== "causes" && state.task !== "consequences") return;
-    const start = () => void loadLinkSupport();
+    const start = () => void loadLinkSupport().then(() => taskViews.warmCounts());
     if (typeof globalThis.requestIdleCallback === "function") globalThis.requestIdleCallback(start, { timeout: 5000 });
     else setTimeout(start, 1000);
   },

@@ -1,5 +1,5 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=882ff3c99c44c1f2";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=882ff3c99c44c1f2";
+import { h, replaceChildren } from "./dom_builder.mjs?v=c9960e2b851f6355";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=c9960e2b851f6355";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -96,6 +96,33 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
       if (!counts.has(id)) counts.set(id, support.papersFor(link, forward));
       return counts.get(id);
     };
+  }
+
+  /**
+   * Count the papers behind every link ahead of the first pick, a slice at a
+   * time so the page stays responsive. The counts are cached for neighborhood().
+   */
+  let warming = false;
+  async function warmCounts() {
+    const support = paperSupport();
+    if (warming || support.status !== "ready" || !support.papersFor) return;
+    warming = true;
+    try {
+      const links = state.project?.links || [];
+      const counter = cachedCounter(support);
+      let sliceStart = performance.now();
+      for (let index = 0; index < links.length; index++) {
+        counter(links[index], true);
+        counter(links[index], false);
+        if ((index & 63) === 63 && performance.now() - sliceStart > 8) {
+          await new Promise(resolve => setTimeout(resolve, 0));
+          sliceStart = performance.now();
+          if (state.project?.links !== links) return;
+        }
+      }
+    } finally {
+      warming = false;
+    }
   }
 
   /**
@@ -329,6 +356,6 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
     });
   }
 
-  return { install, render, setTask, refreshSelection, neighborhood, exploring, focus, searchFocusGroups,
+  return { install, render, setTask, refreshSelection, neighborhood, warmCounts, exploring, focus, searchFocusGroups,
     chooseFocus, changeFocus, freshProjectUrl };
 }
