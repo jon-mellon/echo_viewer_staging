@@ -1,5 +1,5 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=961ccacebae67321";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=961ccacebae67321";
+import { h, replaceChildren } from "./dom_builder.mjs?v=54315e05978d2b54";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=54315e05978d2b54";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -83,6 +83,11 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
   const groupFor = id => groups().find(group => group.group_id === id);
   const labelFor = id => groupFor(id)?.label || id;
   const focusId = () => (groupFor(view().focusId) ? view().focusId : null);
+  const anchorConfigured = side => {
+    const group = groupFor(state.project?.[`${side}_group_id`]);
+    return Boolean(group?.variable_ids?.length
+      || (state.publishedSchemaHydrating && Number(group?.member_count) > 0));
+  };
 
   function cachedCounter(support) {
     const links = state.project?.links || [];
@@ -181,9 +186,9 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
     // The shared workspace can be left in Groups by another task. An
     // unconfigured Identify view must begin at its anchor setup regardless of
     // which tab (or landing choice) opened it.
-    if (task === "identify" && (!state.project?.iv_group_id || !state.project?.dv_group_id)) {
+    if (task === "identify" && (!anchorConfigured("iv") || !anchorConfigured("dv"))) {
       state.workflowMode = "setup";
-      state.phase = state.project?.iv_group_id ? "select_dv" : "select_iv";
+      state.phase = anchorConfigured("iv") ? "select_dv" : "select_iv";
     }
     changing.causes = false;
     changing.consequences = false;
