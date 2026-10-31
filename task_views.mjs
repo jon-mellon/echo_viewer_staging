@@ -1,9 +1,9 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=2990673de4e547bb";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=2990673de4e547bb";
+import { h, replaceChildren } from "./dom_builder.mjs?v=12b6b93b85f6d622";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=12b6b93b85f6d622";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
-const EXPLORE_NAV_LABELS = { controls: "List", dag: "Graph" };
+const EXPLORE_NAV_LABELS = { controls: "Variables", dag: "Map" };
 const IDENTIFY_DEFAULTS = { confounderMaxPathLength: 1, excludeSparseEdges: false, minimumEdgePapers: 2 };
 const clampDepth = value => Math.max(1, Math.min(MAX_NEIGHBORHOOD_DEPTH, Math.trunc(Number(value)) || 1));
 

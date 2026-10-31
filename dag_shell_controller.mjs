@@ -1,5 +1,5 @@
 // Owns cross-feature shell layout: fullscreen focus and draggable panel sizes.
-import { DAG_FIT_OPTIONS } from "./dag_network_controller.mjs?v=2990673de4e547bb";
+import { DAG_FIT_OPTIONS } from "./dag_network_controller.mjs?v=12b6b93b85f6d622";
 export function createDagShellController({ state, elements, resizeMap, fitMap, renderDag, getNetwork, isDagFullyVisible, dismissEvidencePane }) {
   let showInstalledMobilePanel = null;
 
@@ -46,6 +46,10 @@ export function createDagShellController({ state, elements, resizeMap, fitMap, r
       if (document.body.dataset.mobilePanel === "variables" && !document.body.classList.contains("defining-variable")) {
         showPanel("controls");
       } else if (document.body.dataset.mobilePanel === "dag" && document.body.classList.contains("defining-variable")) {
+        showPanel("controls");
+      } else if (document.body.dataset.mobilePanel !== "controls" && document.body.classList.contains("initial-setup")
+        && !document.body.classList.contains("defining-variable")) {
+        // Choosing the first variables has no tab bar and no graph: arriving from another view's Graph tab would otherwise leave a blank screen.
         showPanel("controls");
       }
     }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
