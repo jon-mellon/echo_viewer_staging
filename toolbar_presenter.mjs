@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=90cb4a8a93f3fdbc";
+import { h, replaceChildren } from "./dom_builder.mjs?v=e0db90848b80f645";
 
 export function diagnosticViewTitle(state, anchorsReady) {
   if (!anchorsReady) return "Working map";
@@ -90,7 +90,7 @@ export function createToolbarPresenter({ state, elements, groupById, visibleVari
     elements.toggleExogeneity.title = `Show groups with directed paths to both the instrument and outcome within ${state.confounderMaxPathLength} links of each. Bidirectional links may run either way.`;
     elements.toggleExclusionViolations.classList.toggle("active", state.showExclusionViolations);
     elements.toggleExclusionViolations.setAttribute("aria-pressed", state.showExclusionViolations ? "true" : "false");
-    elements.toggleExclusionViolations.textContent = `Exclusion restriction violations (${state.exclusionViolationIds?.size || 0})`;
+    elements.toggleExclusionViolations.textContent = `Exclusion (${state.exclusionViolationIds?.size || 0})`;
     elements.toggleExclusionViolations.title = `Show directed paths from the instrument to the Dep var through at least one other group, never through the Ind var, within ${state.exclusionMaxPathLength} links.`;
     elements.toggleConfoundersOnly.disabled = !anchorsReady;
     elements.toggleConfoundersOnly.classList.toggle("active", state.showConfoundersOnly);

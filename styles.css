@@ -657,6 +657,7 @@ h2 {
 }
 
 .dag-body {
+  display: flow-root;
   --app-top: 48px;
   overflow: hidden;
   background: #eef1ed;
@@ -1860,11 +1861,15 @@ h2 {
   position: relative;
 }
 .filter-dropdown > summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   cursor: pointer;
   list-style: none;
 }
 .filter-dropdown > summary::-webkit-details-marker { display: none; }
-.filter-dropdown > summary::after { content: " ▾"; }
+.filter-dropdown > summary::after { content: "▾"; }
 .filter-dropdown-panel {
   position: absolute;
   z-index: 20;
@@ -2598,7 +2603,7 @@ h2 {
     inset: auto 0 0;
     z-index: 110;
     display: grid;
-    grid-template-columns: auto repeat(2, minmax(0, 112px));
+    grid-template-columns: repeat(2, minmax(0, 112px));
     justify-content: center;
     gap: 8px;
     min-height: var(--mobile-nav-height);
@@ -2606,14 +2611,6 @@ h2 {
     border-top: 1px solid var(--line);
     background: rgba(255, 255, 255, 0.96);
     box-shadow: 0 -6px 20px rgba(23, 32, 51, 0.08);
-  }
-
-  .mobile-panel-nav-label {
-    align-self: center;
-    margin-right: 4px;
-    color: var(--muted);
-    font-size: 12px;
-    font-weight: 700;
   }
 
   .dag-body.focus-variable-map .mobile-panel-nav,
@@ -2666,18 +2663,16 @@ h2 {
   .dag-ws-controls {
     width: 100%;
     justify-content: flex-start;
-    flex-wrap: nowrap;
-    overflow: visible;
-    padding-bottom: 3px;
-    scrollbar-width: none;
-  }
-
-  .dag-ws-controls::-webkit-scrollbar {
-    display: none;
+    flex-wrap: wrap;
   }
 
   .dag-ws-controls > * {
     flex: 0 0 auto;
+  }
+
+  /* The map itself owns its scrolling; keep its controls visible above it. */
+  .dag-body[data-mobile-panel="dag"] .dag-right-panel:has(#dagWorkspaceSection:not([hidden])) {
+    overflow: hidden;
   }
 
   .dag-ws-footer {
@@ -2914,9 +2909,20 @@ h2 {
 }
 
 @media (max-width: 840px) {
-  .legal-link {
-    bottom: calc(var(--mobile-nav-height) + max(6px, env(safe-area-inset-bottom)));
+  .dag2-mode:not(.initial-setup):not(.task-home) .dag-shell {
+    position: fixed;
+    inset: var(--app-top, 0px) 0 calc(var(--mobile-nav-height) + env(safe-area-inset-bottom));
+    width: 100%;
+    height: auto;
+    margin-top: 0;
   }
+
+  .legal-link {
+    bottom: max(6px, env(safe-area-inset-bottom));
+  }
+}
+@media (max-width: 360px) {
+  .mobile-panel-nav { grid-template-columns: repeat(2, minmax(0, 96px)); }
 }
 .previous-sessions-panel {
   margin-top: 0.7rem;
@@ -3176,6 +3182,7 @@ h2 {
 .dag-body.task-causes #toggleIrrelevantConfounderLinks, .dag-body.task-consequences #toggleIrrelevantConfounderLinks,
 .dag-body.task-causes #toggleAllExclusionLinks, .dag-body.task-consequences #toggleAllExclusionLinks,
 .dag-body.task-causes #diagnosticOverlapKey, .dag-body.task-consequences #diagnosticOverlapKey { display: none !important; }
+.dag-body.task-causes .dag-diagnostic-switch, .dag-body.task-consequences .dag-diagnostic-switch { display: none; }
 .dag-body.task-causes .mobile-variable-tab, .dag-body.task-consequences .mobile-variable-tab { display: none; }
 
 .reset-dialog-actions { display: grid; gap: 8px; margin-top: 18px; }
@@ -3200,18 +3207,21 @@ h2 {
 /* Identification keeps its own panel heading, so the bar need not repeat the name there. */
 .dag-body.task-identify .task-bar-brand, .dag-body.task-causes .task-bar-brand, .dag-body.task-consequences .task-bar-brand { display: none; }
 
-/* Graph / table switch, top right of the diagram panel. */
+/* Diagnostic and graph/table choices use the same segmented control. */
+.dag-diagnostic-switch,
 .dag-view-switch {
   display: inline-flex;
-  order: 99;
   border: 1px solid var(--line, #cfd8d3);
   border-radius: 8px;
   overflow: hidden;
 }
+.dag-view-switch { order: 99; }
+.dag-diagnostic-switch .toolbar-button,
 .dag-view-switch .toolbar-button {
   border: 0;
   border-radius: 0;
 }
+.dag-diagnostic-switch .toolbar-button.active,
 .dag-view-switch .toolbar-button.active {
   background: var(--accent, #1e6b5c);
   color: #fff;
@@ -3259,6 +3269,8 @@ h2 {
 .dag-table-action:focus-visible { outline: 2px solid #1e4fa0; outline-offset: 2px; }
 .dag-table-summary, .dag-table-more { margin: 0 0 8px; font-size: 12px; color: var(--muted, #66716a); }
 @media (max-width: 760px) {
+  .dag-diagnostic-switch { order: -2; width: 100%; }
+  .dag-diagnostic-switch .toolbar-button { flex: 1 1 0; min-width: 0; }
   .dag-view-switch { order: -1; }
   .dag-table th, .dag-table td { padding: 6px 4px; position: relative; }
   #dagLinksTable th:nth-child(2) { font-size: 0; width: 1.4em; }
@@ -3277,7 +3289,16 @@ h2 {
 .dag-table th.dag-table-candidate { text-align: left; font-weight: 600; border-right: 1px solid var(--line, #dfe6e2); }
 .dag-table tr.dag-table-first-line > * { border-top: 2px solid var(--line, #cfd8d3); }
 .dag-table-path { line-height: 1.4; }
-.dag-table-arrow { padding: 0 6px; font-weight: 700; }
+.dag-table-route-label { display: block; color: var(--muted); font-size: 12px; font-weight: 600; }
+.dag-table-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 2px 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
 /* With nothing chosen yet the hint ("Choose a variable...") is the whole view, as it is for the graph. */
 .dag-network-wrapper:has(.explore-graph-hint:not([hidden])) .dag-table-view {
   visibility: hidden;

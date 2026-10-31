@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=90cb4a8a93f3fdbc">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=e0db90848b80f645">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -467,13 +467,15 @@
           <div class="dag-ws-header section-title">
             <h2 id="dagViewTitle">Working map</h2>
             <div class="dag-ws-controls">
+              <div class="dag-diagnostic-switch" role="group" aria-label="Diagnostic view">
+                <button id="toggleConfoundersOnly" class="toolbar-button" type="button" aria-pressed="false" title="Show the Ind var, Dep var, and groups that could point into both; bidirectional edges count in either direction">Confounders</button>
+                <button id="toggleCollidersOnly" class="toolbar-button" type="button" aria-pressed="false" title="Show the Ind var, Dep var, and groups that both could point into; bidirectional edges count in either direction">Colliders</button>
+                <button id="toggleExclusionViolations" class="toolbar-button" type="button" aria-pressed="false" aria-label="Exclusion restriction violations" hidden>Exclusion</button>
+                <button id="toggleExogeneity" class="toolbar-button" type="button" aria-pressed="false" hidden>Exogeneity</button>
+              </div>
               <details class="filter-dropdown">
                 <summary class="toolbar-button">Filters</summary>
                 <div class="filter-dropdown-panel" aria-label="Diagram filters">
-              <button id="toggleConfoundersOnly" class="toolbar-button" type="button" aria-pressed="false" title="Show the Ind var, Dep var, and groups that could point into both; bidirectional edges count in either direction">Confounders</button>
-              <button id="toggleCollidersOnly" class="toolbar-button" type="button" aria-pressed="false" title="Show the Ind var, Dep var, and groups that both could point into; bidirectional edges count in either direction">Colliders</button>
-              <button id="toggleExclusionViolations" class="toolbar-button" type="button" aria-pressed="false" hidden>Exclusion restriction violations</button>
-              <button id="toggleExogeneity" class="toolbar-button" type="button" aria-pressed="false" hidden>Exogeneity</button>
               <label class="path-length-control" for="confounderPathLength" title="Maximum number of directed edges allowed on each path from a confounder to the Ind var and Dep var">
                 <span id="confounderPathLengthLabel">Max path</span>
                 <input id="confounderPathLength" class="path-length-input" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" aria-label="Maximum confounder path length">
@@ -549,13 +551,12 @@
 
     </main>
     <nav class="mobile-panel-nav" aria-label="Panels in current task">
-      <span class="mobile-panel-nav-label" aria-hidden="true">View</span>
-      <button class="mobile-panel-tab active" type="button" data-mobile-panel="controls" aria-pressed="true">Setup</button>
-      <button class="mobile-panel-tab mobile-variable-tab" type="button" data-mobile-panel="variables" aria-pressed="false">Variables</button>
-      <button class="mobile-panel-tab" type="button" data-mobile-panel="dag" aria-pressed="false">Map</button>
+      <button class="mobile-panel-tab active" type="button" data-mobile-panel="controls" aria-pressed="true">Setup view</button>
+      <button class="mobile-panel-tab mobile-variable-tab" type="button" data-mobile-panel="variables" aria-pressed="false">Variables view</button>
+      <button class="mobile-panel-tab" type="button" data-mobile-panel="dag" aria-pressed="false">Map view</button>
     </nav>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=90cb4a8a93f3fdbc"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=90cb4a8a93f3fdbc"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=e0db90848b80f645"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=e0db90848b80f645"></script>
   </body>
 </html>
