@@ -1,4 +1,4 @@
-import { attachGraphTouchGuard } from "./graph_touch.mjs?v=6c90fda780fd344c";
+import { attachGraphTouchGuard } from "./graph_touch.mjs?v=200ace0f2f1e6f7b";
 
 export function constrainViewPosition(position, scale, contentBounds, viewport, minimumVisible = 32) {
   if (!contentBounds || !Number.isFinite(scale) || scale <= 0) return { ...position };
