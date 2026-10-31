@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @typedef {import("./app_contracts.mjs?v=200ace0f2f1e6f7b").DagAppState} DagAppState */
+/** @typedef {import("./app_contracts.mjs?v=2990673de4e547bb").DagAppState} DagAppState */
 
 // There is no unfiltered diagram: when no diagnostic view is on, the confounders view is. Every rebuild path normalizes
 // through this, so the heading, toolbar and graph always describe the same view.
@@ -23,7 +23,7 @@ export function createExploreState() {
 export function createDagAppState(interfaceMode = "classic") {
   return /** @type {DagAppState} */ ({
     interfaceMode,
-    task: null, explore: createExploreState(),
+    task: null, explore: createExploreState(), dagDisplay: "graph",
     data: null,
     variables: [], variableById: new Map(), clusterOf: new Map(), clusterMembers: new Map(),
     rawLinks: [], rawLinksById: new Map(), edgeSupportById: new Map(), linkLookup: new Map(), similarityEdgeMap: new Map(),

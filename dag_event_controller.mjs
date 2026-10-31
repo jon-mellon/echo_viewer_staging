@@ -1,6 +1,6 @@
-import { attachGraphTouchGuard } from "./graph_touch.mjs?v=200ace0f2f1e6f7b";
-import * as projectOps from "./dag_project.mjs?v=200ace0f2f1e6f7b";
-import * as mapInteractions from "./map_interactions.mjs?v=200ace0f2f1e6f7b";
+import { attachGraphTouchGuard } from "./graph_touch.mjs?v=2990673de4e547bb";
+import * as projectOps from "./dag_project.mjs?v=2990673de4e547bb";
+import * as mapInteractions from "./map_interactions.mjs?v=2990673de4e547bb";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -234,6 +234,9 @@ function installHandlers() {
     dagNetwork.fit();
   });
   els.fullscreenDag.addEventListener("click", () => toggleFullscreenPanel("dag"));
+  for (const [button, mode] of [[els.dagViewGraph, "graph"], [els.dagViewTable, "table"]]) {
+    button.addEventListener("click", () => dagNetwork.setDagDisplay(mode));
+  }
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && state.fullscreenPanel) setFullscreenPanel(null);

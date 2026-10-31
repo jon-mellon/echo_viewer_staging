@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=200ace0f2f1e6f7b">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=2990673de4e547bb">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -494,10 +494,15 @@
               <button id="dagSvgFit" class="toolbar-button" type="button" title="Reset zoom">Fit</button>
               <button id="fullscreenDag" class="toolbar-button fullscreen-toggle" type="button" aria-pressed="false" title="Expand the DAG to fill the window; press Escape to exit">Full screen DAG</button>
               <button id="copyPermalink" class="toolbar-button" type="button" title="Copy a link to this view of the public schema">Share view</button>
+              <div class="dag-view-switch" role="group" aria-label="Show the data as">
+                <button id="dagViewGraph" class="toolbar-button active" type="button" aria-pressed="true" title="Show the diagram">Graph</button>
+                <button id="dagViewTable" class="toolbar-button" type="button" aria-pressed="false" title="Show the same variables and links as tables">Table</button>
+              </div>
             </div>
           </div>
           <div class="dag-network-wrapper">
             <div id="dagNetwork" class="dag-network"></div>
+            <div id="dagTable" class="dag-table-view" hidden tabindex="-1" aria-label="Variables and links as tables"></div>
             <p id="exploreGraphHint" class="explore-graph-hint" hidden></p>
             <div id="diagnosticOverlapKey" class="diagnostic-overlap-key" hidden></div>
           </div>
@@ -548,7 +553,7 @@
       <button class="mobile-panel-tab" type="button" data-mobile-panel="dag" aria-pressed="false">Map</button>
     </nav>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=200ace0f2f1e6f7b"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=200ace0f2f1e6f7b"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=2990673de4e547bb"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=2990673de4e547bb"></script>
   </body>
 </html>
