@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=54315e05978d2b54";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=54315e05978d2b54";
-import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=54315e05978d2b54";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=54315e05978d2b54";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=54315e05978d2b54";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=54315e05978d2b54";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=54315e05978d2b54";
-import { validateGroupingSchema } from "./data_validation.mjs?v=54315e05978d2b54";
+import { dagDataSource } from "./dag_data_source.mjs?v=90cb4a8a93f3fdbc";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=90cb4a8a93f3fdbc";
+import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=90cb4a8a93f3fdbc";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=90cb4a8a93f3fdbc";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=90cb4a8a93f3fdbc";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=90cb4a8a93f3fdbc";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=90cb4a8a93f3fdbc";
+import { validateGroupingSchema } from "./data_validation.mjs?v=90cb4a8a93f3fdbc";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   resizeMap, initializeProject, loadLatestSchemaGroups,
@@ -152,7 +152,11 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
     // schema work is done, in idle time, unless the snapshot has evidence bundles
     // (which never need it) or the user asked to save data.
     const prewarmEvidenceEngine = () => new Promise(resolve => {
-      if (globalThis.navigator?.connection?.saveData || dagDataSource.hasEvidencePanelBundles()) { resolve(); return; }
+      // The landing page has no evidence to inspect. On narrow screens, keeping
+      // DuckDB and its WASM heap out of startup avoids a second, expensive load
+      // just after the home screen becomes visible.
+      if ((!state.task && globalThis.matchMedia?.("(max-width: 700px)").matches)
+        || globalThis.navigator?.connection?.saveData || dagDataSource.hasEvidencePanelBundles()) { resolve(); return; }
       const start = () => void dagDataSource.ensureEvidenceConnection({ variableIds: [] }).catch(() => {}).finally(resolve);
       if (typeof globalThis.requestIdleCallback === "function") globalThis.requestIdleCallback(start, { timeout: 5000 });
       else setTimeout(start, 1000);
@@ -183,7 +187,9 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
         }
         // Compiled nodes and routes already describe this publication. Hydrating
         // memberships updates controls and metadata without changing geometry.
-        renderAll({ reuseDagGeometry: true });
+        // The landing page covers the workspace. Its first paint is already
+        // complete, and choosing a task renders the hydrated workspace then.
+        if (state.task) renderAll({ reuseDagGeometry: true });
       };
       void state.data.load_published_schema({ onPriorityReady: ({ schema, groupIds }) => {
         if ((state.compiledDagRevision || 0) !== revision) return;

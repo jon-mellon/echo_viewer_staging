@@ -1,7 +1,7 @@
-import { buildPermalink } from "./dag_permalink.mjs?v=54315e05978d2b54";
-import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=54315e05978d2b54";
-import { validateGroupingSchema } from "./data_validation.mjs?v=54315e05978d2b54";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=54315e05978d2b54";
+import { buildPermalink } from "./dag_permalink.mjs?v=90cb4a8a93f3fdbc";
+import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=90cb4a8a93f3fdbc";
+import { validateGroupingSchema } from "./data_validation.mjs?v=90cb4a8a93f3fdbc";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=90cb4a8a93f3fdbc";
 
 const RESET_HANDOFF_KEY = "echo-pending-reset-session";
 
@@ -189,6 +189,9 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
 
   function viewerChanged(continuous = false) {
     if (!ready || editorBaseline || state.definitionDraft || commitPending || unsavedSchema) return;
+    // A clean home URL already restores the landing page. Keep it stable rather
+    // than replacing it with a long workspace permalink during startup.
+    if (!state.task && !new URL(window.location.href).searchParams.has("p")) return;
     if (urlTimer !== null) clearTimeout(urlTimer);
     urlTimer = setTimeout(() => {
       urlTimer = null;

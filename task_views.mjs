@@ -1,5 +1,5 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=54315e05978d2b54";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=54315e05978d2b54";
+import { h, replaceChildren } from "./dom_builder.mjs?v=90cb4a8a93f3fdbc";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=90cb4a8a93f3fdbc";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
