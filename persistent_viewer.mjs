@@ -1,7 +1,9 @@
-import { buildPermalink } from "./dag_permalink.mjs?v=12b6b93b85f6d622";
-import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=12b6b93b85f6d622";
-import { validateGroupingSchema } from "./data_validation.mjs?v=12b6b93b85f6d622";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=12b6b93b85f6d622";
+import { buildPermalink } from "./dag_permalink.mjs?v=961ccacebae67321";
+import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=961ccacebae67321";
+import { validateGroupingSchema } from "./data_validation.mjs?v=961ccacebae67321";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=961ccacebae67321";
+
+const RESET_HANDOFF_KEY = "echo-pending-reset-session";
 
 export function createPersistentViewer({ state, getSchema, getViewport = () => {},
   status = () => {}, onDiscard = () => {} }) {
@@ -53,6 +55,19 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
     sessionId = pending?.url === window.location.href && pending.id
       ? pending.id : history.state?.echoSessionId || crypto.randomUUID();
     replaceUrl(window.location.href);
+    // A reset can interrupt the old page's IndexedDB write. Finish that write
+    // from this page before removing the same-tab handoff.
+    try {
+      const handoff = JSON.parse(sessionStorage.getItem(RESET_HANDOFF_KEY) || "null");
+      if (handoff?.id && handoff?.url && handoff?.sequence) {
+        void mirrorSessionUrl(handoff.id, handoff.url, handoff.sequence, handoff.title)
+          .then(() => {
+            if (sessionStorage.getItem(RESET_HANDOFF_KEY) === JSON.stringify(handoff)) {
+              sessionStorage.removeItem(RESET_HANDOFF_KEY);
+            }
+          }).catch(error => status(`Previous view not saved yet — ${error.message}`));
+      }
+    } catch { /* A malformed handoff cannot prevent the viewer from opening. */ }
     void navigator.storage?.persist?.().catch(() => {});
     if (new URL(window.location.href).searchParams.has("p")) {
       void mirrorSessionUrl(sessionId, window.location.href, urlSequence(), sessionTitle()).catch(error =>
@@ -199,6 +214,19 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
       .catch(error => status(`Previous view not saved — ${error.message}`));
   }
 
+  function prepareReset() {
+    if (!ready) throw new Error("The viewer is still loading.");
+    if (sessionStorage.getItem(RESET_HANDOFF_KEY)) {
+      throw new Error("A previous project is still waiting to be saved. Please try again after browser storage recovers.");
+    }
+    const url = currentUrl();
+    if (!url) return;
+    const handoff = { id: sessionId, url, sequence: urlSequence(), title: sessionTitle() };
+    // This write is synchronous and survives navigation within the tab.
+    sessionStorage.setItem(RESET_HANDOFF_KEY, JSON.stringify(handoff));
+    if (url !== window.location.href) replaceUrl(url);
+  }
+
   function clearSaveFailure() {
     unsavedSchema = false;
     status("Definition draft remains in memory");
@@ -207,7 +235,7 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
   return { setLoadedRecord, start, beginEditor, discardEditor, finishEditor, markPublished,
     saveIndependentCopy,
     clearSaveFailure,
-    commitDecision, viewerChanged, flushUrl, currentUrl,
+    commitDecision, viewerChanged, flushUrl, prepareReset, currentUrl,
     get sessionId() { return sessionId; },
     get localRecord() { return localRecord; },
     get editorOpen() { return Boolean(editorBaseline); },

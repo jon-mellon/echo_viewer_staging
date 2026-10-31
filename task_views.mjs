@@ -1,5 +1,5 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=12b6b93b85f6d622";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=12b6b93b85f6d622";
+import { h, replaceChildren } from "./dom_builder.mjs?v=961ccacebae67321";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=961ccacebae67321";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -56,7 +56,7 @@ export function neighborhoodGraph({ rows, focusId, links, direction = "causes" }
 export function createTaskViews({ state, searchGroups, searchStatus = () => "ready", onChange = () => {},
   paperSupport = () => ({ status: "ready", papersFor: undefined }), loadPaperSupport = () => {},
   isDisplayGroup = () => true, onExploreChange = () => {}, onTaskChange = () => {},
-  onFocusPicking = () => {}, onPickerInput = () => {}, openEvidence = () => {}, flushUrl = async () => {}, openWindow = (url) => window.open(url, "_blank", "noopener"),
+  onFocusPicking = () => {}, onPickerInput = () => {}, openEvidence = () => {}, prepareReset = () => {}, openWindow = (url) => window.open(url, "_blank", "noopener"),
   navigate = (url) => window.location.assign(url) }) {
   const el = id => document.getElementById(id);
   const els = {
@@ -173,6 +173,18 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
     if (state.task === task) return;
     const previous = state.task;
     swapTask(previous, task);
+    // The focus search input is shared by both explore views. A first visit
+    // should start with the full picker, rather than another view's query.
+    if ((task === "causes" || task === "consequences") && !focusId()) {
+      els.focusInput.value = "";
+    }
+    // The shared workspace can be left in Groups by another task. An
+    // unconfigured Identify view must begin at its anchor setup regardless of
+    // which tab (or landing choice) opened it.
+    if (task === "identify" && (!state.project?.iv_group_id || !state.project?.dv_group_id)) {
+      state.workflowMode = "setup";
+      state.phase = state.project?.iv_group_id ? "select_dv" : "select_iv";
+    }
     changing.causes = false;
     changing.consequences = false;
     onTaskChange({ previous, task });
@@ -311,10 +323,15 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
       openWindow(freshProjectUrl(window.location.href));
       els.dialog.close();
     });
-    el("resetHere").addEventListener("click", async () => {
-      // Record the current project in Previous Sessions before leaving it.
-      try { await flushUrl(); } catch { /* Resetting must not depend on saving history. */ }
-      navigate(freshProjectUrl(window.location.href));
+    el("resetHere").addEventListener("click", () => {
+      try {
+        prepareReset();
+        navigate(freshProjectUrl(window.location.href));
+      } catch (error) {
+        const message = el("resetError");
+        message.textContent = `Could not keep this project in Previous Sessions — ${error.message}`;
+        message.hidden = false;
+      }
     });
   }
 

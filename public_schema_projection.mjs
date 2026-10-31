@@ -1,5 +1,5 @@
 // Only these decision fields are permitted in public schema and graph artifacts.
-import { publicConfounderStatuses } from "./confounder_status.mjs?v=12b6b93b85f6d622";
+import { publicConfounderStatuses } from "./confounder_status.mjs?v=961ccacebae67321";
 export function publicLinkDecisions(decisions = {}) {
   return Object.fromEntries(Object.entries(decisions).flatMap(([edgeId, decision]) => {
     const status = decision?.display_status === "hidden" ? "excluded" : decision?.display_status;
