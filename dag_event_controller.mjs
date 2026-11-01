@@ -1,6 +1,6 @@
-import { attachGraphTouchGuard } from "./graph_touch.mjs?v=f29b168c4e379d4b";
-import * as projectOps from "./dag_project.mjs?v=f29b168c4e379d4b";
-import * as mapInteractions from "./map_interactions.mjs?v=f29b168c4e379d4b";
+import { attachGraphTouchGuard } from "./graph_touch.mjs?v=f2b90ba1bae5e668";
+import * as projectOps from "./dag_project.mjs?v=f2b90ba1bae5e668";
+import * as mapInteractions from "./map_interactions.mjs?v=f2b90ba1bae5e668";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,

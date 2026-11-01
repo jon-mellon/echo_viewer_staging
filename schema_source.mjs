@@ -1,5 +1,5 @@
-import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=f29b168c4e379d4b";
-import { SUPABASE_URL } from "./supabase_config.mjs?v=f29b168c4e379d4b";
+import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=f2b90ba1bae5e668";
+import { SUPABASE_URL } from "./supabase_config.mjs?v=f2b90ba1bae5e668";
 
 // Where published schema files are read from. Supabase Storage is the default;
 // `?schema_source=cloudflare` reads the same files, byte for byte, from the R2

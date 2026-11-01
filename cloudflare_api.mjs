@@ -1,8 +1,8 @@
-import { CLOUDFLARE_API_URL, TURNSTILE_SITE_KEY } from "./cloudflare_config.mjs?v=f29b168c4e379d4b";
-import { solveTurnstile } from "./turnstile.mjs?v=f29b168c4e379d4b";
-import { publishedFileUrl } from "./schema_source.mjs?v=f29b168c4e379d4b";
+import { CLOUDFLARE_API_URL, TURNSTILE_SITE_KEY } from "./cloudflare_config.mjs?v=f2b90ba1bae5e668";
+import { solveTurnstile } from "./turnstile.mjs?v=f2b90ba1bae5e668";
+import { publishedFileUrl } from "./schema_source.mjs?v=f2b90ba1bae5e668";
 
-// Client for the publishing worker (cloudflare/publish-worker/README.md lists its routes).
+// Client for the publishing service (docs/publishing-api.md is the contract; the Worker itself lives in harvest_abstracts).
 const OWNER_KEY = "echo-owner-token";
 
 class CloudflareApiError extends Error {
