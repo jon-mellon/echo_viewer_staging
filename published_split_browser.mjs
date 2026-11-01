@@ -1,12 +1,18 @@
-import { supabase } from "./supabase_client.mjs?v=ca223e9141c36f35";
-import { publicSchemaBaseUrl } from "./publication_access.mjs?v=ca223e9141c36f35";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=ca223e9141c36f35";
+import { supabase } from "./supabase_client.mjs?v=0f5b38f29a1a33a7";
+import { schemaSource } from "./schema_source.mjs?v=0f5b38f29a1a33a7";
+import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=0f5b38f29a1a33a7";
+import { getSplits } from "./cloudflare_api.mjs?v=0f5b38f29a1a33a7";
+import { publicSchemaBaseUrl } from "./publication_access.mjs?v=0f5b38f29a1a33a7";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=0f5b38f29a1a33a7";
 
-export async function browsePublishedSplits(sourceGroupIds, client = supabase) {
-  if (!client) throw new Error("Supabase is not configured.");
+export async function browsePublishedSplits(sourceGroupIds, client = supabase,
+  { source = schemaSource(), apiUrl = CLOUDFLARE_API_URL, fetchImpl } = {}) {
+  const viaWorker = source === "cloudflare" && cloudflareApiConfigured(apiUrl);
+  if (!client && !viaWorker) throw new Error("Supabase is not configured.");
   const ids = [...new Set(sourceGroupIds)].filter(Boolean);
   if (!ids.length) return [];
   const pages = await Promise.all(ids.map(async id => {
+    if (viaWorker) return getSplits(id, { apiUrl, ...(fetchImpl ? { fetchImpl } : {}) });
     const { data, error } = await client.from("published_split_index")
       .select("publication_id,group_id,split_id,source_group_ids,name,description,storage_prefix,membership_path,owner_id,published_at")
       .eq("quality_status", "approved").contains("source_group_ids", [id])
