@@ -1,5 +1,5 @@
-import { MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=0f5b38f29a1a33a7";
-import { SCHEMA_SOURCE_PARAM, schemaSource, schemaSourceRequested } from "./schema_source.mjs?v=0f5b38f29a1a33a7";
+import { MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=8ee579771f275139";
+import { SCHEMA_SOURCE_PARAM, schemaSource, schemaSourceRequested } from "./schema_source.mjs?v=8ee579771f275139";
 
 export const PERMALINK_VERSION = "1";
 export const TASKS = ["identify", "causes", "consequences"];

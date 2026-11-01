@@ -1,7 +1,7 @@
-import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=0f5b38f29a1a33a7";
-import { publishedFileUrl, schemaSource } from "./schema_source.mjs?v=0f5b38f29a1a33a7";
-import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=0f5b38f29a1a33a7";
-import { getSchema } from "./cloudflare_api.mjs?v=0f5b38f29a1a33a7";
+import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=8ee579771f275139";
+import { publishedFileUrl, schemaSource } from "./schema_source.mjs?v=8ee579771f275139";
+import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=8ee579771f275139";
+import { getSchema } from "./cloudflare_api.mjs?v=8ee579771f275139";
 
 /** The folder holding one publication's files, on the page's schema source. */
 export function publicSchemaBaseUrl(client, storagePrefix, source = schemaSource()) {

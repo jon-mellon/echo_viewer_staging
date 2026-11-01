@@ -1,13 +1,13 @@
-import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=0f5b38f29a1a33a7";
-import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=0f5b38f29a1a33a7";
-import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=0f5b38f29a1a33a7";
-import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl, schemaSource } from "./schema_source.mjs?v=0f5b38f29a1a33a7";
-import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=0f5b38f29a1a33a7";
-import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=0f5b38f29a1a33a7";
-import { ensureAnonymousPublicationUser } from "./dag_anonymous_auth.mjs?v=0f5b38f29a1a33a7";
+import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=8ee579771f275139";
+import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=8ee579771f275139";
+import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=8ee579771f275139";
+import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl, schemaSource } from "./schema_source.mjs?v=8ee579771f275139";
+import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=8ee579771f275139";
+import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=8ee579771f275139";
+import { ensureAnonymousPublicationUser } from "./dag_anonymous_auth.mjs?v=8ee579771f275139";
 import { createCompiledArtifacts, evidenceSnapshotForSchema, fullCompileDag,
-  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=0f5b38f29a1a33a7";
-import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=0f5b38f29a1a33a7";
+  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=8ee579771f275139";
+import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=8ee579771f275139";
 
 export const CANONICAL_BASELINE_ID = "a0118906-2366-4cc8-8809-bafdf3860c23";
 export const CANONICAL_BASELINE_HASH = "0afd5f28c1b5456c47cfba84467bea1d62c6dc923a5851281a98d461f60066b4";
