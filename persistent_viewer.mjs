@@ -1,7 +1,7 @@
-import { buildPermalink } from "./dag_permalink.mjs?v=e0db90848b80f645";
-import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=e0db90848b80f645";
-import { validateGroupingSchema } from "./data_validation.mjs?v=e0db90848b80f645";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=e0db90848b80f645";
+import { buildPermalink } from "./dag_permalink.mjs?v=55de7a8ff7e01b87";
+import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=55de7a8ff7e01b87";
+import { validateGroupingSchema } from "./data_validation.mjs?v=55de7a8ff7e01b87";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=55de7a8ff7e01b87";
 
 const RESET_HANDOFF_KEY = "echo-pending-reset-session";
 
@@ -12,6 +12,8 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
   let editorBaseline = null;
   let urlTimer = null;
   let ready = false;
+  let markReady;
+  const whenReady = new Promise(resolve => { markReady = resolve; });
   let commitPending = null;
   let unsavedSchema = false;
   let sessionId = null;
@@ -48,6 +50,7 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
   function start() {
     committedSchema = structuredClone(getSchema());
     ready = true;
+    markReady();
     let pending = null;
     try { pending = JSON.parse(sessionStorage.getItem("echo-pending-session-restore") || "null"); }
     catch { /* An invalid handoff starts an independent session. */ }
@@ -235,7 +238,7 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
     status("Definition draft remains in memory");
   }
 
-  return { setLoadedRecord, start, beginEditor, discardEditor, finishEditor, markPublished,
+  return { setLoadedRecord, start, whenReady: () => whenReady, beginEditor, discardEditor, finishEditor, markPublished,
     saveIndependentCopy,
     clearSaveFailure,
     commitDecision, viewerChanged, flushUrl, prepareReset, currentUrl,

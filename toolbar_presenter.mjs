@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=e0db90848b80f645";
+import { h, replaceChildren } from "./dom_builder.mjs?v=55de7a8ff7e01b87";
 
 export function diagnosticViewTitle(state, anchorsReady) {
   if (!anchorsReady) return "Working map";

@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=e0db90848b80f645";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=e0db90848b80f645";
-import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=e0db90848b80f645";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=e0db90848b80f645";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=e0db90848b80f645";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=e0db90848b80f645";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=e0db90848b80f645";
-import { validateGroupingSchema } from "./data_validation.mjs?v=e0db90848b80f645";
+import { dagDataSource } from "./dag_data_source.mjs?v=55de7a8ff7e01b87";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=55de7a8ff7e01b87";
+import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=55de7a8ff7e01b87";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=55de7a8ff7e01b87";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=55de7a8ff7e01b87";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=55de7a8ff7e01b87";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=55de7a8ff7e01b87";
+import { validateGroupingSchema } from "./data_validation.mjs?v=55de7a8ff7e01b87";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   resizeMap, initializeProject, loadLatestSchemaGroups,
@@ -152,11 +152,9 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
     // schema work is done, in idle time, unless the snapshot has evidence bundles
     // (which never need it) or the user asked to save data.
     const prewarmEvidenceEngine = () => new Promise(resolve => {
-      // The landing page has no evidence to inspect. On narrow screens, keeping
-      // DuckDB and its WASM heap out of startup avoids a second, expensive load
-      // just after the home screen becomes visible.
-      if ((!state.task && globalThis.matchMedia?.("(max-width: 700px)").matches)
-        || globalThis.navigator?.connection?.saveData || dagDataSource.hasEvidencePanelBundles()) { resolve(); return; }
+      // Startup has already painted. Warm the engine in idle time even when
+      // the start page is showing, so the first evidence click is ready.
+      if (globalThis.navigator?.connection?.saveData || dagDataSource.hasEvidencePanelBundles()) { resolve(); return; }
       const start = () => void dagDataSource.ensureEvidenceConnection({ variableIds: [] }).catch(() => {}).finally(resolve);
       if (typeof globalThis.requestIdleCallback === "function") globalThis.requestIdleCallback(start, { timeout: 5000 });
       else setTimeout(start, 1000);
