@@ -1,13 +1,13 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=55de7a8ff7e01b87";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=55de7a8ff7e01b87";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=55de7a8ff7e01b87";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=55de7a8ff7e01b87";
-import * as dagDisplay from "./dag_display.mjs?v=55de7a8ff7e01b87";
-import * as workflow from "./dag_workflow.mjs?v=55de7a8ff7e01b87";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=55de7a8ff7e01b87";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=55de7a8ff7e01b87";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=55de7a8ff7e01b87";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=55de7a8ff7e01b87";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=ca223e9141c36f35";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=ca223e9141c36f35";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=ca223e9141c36f35";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=ca223e9141c36f35";
+import * as dagDisplay from "./dag_display.mjs?v=ca223e9141c36f35";
+import * as workflow from "./dag_workflow.mjs?v=ca223e9141c36f35";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=ca223e9141c36f35";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=ca223e9141c36f35";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=ca223e9141c36f35";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=ca223e9141c36f35";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -209,7 +209,7 @@ function tableRole(group) {
   return "";
 }
 
-function renderDagTable(groups, links) {
+async function renderDagTable(groups, links) {
   _dagTable ||= createDagTable({ container: els.dagTable, onOpenVariable: openVariable, onOpenEvidence: openEvidence });
   const studyLinks = studyDesignEdgeData(groups, state.project).map(edge => ({
     edgeId: edge.id, sourceId: edge.from, targetId: edge.to,
@@ -218,10 +218,12 @@ function renderDagTable(groups, links) {
   const view = pathView({ ...state, exploring: exploring() });
   const pathsByGroup = { exogeneity: state.exogeneityPathsByGroup, exclusion: state.exclusionPathsByGroup,
     colliders: state.colliderPathsByGroup, confounders: state.confounderPathsByGroup }[view];
-  _dagTable.update(dagTableModel({ view, groups, links, pathsByGroup, exploreRows: view === "explore" ? exploreRows() : [],
+  const built = _dagTable.update(dagTableModel({ view, groups, links, pathsByGroup, exploreRows: view === "explore" ? exploreRows() : [],
     anchors: studyAnchors(), maxPathLength: view === "exclusion" ? state.exclusionMaxPathLength : state.confounderMaxPathLength,
     roleFor: tableRole, studyLinks }));
   _dagTable.select({ edgeId: state.selectedEdgeId, groupId: state.selectedEvidenceGroupId });
+  // The table builds in chunks; the render is done when every row is in.
+  await built;
 }
 
 function showDagDisplay() {
@@ -473,7 +475,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
   if (els.dagTable.hidden === tableShown()) showDagDisplay();
   if (tableShown()) {
     // No layout: the graph is rebuilt from the same groups and links when it is shown again.
-    renderDagTable(groups, links);
+    await renderDagTable(groups, links);
     resolveRendered();
     return;
   }
@@ -552,7 +554,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=55de7a8ff7e01b87", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=ca223e9141c36f35", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;

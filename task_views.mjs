@@ -1,5 +1,5 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=55de7a8ff7e01b87";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=55de7a8ff7e01b87";
+import { h, replaceChildren } from "./dom_builder.mjs?v=ca223e9141c36f35";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=ca223e9141c36f35";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -11,7 +11,7 @@ const clampDepth = value => Math.max(1, Math.min(MAX_NEIGHBORHOOD_DEPTH, Math.tr
 export function freshProjectUrl(href) {
   const current = new URL(href);
   const fresh = new URL(current.pathname, current.origin);
-  for (const key of ["schema", "data_version", "evidence_manifest"]) {
+  for (const key of ["schema", "data_version", "evidence_manifest", "schema_source"]) {
     if (current.searchParams.has(key)) fresh.searchParams.set(key, current.searchParams.get(key));
   }
   return fresh.href;

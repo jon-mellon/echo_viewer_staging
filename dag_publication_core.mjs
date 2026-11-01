@@ -1,10 +1,11 @@
-import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=55de7a8ff7e01b87";
-import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=55de7a8ff7e01b87";
-import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=55de7a8ff7e01b87";
-import { ensureAnonymousPublicationUser } from "./dag_anonymous_auth.mjs?v=55de7a8ff7e01b87";
+import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=ca223e9141c36f35";
+import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=ca223e9141c36f35";
+import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=ca223e9141c36f35";
+import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl } from "./schema_source.mjs?v=ca223e9141c36f35";
+import { ensureAnonymousPublicationUser } from "./dag_anonymous_auth.mjs?v=ca223e9141c36f35";
 import { createCompiledArtifacts, evidenceSnapshotForSchema, fullCompileDag,
-  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=55de7a8ff7e01b87";
-import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=55de7a8ff7e01b87";
+  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=ca223e9141c36f35";
+import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=ca223e9141c36f35";
 
 export const CANONICAL_BASELINE_ID = "a0118906-2366-4cc8-8809-bafdf3860c23";
 export const CANONICAL_BASELINE_HASH = "0afd5f28c1b5456c47cfba84467bea1d62c6dc923a5851281a98d461f60066b4";
@@ -91,16 +92,16 @@ export async function publishWorkingSchema({
         const [groupId, path] = candidates[next++];
         const oldPath = parent.group_membership_files?.[groupId];
         if (!oldPath) continue;
-        const url = new URL(parent.group_membership_references?.[groupId] || oldPath, base);
-        if (url.origin !== new URL(base).origin || !url.pathname.startsWith("/storage/v1/object/public/published-schemas/")) {
-          throw new Error(`Invalid parent membership reference for ${groupId}.`);
-        }
+        const reference = parent.group_membership_references?.[groupId];
+        const url = reference ? publishedReferenceUrl(reference, base) : new URL(oldPath, base);
+        if (!url || !isPublishedFileUrl(url, base)) throw new Error(`Invalid parent membership reference for ${groupId}.`);
         const oldResponse = await fetchImpl(url);
         if (!oldResponse.ok) throw new Error(`Could not read parent membership for ${groupId}: ${oldResponse.status}`);
         const oldBytes = new Uint8Array(await oldResponse.arrayBuffer());
         const current = files.get(path);
         if (oldBytes.length === current.length && oldBytes.every((byte, index) => byte === current[index])) {
-          references[groupId] = url.href;
+          // Stored as the Supabase address whichever source the parent was read from.
+          references[groupId] = canonicalPublishedReference(url);
           files.delete(path);
         }
       }

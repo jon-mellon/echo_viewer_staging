@@ -1,6 +1,9 @@
-import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=55de7a8ff7e01b87";
+import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=ca223e9141c36f35";
+import { publishedFileUrl, schemaSource } from "./schema_source.mjs?v=ca223e9141c36f35";
 
-export function publicSchemaBaseUrl(client, storagePrefix) {
+/** The folder holding one publication's files, on the page's schema source. */
+export function publicSchemaBaseUrl(client, storagePrefix, source = schemaSource()) {
+  if (source === "cloudflare") return `${publishedFileUrl(storagePrefix, "cloudflare")}/`;
   const { data } = client.storage.from(PUBLISHED_SCHEMA_BUCKET).getPublicUrl(`${storagePrefix}/manifest.json`);
   if (!data?.publicUrl) throw new Error("Supabase did not return a public schema URL.");
   return data.publicUrl.replace(/manifest\.json$/, "");
