@@ -1,13 +1,13 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=b78bb15a61a2b0d4";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=b78bb15a61a2b0d4";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=b78bb15a61a2b0d4";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=b78bb15a61a2b0d4";
-import * as dagDisplay from "./dag_display.mjs?v=b78bb15a61a2b0d4";
-import * as workflow from "./dag_workflow.mjs?v=b78bb15a61a2b0d4";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=b78bb15a61a2b0d4";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=b78bb15a61a2b0d4";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=b78bb15a61a2b0d4";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=b78bb15a61a2b0d4";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=f29b168c4e379d4b";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=f29b168c4e379d4b";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=f29b168c4e379d4b";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=f29b168c4e379d4b";
+import * as dagDisplay from "./dag_display.mjs?v=f29b168c4e379d4b";
+import * as workflow from "./dag_workflow.mjs?v=f29b168c4e379d4b";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=f29b168c4e379d4b";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=f29b168c4e379d4b";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=f29b168c4e379d4b";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=f29b168c4e379d4b";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -211,7 +211,7 @@ function tableRole(group) {
 
 async function renderDagTable(groups, links) {
   _dagTable ||= createDagTable({ container: els.dagTable, onOpenVariable: openVariable, onOpenEvidence: openEvidence });
-  const studyLinks = studyDesignEdgeData(groups, state.project).map(edge => ({
+  const studyLinks = studyDesignEdgeData(groups, state.project, state.task).map(edge => ({
     edgeId: edge.id, sourceId: edge.from, targetId: edge.to,
     note: edge.id === STUDY_DESIGN_EDGE_ID ? "Study relationship" : "Study instrument",
   }));
@@ -554,7 +554,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=b78bb15a61a2b0d4", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=f29b168c4e379d4b", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -598,7 +598,7 @@ async function applyDagRender(groups, layout, routes) {
   _dagBoundsCache = null;
   const previousNodeData = _dagNodeDataById;
   _dagNodeDataById = new Map(nodeData.map(node => [node.id, node]));
-  edgeData.push(...studyDesignEdgeData(groups, state.project));
+  edgeData.push(...studyDesignEdgeData(groups, state.project, state.task));
   _dagEdgeSegments = edgeSegments;
   _renderedSelectedEdgeId = state.selectedEdgeId;
 

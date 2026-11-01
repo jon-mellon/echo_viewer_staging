@@ -1,6 +1,6 @@
 "use strict";
 
-import { computeDagRender } from "./dag_render_compute.mjs?v=b78bb15a61a2b0d4";
+import { computeDagRender } from "./dag_render_compute.mjs?v=f29b168c4e379d4b";
 
 self.addEventListener("message", (event) => {
   const { requestId, input } = event.data;

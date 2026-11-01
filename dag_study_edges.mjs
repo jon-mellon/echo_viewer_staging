@@ -1,6 +1,7 @@
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=b78bb15a61a2b0d4";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=f29b168c4e379d4b";
 
-export function studyDesignEdgeData(groups, project) {
+export function studyDesignEdgeData(groups, project, task = "identify") {
+  if (task === "causes" || task === "consequences") return [];
   const groupIds = new Set(groups.map(group => group.group_id));
   const ivId = project?.iv_group_id;
   const dvId = project?.dv_group_id;
