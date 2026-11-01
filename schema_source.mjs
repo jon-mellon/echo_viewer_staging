@@ -8,7 +8,7 @@ import { SUPABASE_URL } from "./supabase_config.mjs?v=b78bb15a61a2b0d4";
 // registry stays there. When Cloudflare is ready to be the default, change
 // DEFAULT_SCHEMA_SOURCE; Supabase support can then be removed.
 export const SCHEMA_SOURCES = ["supabase", "cloudflare"];
-export const DEFAULT_SCHEMA_SOURCE = "supabase";
+export const DEFAULT_SCHEMA_SOURCE = "cloudflare";
 export const SCHEMA_SOURCE_PARAM = "schema_source";
 
 const CLOUDFLARE_ORIGIN = "https://data.epistemicinfra.org";
