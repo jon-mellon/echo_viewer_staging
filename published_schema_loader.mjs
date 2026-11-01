@@ -1,17 +1,17 @@
-import { SCHEMA_SOURCE_PARAM, schemaSource, schemaSourceRequested } from "./schema_source.mjs?v=8ee579771f275139";
-import { supabase } from "./supabase_client.mjs?v=8ee579771f275139";
-import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=8ee579771f275139";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=8ee579771f275139";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=8ee579771f275139";
-import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=8ee579771f275139";
-import { buildPermalink } from "./dag_permalink.mjs?v=8ee579771f275139";
-import { deriveDagView } from "./dag_view.mjs?v=8ee579771f275139";
+import { SCHEMA_SOURCE_PARAM, publishedReferenceUrl, schemaSource, schemaSourceRequested } from "./schema_source.mjs?v=b78bb15a61a2b0d4";
+import { supabase } from "./supabase_client.mjs?v=b78bb15a61a2b0d4";
+import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=b78bb15a61a2b0d4";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=b78bb15a61a2b0d4";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=b78bb15a61a2b0d4";
+import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=b78bb15a61a2b0d4";
+import { buildPermalink } from "./dag_permalink.mjs?v=b78bb15a61a2b0d4";
+import { deriveDagView } from "./dag_view.mjs?v=b78bb15a61a2b0d4";
 import { COMPILED_DAG_PATH, sha256Hex, stableJsonBytes,
-  validateCompiledArtifact } from "./compiled_dag.mjs?v=8ee579771f275139";
+  validateCompiledArtifact } from "./compiled_dag.mjs?v=b78bb15a61a2b0d4";
 
-export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=8ee579771f275139";
+export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=b78bb15a61a2b0d4";
 import { publicSchemaBaseUrl as sharedPublicSchemaBaseUrl,
-  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=8ee579771f275139";
+  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=b78bb15a61a2b0d4";
 
 export async function fetchPublishedFile(url, options, fetchImpl, sleep = ms => new Promise(resolve => setTimeout(resolve, ms))) {
   for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -139,9 +139,12 @@ export async function loadPublishedSchema(publicationId, client = supabase, fetc
     const schemaFiles = new Map();
     const schemaFetch = async (url, options) => {
       const response = await cachingFetch(url, options);
-      if (response.ok) {
-        const relative = new URL(url).href.slice(new URL(baseUrl).href.length);
-        schemaFiles.set(relative, new Uint8Array(await response.clone().arrayBuffer()));
+      // Only this publication's own files are recorded here; a parent's file that a membership reference points at is
+      // added at its logical path below. (Recording it under a slice of its address collided with the real path
+      // whenever the two folder names were the same length, and the later clean-up then deleted the real file.)
+      const href = new URL(url).href, base = new URL(baseUrl).href;
+      if (response.ok && href.startsWith(base)) {
+        schemaFiles.set(href.slice(base.length), new Uint8Array(await response.clone().arrayBuffer()));
       }
       return response;
     };
@@ -190,10 +193,11 @@ export async function loadPublishedSchema(publicationId, client = supabase, fetc
       delete logicalManifest.group_membership_references;
       schemaFiles.set("manifest.json", new TextEncoder().encode(stableJson(logicalManifest)));
       for (const [groupId, reference] of Object.entries(references)) {
-        const bytes = memory.get(new URL(reference, baseUrl).href);
+        // Manifests name a parent's file by its Supabase address; it was fetched (and remembered) under the page's source.
+        const referenceUrl = publishedReferenceUrl(reference, baseUrl)?.href;
+        const bytes = referenceUrl && memory.get(referenceUrl);
         if (!bytes || !staged.manifest.group_membership_files[groupId]) throw new Error(`Missing referenced membership for ${groupId}.`);
         schemaFiles.set(staged.manifest.group_membership_files[groupId], bytes);
-        schemaFiles.delete(new URL(reference, baseUrl).href.slice(new URL(baseUrl).href.length));
       }
     }
     const downloadedHash = await canonicalFolderHash(schemaFiles);

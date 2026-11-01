@@ -1,5 +1,5 @@
-import { CLOUDFLARE_API_URL, TURNSTILE_SITE_KEY } from "./cloudflare_config.mjs?v=8ee579771f275139";
-import { solveTurnstile } from "./turnstile.mjs?v=8ee579771f275139";
+import { CLOUDFLARE_API_URL, TURNSTILE_SITE_KEY } from "./cloudflare_config.mjs?v=b78bb15a61a2b0d4";
+import { solveTurnstile } from "./turnstile.mjs?v=b78bb15a61a2b0d4";
 
 // Client for the publishing worker (cloudflare/publish-worker/README.md lists its routes).
 const OWNER_KEY = "echo-owner-token";

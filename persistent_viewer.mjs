@@ -1,7 +1,7 @@
-import { buildPermalink } from "./dag_permalink.mjs?v=8ee579771f275139";
-import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=8ee579771f275139";
-import { validateGroupingSchema } from "./data_validation.mjs?v=8ee579771f275139";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=8ee579771f275139";
+import { buildPermalink } from "./dag_permalink.mjs?v=b78bb15a61a2b0d4";
+import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=b78bb15a61a2b0d4";
+import { validateGroupingSchema } from "./data_validation.mjs?v=b78bb15a61a2b0d4";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=b78bb15a61a2b0d4";
 
 const RESET_HANDOFF_KEY = "echo-pending-reset-session";
 
