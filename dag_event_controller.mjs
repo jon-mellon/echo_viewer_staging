@@ -1,6 +1,6 @@
-import { attachGraphTouchGuard } from "./graph_touch.mjs?v=843484d569671f84";
-import * as projectOps from "./dag_project.mjs?v=843484d569671f84";
-import * as mapInteractions from "./map_interactions.mjs?v=843484d569671f84";
+import { attachGraphTouchGuard } from "./graph_touch.mjs?v=3912537ef3df588a";
+import * as projectOps from "./dag_project.mjs?v=3912537ef3df588a";
+import * as mapInteractions from "./map_interactions.mjs?v=3912537ef3df588a";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -294,6 +294,15 @@ function installMapHandlers() {
     if (els.dagMapContextMenu.contains(event.target)) return;
     if (event.target === canvas && event.button === 2) return;
     hideMapContextMenu();
+  });
+  document.addEventListener("pointerdown", (event) => {
+    for (const dropdown of document.querySelectorAll("details.filter-dropdown[open]")) {
+      if (!dropdown.contains(event.target)) dropdown.open = false;
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    for (const dropdown of document.querySelectorAll("details.filter-dropdown[open]")) dropdown.open = false;
   });
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;

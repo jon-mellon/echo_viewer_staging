@@ -1,4 +1,4 @@
-import { directedGroupLabels } from "./dag_exports.mjs?v=843484d569671f84";
+import { directedGroupLabels } from "./dag_exports.mjs?v=3912537ef3df588a";
 
 // A table of exactly what the graph draws. Each row is a path: the variables
 // along it are buttons that open their definitions, and the arrows between

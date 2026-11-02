@@ -1,8 +1,8 @@
-import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=843484d569671f84";
-import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=843484d569671f84";
-import { setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=843484d569671f84";
-import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=843484d569671f84";
-export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=843484d569671f84";
+import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=3912537ef3df588a";
+import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=3912537ef3df588a";
+import { setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=3912537ef3df588a";
+import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=3912537ef3df588a";
+export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=3912537ef3df588a";
 
 function showStatus(element, message, isError = false) {
   element.textContent = message;
@@ -122,7 +122,7 @@ export function createPublicationController({
     button.classList.add("share-copied");
     button.setAttribute("aria-label", "View link copied to clipboard");
     shareFeedbackTimer = setTimeout(() => {
-      button.textContent = "Share view";
+      button.textContent = "Share";
       button.classList.remove("share-copied");
       button.removeAttribute("aria-label");
     }, 2400);

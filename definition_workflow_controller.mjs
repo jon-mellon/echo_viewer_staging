@@ -1,8 +1,8 @@
-import * as projectOps from "./dag_project.mjs?v=843484d569671f84";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=843484d569671f84";
-import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=843484d569671f84";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=843484d569671f84";
-import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=843484d569671f84";
+import * as projectOps from "./dag_project.mjs?v=3912537ef3df588a";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=3912537ef3df588a";
+import { nearbyMapNeighbors } from "./definition_neighbors.mjs?v=3912537ef3df588a";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=3912537ef3df588a";
+import { browsePublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=3912537ef3df588a";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateMapCaches, renderAll, drawMap = () => {}, renderAssignmentCoverage = () => {}, setMapMode, fitMap, groupById, persistProjectLocally, getReturnUrl = () => location.href,
