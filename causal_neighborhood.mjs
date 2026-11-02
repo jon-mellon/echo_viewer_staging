@@ -2,7 +2,7 @@
 // evidence in each direction; a hop counts when that direction is supported by
 // at least `minPapers` distinct papers and the link is traversable by the same
 // rule the identification diagrams use.
-import { excludedForConnectivity, presentPaperIds } from "./dag_view.mjs?v=f2b90ba1bae5e668";
+import { excludedForConnectivity, presentPaperIds } from "./dag_view.mjs?v=843484d569671f84";
 
 export const MAX_NEIGHBORHOOD_DEPTH = 4;
 

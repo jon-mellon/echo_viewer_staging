@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=f2b90ba1bae5e668";
-import { jevRunId, loadJevRun, latestJevRun, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=f2b90ba1bae5e668";
-import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=f2b90ba1bae5e668";
-export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=f2b90ba1bae5e668";
+import { h, replaceChildren } from "./dom_builder.mjs?v=843484d569671f84";
+import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=843484d569671f84";
+import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=843484d569671f84";
+export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=843484d569671f84";
 
 const OAUTH_PENDING_KEY = "echo-openrouter-pkce-v1";
 const OAUTH_DRAFT_KEY = "echo-openrouter-definition-draft-v1";
@@ -120,7 +120,7 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
 
   function checkpointSource(draft, description) {
     return { version: 1, model: MODEL, description,
-      role: draft.role, split_id: draft.split_id || null,
+      split_id: draft.split_id || null,
       source_snapshot: draft.source_snapshot,
       eligible_variable_ids: draft.eligible_variable_ids,
       records: recordsFor(draft.eligible_variable_ids) };
@@ -737,5 +737,5 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
   }
 
   return { install, render, clearPreview, takeResumeDraft, restoreForDraft,
-    latestResumeDraft: async () => (await latestJevRun())?.draft || null };
+    listSavedRuns: listJevRuns, discardSavedRun: deleteJevRun };
 }

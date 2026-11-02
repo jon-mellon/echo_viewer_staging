@@ -1,8 +1,8 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=f2b90ba1bae5e668";
-import * as groupListModel from "./dag_group_list.mjs?v=f2b90ba1bae5e668";
-import * as searchModel from "./dag_search.mjs?v=f2b90ba1bae5e668";
-import * as workflow from "./dag_workflow.mjs?v=f2b90ba1bae5e668";
-import { h, replaceChildren } from "./dom_builder.mjs?v=f2b90ba1bae5e668";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=843484d569671f84";
+import * as groupListModel from "./dag_group_list.mjs?v=843484d569671f84";
+import * as searchModel from "./dag_search.mjs?v=843484d569671f84";
+import * as workflow from "./dag_workflow.mjs?v=843484d569671f84";
+import { h, replaceChildren } from "./dom_builder.mjs?v=843484d569671f84";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);
@@ -467,10 +467,14 @@ export function createDagSetupGroupController({
       : query && state.variableSearchStatus === "loading" ? "Existing groups · variable search loading…"
         : query && state.variableSearchStatus === "error" ? "Existing groups · variable search unavailable"
           : "Existing groups";
+    const defineRow = h("div", { className: "setup-group-picker-row define-new-row" },
+      h("div", {}, h("strong", { textContent: "Define a variable" }), h("span", { textContent: "Chop one or more existing categories in the spatial viewer" })),
+      h("button", { className: "action-button", type: "button", dataset: { defineFocus: "true" }, textContent: "Define" }));
     replaceChildren(container, h("div", { className: "setup-group-picker-title", textContent: title }),
-      h("div", { className: "setup-group-picker-list" }, ...rows));
+      h("div", { className: "setup-group-picker-list" }, defineRow, ...rows));
     container.querySelectorAll("button[data-group-id]").forEach(button =>
       button.addEventListener("click", () => onChooseFocus(button.dataset.groupId)));
+    container.querySelector("button[data-define-focus]")?.addEventListener("click", () => startDefinition?.("candidate"));
   }
 
   function renderGroupList() {
