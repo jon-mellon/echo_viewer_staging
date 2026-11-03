@@ -1,9 +1,9 @@
-import { supabase } from "./supabase_client.mjs?v=72fbe7272c2e493a";
-import { schemaSource } from "./schema_source.mjs?v=72fbe7272c2e493a";
-import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=72fbe7272c2e493a";
-import { getSplits } from "./cloudflare_api.mjs?v=72fbe7272c2e493a";
-import { publicSchemaBaseUrl } from "./publication_access.mjs?v=72fbe7272c2e493a";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=72fbe7272c2e493a";
+import { supabase } from "./supabase_client.mjs?v=5d1de2e06ebdde6b";
+import { schemaSource } from "./schema_source.mjs?v=5d1de2e06ebdde6b";
+import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=5d1de2e06ebdde6b";
+import { getSplits } from "./cloudflare_api.mjs?v=5d1de2e06ebdde6b";
+import { publicSchemaBaseUrl } from "./publication_access.mjs?v=5d1de2e06ebdde6b";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=5d1de2e06ebdde6b";
 
 export async function browsePublishedSplits(sourceGroupIds, client = supabase,
   { source = schemaSource(), apiUrl = CLOUDFLARE_API_URL, fetchImpl } = {}) {

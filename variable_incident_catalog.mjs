@@ -1,4 +1,4 @@
-import { EvidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=72fbe7272c2e493a";
+import { EvidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=5d1de2e06ebdde6b";
 
 export const VARIABLE_INCIDENT_BINDINGS = Object.freeze({
   "f7666b4f9c4537c3ecfef0e9dc096f00650040e4bd1b2360eea64c1d5fba3f7b": {

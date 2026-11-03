@@ -1,5 +1,5 @@
-import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=72fbe7272c2e493a";
-import { SUPABASE_URL } from "./supabase_config.mjs?v=72fbe7272c2e493a";
+import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=5d1de2e06ebdde6b";
+import { SUPABASE_URL } from "./supabase_config.mjs?v=5d1de2e06ebdde6b";
 
 // Where published schema files are read from. The R2 bucket behind data.epistemicinfra.org
 // (see harvest_abstracts mirror_published_schemas_r2.py) is the default, so loading a page

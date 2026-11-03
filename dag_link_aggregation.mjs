@@ -1,9 +1,9 @@
 // Pure derived links. Ordering, target-pair direction and evidence IDs follow the viewer rules.
-export { pairKey } from "./edge_keys.mjs?v=72fbe7272c2e493a";
-import { pairKey } from "./edge_keys.mjs?v=72fbe7272c2e493a";
+export { pairKey } from "./edge_keys.mjs?v=5d1de2e06ebdde6b";
+import { pairKey } from "./edge_keys.mjs?v=5d1de2e06ebdde6b";
 
-/** @typedef {import("./app_contracts.mjs?v=72fbe7272c2e493a").Project} Project */
-/** @typedef {import("./app_contracts.mjs?v=72fbe7272c2e493a").AggregatedLink} AggregatedLink */
+/** @typedef {import("./app_contracts.mjs?v=5d1de2e06ebdde6b").Project} Project */
+/** @typedef {import("./app_contracts.mjs?v=5d1de2e06ebdde6b").AggregatedLink} AggregatedLink */
 
 // A record supports an edge only when its claim is "present". Records without a
 // claim (legacy data) count as present; "absent" and "uncertain" are evidence only.
