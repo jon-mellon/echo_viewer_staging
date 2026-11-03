@@ -1,6 +1,6 @@
-import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=3236cd20c20217e2";
-import { publishedFileUrl, schemaSource } from "./schema_source.mjs?v=3236cd20c20217e2";
-import { getPublishedRow } from "./cloudflare_api.mjs?v=3236cd20c20217e2";
+import { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=bd323460e30fdcab";
+import { publishedFileUrl, schemaSource } from "./schema_source.mjs?v=bd323460e30fdcab";
+import { getPublishedRow } from "./cloudflare_api.mjs?v=bd323460e30fdcab";
 
 /** The folder holding one publication's files, on the page's schema source. */
 export function publicSchemaBaseUrl(client, storagePrefix, source = schemaSource()) {

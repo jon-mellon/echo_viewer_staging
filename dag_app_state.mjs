@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @typedef {import("./app_contracts.mjs?v=3236cd20c20217e2").DagAppState} DagAppState */
+/** @typedef {import("./app_contracts.mjs?v=bd323460e30fdcab").DagAppState} DagAppState */
 
 // There is no unfiltered diagram: when no diagnostic view is on, the confounders view is. Every rebuild path normalizes
 // through this, so the heading, toolbar and graph always describe the same view.
@@ -43,8 +43,8 @@ export function createDagAppState(interfaceMode = "classic") {
     phase: "select_dv", workflowMode: "setup", changingAnchorSide: null,
     anchorSearchMode: { iv: "existing", dv: "existing", instrument: "existing" }, groupListSort: "relevance",
     undoHistory: [], undoPointer: -1, actionLog: [], showActionHistory: false,
-    definitionDraft: null, definitionAiPreviewIds: null, definitionMethod: null,
-    showVariableLabels: true, showGroupLabels: true, variableLayoutSource: "",
+    definitionDraft: null,
+    variableLayoutSource: "",
     projectStorageVariableCount: null, dagLayoutMode: "auto",
     showConfoundersOnly: true, showCollidersOnly: false,
     showExclusionViolations: false,
@@ -65,11 +65,6 @@ export function createDagAppState(interfaceMode = "classic") {
     colliderPathsByGroup: new Map(), colliderLinkPairKeys: new Set(),
     bottleneckedColliderIds: new Set(),
     fullscreenPanel: null, selectedVariableIds: new Set(),
-    mapContextMenu: { variableIds: [], variableId: null, clientX: 0, clientY: 0, query: "" },
-    map: {
-      canvas: null, ctx: null, dpr: 1,
-      transform: { scale: 1, tx: 0, ty: 0 }, fitScale: 1,
-      dragging: false, moved: false, dragStart: null, mode: "select", brush: null,
-    },
+    visibleCache: { variables: null, clusterReps: null },
   });
 }

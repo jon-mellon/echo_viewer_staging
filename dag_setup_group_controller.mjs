@@ -1,9 +1,9 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=3236cd20c20217e2";
-import * as groupListModel from "./dag_group_list.mjs?v=3236cd20c20217e2";
-import * as searchModel from "./dag_search.mjs?v=3236cd20c20217e2";
-import * as workflow from "./dag_workflow.mjs?v=3236cd20c20217e2";
-import { h, replaceChildren } from "./dom_builder.mjs?v=3236cd20c20217e2";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=3236cd20c20217e2";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=bd323460e30fdcab";
+import * as groupListModel from "./dag_group_list.mjs?v=bd323460e30fdcab";
+import * as searchModel from "./dag_search.mjs?v=bd323460e30fdcab";
+import * as workflow from "./dag_workflow.mjs?v=bd323460e30fdcab";
+import { h, replaceChildren } from "./dom_builder.mjs?v=bd323460e30fdcab";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=bd323460e30fdcab";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);
@@ -26,7 +26,7 @@ function anchorHasMembers(state, group) {
 
 export function createDagSetupGroupController({
   state, elements, escapeHtml, normalized, truncate, groupById,
-  assignGroupAsAnchor, assignGroupAsInstrument, setMapMode, renderAll,
+  assignGroupAsAnchor, assignGroupAsInstrument, renderAll,
   roleLabels, dagProjectView, startDefinition, startEditSplit,
   canEditSplit = () => false, searchAnchorGroups = searchModel.searchAnchorGroups,
   beginEditor = () => {},
@@ -557,7 +557,7 @@ export function createDagSetupGroupController({
       if (!group) return;
       beginEditor();
       Object.assign(state, workflow.transition(state, { type: "open-editor", groupId: group.group_id }));
-      setMapMode("select"); renderAll({ rebuild: false, refreshView: true });
+      renderAll({ rebuild: false, refreshView: true });
     }));
   }
 

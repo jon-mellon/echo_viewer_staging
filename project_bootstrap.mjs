@@ -1,16 +1,16 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=3236cd20c20217e2";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=3236cd20c20217e2";
-import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=3236cd20c20217e2";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=3236cd20c20217e2";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=3236cd20c20217e2";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=3236cd20c20217e2";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=3236cd20c20217e2";
-import { validateGroupingSchema } from "./data_validation.mjs?v=3236cd20c20217e2";
+import { dagDataSource } from "./dag_data_source.mjs?v=bd323460e30fdcab";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=bd323460e30fdcab";
+import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=bd323460e30fdcab";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=bd323460e30fdcab";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=bd323460e30fdcab";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=bd323460e30fdcab";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=bd323460e30fdcab";
+import { validateGroupingSchema } from "./data_validation.mjs?v=bd323460e30fdcab";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
-  resizeMap, initializeProject, loadLatestSchemaGroups,
+  initializeProject, loadLatestSchemaGroups,
   normalizeProjectDuplicateAssignments, publicationController, renderAll,
-  constrainMapTransform, drawMap, fitMap, dagNetworkController, buildDuplicateClusters,
+  dagNetworkController, buildDuplicateClusters,
   linkKey, pairKey, loadVariableSearchCatalog = async () => {}, onReady = () => {},
   onLocalSchemaLoaded = () => {} }) {
   const presenter = createProjectBootstrapPresenter({});
@@ -23,7 +23,6 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
     initElements();
     installHandlers();
     installDefinitionHandlers();
-    resizeMap();
     const requested = new URL(window.location.href);
     // A plain ?task= link opens that task directly; permalinks carry their own.
     const requestedTask = requested.searchParams.get("task");
@@ -139,12 +138,6 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
     renderAll();
     await dagNetworkController.whenRendered?.();
     performance.measure("echo:startup:graph", { start: renderStart, end: performance.now() });
-    if (state.permalinkMapViewport) {
-      constrainMapTransform();
-      drawMap();
-    } else {
-      fitMap();
-    }
     if (state.permalinkDagViewport) {
       dagNetworkController.getNetwork()?.moveTo({ ...state.permalinkDagViewport, animation: false });
     }

@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=3236cd20c20217e2";
-import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=3236cd20c20217e2";
-import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=3236cd20c20217e2";
-export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=3236cd20c20217e2";
+import { h, replaceChildren } from "./dom_builder.mjs?v=bd323460e30fdcab";
+import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=bd323460e30fdcab";
+import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=bd323460e30fdcab";
+export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=bd323460e30fdcab";
 
 const OAUTH_PENDING_KEY = "echo-openrouter-pkce-v1";
 const OAUTH_DRAFT_KEY = "echo-openrouter-definition-draft-v1";
@@ -386,8 +386,6 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
       && els.definitionAiDescription.value !== (draft.ai_description || "")) {
       els.definitionAiDescription.value = draft.ai_description || "";
     }
-    els.definitionMethodJev.disabled = busy;
-    els.definitionMethodManual.disabled = busy;
     const description = String(draft?.ai_description || "").trim();
     if (active && description) void restoreForDraft().catch(() => {});
     const limitOk = Boolean(key) && keyCheck === "ok";

@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=3236cd20c20217e2";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=3236cd20c20217e2";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=3236cd20c20217e2";
-import { pathView } from "./dag_table.mjs?v=3236cd20c20217e2";
+import { h, replaceChildren } from "./dom_builder.mjs?v=bd323460e30fdcab";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=bd323460e30fdcab";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=bd323460e30fdcab";
+import { pathView } from "./dag_table.mjs?v=bd323460e30fdcab";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;

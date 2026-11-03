@@ -1,16 +1,16 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=3236cd20c20217e2";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=3236cd20c20217e2";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=3236cd20c20217e2";
-import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=3236cd20c20217e2";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=3236cd20c20217e2";
-import * as dagDisplay from "./dag_display.mjs?v=3236cd20c20217e2";
-import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=3236cd20c20217e2";
-import * as workflow from "./dag_workflow.mjs?v=3236cd20c20217e2";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=3236cd20c20217e2";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=3236cd20c20217e2";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=3236cd20c20217e2";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=3236cd20c20217e2";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "./confounder_status.mjs?v=3236cd20c20217e2";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=bd323460e30fdcab";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=bd323460e30fdcab";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=bd323460e30fdcab";
+import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=bd323460e30fdcab";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=bd323460e30fdcab";
+import * as dagDisplay from "./dag_display.mjs?v=bd323460e30fdcab";
+import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=bd323460e30fdcab";
+import * as workflow from "./dag_workflow.mjs?v=bd323460e30fdcab";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=bd323460e30fdcab";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=bd323460e30fdcab";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=bd323460e30fdcab";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=bd323460e30fdcab";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "./confounder_status.mjs?v=bd323460e30fdcab";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -77,7 +77,7 @@ export function isDagFullyVisible(network, boxes, viewport) {
 
 export function createDagNetworkController({
   state, elements: els, visApi, clusterRep, groupColor, dagGroups, groupById,
-  drawMap, setMapMode, renderAll, selectEdge, selectGroup, onViewportChange = () => {}, exploreRows = () => [],
+  renderAll, selectEdge, selectGroup, onViewportChange = () => {}, exploreRows = () => [],
   onNodeHover = () => {}, onSetStatus = () => {},
 }) {
   // The causes and consequences views draw a neighborhood of one variable, not
@@ -207,7 +207,6 @@ const tableShown = () => state.dagDisplay === "table";
 
 function openVariable(id) {
   Object.assign(state, workflow.transition(state, { type: "focus-group", groupId: id }));
-  drawMap();
   selectGroup(id);
 }
 
@@ -680,7 +679,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=3236cd20c20217e2", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=bd323460e30fdcab", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -957,7 +956,6 @@ function attachDagNetworkHandlers(network) {
         return;
       }
       Object.assign(state, workflow.transition(state, { type: "focus-group", groupId: id }));
-      drawMap();
       selectGroup(id);
     },
     openGroup(id) {
@@ -966,7 +964,6 @@ function attachDagNetworkHandlers(network) {
         return;
       }
       Object.assign(state, workflow.transition(state, { type: "review-group", groupId: id }));
-      setMapMode("select");
       renderAll({ rebuild: false, refreshView: true });
     },
     zoomToPoint(position) {
