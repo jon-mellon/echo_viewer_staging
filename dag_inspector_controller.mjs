@@ -1,6 +1,6 @@
-import * as inspector from "./dag_inspector.mjs?v=5d1de2e06ebdde6b";
-import * as projectOps from "./dag_project.mjs?v=5d1de2e06ebdde6b";
-import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=5d1de2e06ebdde6b";
+import * as inspector from "./dag_inspector.mjs?v=8335ce2210054e67";
+import * as projectOps from "./dag_project.mjs?v=8335ce2210054e67";
+import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=8335ce2210054e67";
 
 export const STUDY_DESIGN_EDGE_ID = "__study_design_iv_to_dv__";
 export const STUDY_INSTRUMENT_EDGE_ID = "__study_design_instrument_to_iv__";
@@ -305,8 +305,10 @@ export function createDagInspectorController({
           ? "Concept miscategorized" : decision?.reason_code === "other" ? "Other" : "";
       const canDecide = Boolean((raw.paper_title || raw.paper_id)
         && loadedConceptLabel(raw.source_variable_id) && loadedConceptLabel(raw.target_variable_id));
-      const action = canDecide ? h("button", { className: "btn btn--ghost btn--sm finding-decision-button",
-        type: "button", textContent: excluded ? "Restore" : "Exclude",
+      const action = canDecide ? h("button", { className: excluded
+        ? "btn btn--ghost btn--sm finding-decision-button finding-decision-button--restore"
+        : "btn btn--sm btn--icon finding-decision-button finding-decision-button--exclude",
+        type: "button", textContent: excluded ? "Restore" : "×",
         title: excluded ? "Restore finding" : "Exclude finding",
         attrs: { "aria-label": `${excluded ? "Restore" : "Exclude"} finding ${id}` } }) : null;
       action?.addEventListener("click", () => {

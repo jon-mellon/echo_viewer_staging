@@ -1,6 +1,6 @@
-import { CLOUDFLARE_API_URL, TURNSTILE_SITE_KEY } from "./cloudflare_config.mjs?v=5d1de2e06ebdde6b";
-import { solveTurnstile } from "./turnstile.mjs?v=5d1de2e06ebdde6b";
-import { publishedFileUrl } from "./schema_source.mjs?v=5d1de2e06ebdde6b";
+import { CLOUDFLARE_API_URL, TURNSTILE_SITE_KEY } from "./cloudflare_config.mjs?v=8335ce2210054e67";
+import { solveTurnstile } from "./turnstile.mjs?v=8335ce2210054e67";
+import { publishedFileUrl } from "./schema_source.mjs?v=8335ce2210054e67";
 
 // Client for the publishing service (docs/publishing-api.md is the contract; the Worker itself lives in harvest_abstracts).
 const OWNER_KEY = "echo-owner-token";
@@ -53,6 +53,23 @@ export async function getPublishedRow(publicationId, { fetchImpl = globalThis.fe
 
 export async function getSplits(groupId, { apiUrl = CLOUDFLARE_API_URL, fetchImpl = globalThis.fetch.bind(globalThis) } = {}) {
   return (await request(apiUrl, fetchImpl, `/v1/splits?group_id=${encodeURIComponent(groupId)}`)).json();
+}
+
+/** Finished publications belonging to the anonymous owner in this browser. */
+export async function getOwnPublications({ apiUrl = CLOUDFLARE_API_URL,
+  fetchImpl = globalThis.fetch.bind(globalThis), storage = globalThis.localStorage } = {}) {
+  let owner = null;
+  try { owner = parseOwnerToken(storage?.getItem(OWNER_KEY)); } catch { /* storage may be blocked */ }
+  if (!owner) return [];
+  try {
+    return (await request(apiUrl, fetchImpl, "/v1/owners/publications", {
+      headers: { "x-owner-token": owner.token }, cache: "no-store",
+    })).json();
+  } catch (error) {
+    // Older Workers do not have this endpoint. Public approved splits still load while it rolls out.
+    if (error.status === 404) return [];
+    throw error;
+  }
 }
 
 /**

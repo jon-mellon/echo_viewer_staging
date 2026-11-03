@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=5d1de2e06ebdde6b">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=8335ce2210054e67">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -289,16 +289,17 @@
               <p class="small-note definition-explainer">Pick every variable the new one should take concepts from. Then name and define it, and choose the exact concepts.</p>
               <label class="dag-label" for="definitionSourceSearch">Search variables</label>
               <input id="definitionSourceSearch" class="search-input" type="search" placeholder="Search variables or the concepts in them">
-              <div id="definitionSourceList" class="setup-group-picker-list"></div>
               <div id="definitionBrowsePanel" hidden>
                 <h3>Previous published splits from these variables</h3>
                 <p id="definitionBrowseStatus" class="small-note" role="status"></p>
                 <div id="definitionBrowseResults" class="definition-browse-results"></div>
               </div>
+              <div id="definitionSourceList" class="setup-group-picker-list"></div>
               <div id="definitionSourceLoadStatus" class="small-note" role="alert" hidden></div>
               <div id="definitionResumeList" class="definition-resume-list" hidden></div>
               <div class="mini-toolbar">
                 <button id="definitionCancel" class="btn definition-cancel" type="button">Cancel</button>
+                <button id="definitionBrowseJump" class="btn" type="button" hidden disabled></button>
                 <button id="definitionContinue" class="btn btn--primary" type="button" disabled>Next</button>
               </div>
             </div>
@@ -647,7 +648,7 @@
 
     </main>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=5d1de2e06ebdde6b"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=5d1de2e06ebdde6b"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=8335ce2210054e67"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=8335ce2210054e67"></script>
   </body>
 </html>

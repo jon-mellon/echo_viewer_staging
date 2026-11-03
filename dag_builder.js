@@ -1,47 +1,47 @@
 "use strict";
 
-import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=5d1de2e06ebdde6b";
+import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=8335ce2210054e67";
 import { aggregateGroupLinks as deriveGroupLinks, rawLinksBetween as lookupRawLinks,
-  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=5d1de2e06ebdde6b";
+  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=8335ce2210054e67";
 
-import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=5d1de2e06ebdde6b";
-import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=5d1de2e06ebdde6b";
-import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=5d1de2e06ebdde6b";
-import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=5d1de2e06ebdde6b";
-import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=5d1de2e06ebdde6b";
-import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=5d1de2e06ebdde6b";
-import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=5d1de2e06ebdde6b";
-import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=5d1de2e06ebdde6b";
-import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=5d1de2e06ebdde6b";
-import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=5d1de2e06ebdde6b";
-import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=5d1de2e06ebdde6b";
-import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=5d1de2e06ebdde6b";
-import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=5d1de2e06ebdde6b";
-import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=5d1de2e06ebdde6b";
-import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=5d1de2e06ebdde6b";
-import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=5d1de2e06ebdde6b";
-import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=5d1de2e06ebdde6b";
-import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=5d1de2e06ebdde6b";
-import { createGroupPalette } from "/echo_viewer_staging/group_palette.mjs?v=5d1de2e06ebdde6b";
-import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=5d1de2e06ebdde6b";
-import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=5d1de2e06ebdde6b";
-import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=5d1de2e06ebdde6b";
-import { createCustomVariablesPresenter } from "/echo_viewer_staging/custom_variables_presenter.mjs?v=5d1de2e06ebdde6b";
-import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=5d1de2e06ebdde6b";
-import { directionalPaperCounter, linksNeedingExactCounts } from "/echo_viewer_staging/causal_neighborhood.mjs?v=5d1de2e06ebdde6b";
-import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=5d1de2e06ebdde6b";
-import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=5d1de2e06ebdde6b";
-import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=5d1de2e06ebdde6b";
-import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=5d1de2e06ebdde6b";
-import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=5d1de2e06ebdde6b";
-import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=5d1de2e06ebdde6b";
-import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=5d1de2e06ebdde6b";
-import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=5d1de2e06ebdde6b";
-import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=5d1de2e06ebdde6b";
-import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=5d1de2e06ebdde6b";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "/echo_viewer_staging/confounder_status.mjs?v=5d1de2e06ebdde6b";
-import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=5d1de2e06ebdde6b";
-import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=5d1de2e06ebdde6b";
+import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=8335ce2210054e67";
+import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=8335ce2210054e67";
+import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=8335ce2210054e67";
+import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=8335ce2210054e67";
+import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=8335ce2210054e67";
+import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=8335ce2210054e67";
+import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=8335ce2210054e67";
+import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=8335ce2210054e67";
+import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=8335ce2210054e67";
+import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=8335ce2210054e67";
+import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=8335ce2210054e67";
+import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=8335ce2210054e67";
+import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=8335ce2210054e67";
+import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=8335ce2210054e67";
+import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=8335ce2210054e67";
+import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=8335ce2210054e67";
+import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=8335ce2210054e67";
+import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=8335ce2210054e67";
+import { createGroupPalette } from "/echo_viewer_staging/group_palette.mjs?v=8335ce2210054e67";
+import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=8335ce2210054e67";
+import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=8335ce2210054e67";
+import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=8335ce2210054e67";
+import { createCustomVariablesPresenter } from "/echo_viewer_staging/custom_variables_presenter.mjs?v=8335ce2210054e67";
+import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=8335ce2210054e67";
+import { directionalPaperCounter, linksNeedingExactCounts } from "/echo_viewer_staging/causal_neighborhood.mjs?v=8335ce2210054e67";
+import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=8335ce2210054e67";
+import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=8335ce2210054e67";
+import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=8335ce2210054e67";
+import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=8335ce2210054e67";
+import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=8335ce2210054e67";
+import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=8335ce2210054e67";
+import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=8335ce2210054e67";
+import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=8335ce2210054e67";
+import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=8335ce2210054e67";
+import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=8335ce2210054e67";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "/echo_viewer_staging/confounder_status.mjs?v=8335ce2210054e67";
+import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=8335ce2210054e67";
+import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=8335ce2210054e67";
 
 
 const ROLE_LABELS = {
@@ -125,7 +125,7 @@ function initElements() {
     "schemaChoice", "loadSchema", "skipSchema",
     "definitionBlock", "definitionTitle", "definitionCancel", "definitionDescribeStep", "definitionDescribeNext", "definitionResumeList",
     "definitionAiWork", "definitionSourcesStep", "definitionDescribeBack",
-    "definitionSourceSearch", "definitionSourceList", "definitionContinue", "definitionSourceLoadStatus", "definitionBrowsePanel", "definitionBrowseStatus", "definitionBrowseResults",
+    "definitionSourceSearch", "definitionSourceList", "definitionContinue", "definitionSourceLoadStatus", "definitionBrowsePanel", "definitionBrowseStatus", "definitionBrowseResults", "definitionBrowseJump",
     "definitionPartitionStep", "definitionLoadStatus", "definitionJevPanel", "definitionIncludedPanel",
     "definitionConceptsIntro", "definitionCountIncluded", "definitionCountExcluded", "definitionCountUnreviewed",
     "definitionSourcesSummary",
