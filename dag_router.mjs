@@ -9,7 +9,7 @@ import {
   segmentIntersectsExpandedBox,
   simplifyRoute,
   ParallelSegmentIndex,
-} from "./dag_routing_geometry.mjs?v=1bce1567858796e7";
+} from "./dag_routing_geometry.mjs?v=3236cd20c20217e2";
 
 const DEFAULT_CONFIG = {
   hardObstaclePadding: 10,
