@@ -1,6 +1,6 @@
-import * as exportData from "./dag_exports.mjs?v=dadcff6720cc831b";
-import { makeZip } from "./dag_export_zip.mjs?v=dadcff6720cc831b";
-import { setSafeUrl } from "./dom_builder.mjs?v=dadcff6720cc831b";
+import * as exportData from "./dag_exports.mjs?v=deed49b6987ca075";
+import { makeZip } from "./dag_export_zip.mjs?v=deed49b6987ca075";
+import { setSafeUrl } from "./dom_builder.mjs?v=deed49b6987ca075";
 
 export const MAX_REFERENCE_ENRICHMENTS = 24;
 
@@ -36,6 +36,7 @@ export function createDagExportController({
     return structuredClone({
       project: state.project, visibleLinks: state.visibleLinks,
       confounderGroupIds: [...(state.confounderGroupIds || [])],
+      colliderGroupIds: [...(state.colliderGroupIds || [])],
       rawLinksById: state.rawLinksById, cacheCompatibility: state.data.cache_compatibility,
       variableLabelsById: new Map(excludedVariableIds.map(id => {
         const variable = state.variableById?.get(id);
@@ -169,7 +170,7 @@ export function createDagExportController({
       let worker;
       try {
         const blob = await new Promise((resolve, reject) => {
-          worker = new Worker(new URL("./json_export_worker.mjs?v=dadcff6720cc831b", import.meta.url), { type: "module" });
+          worker = new Worker(new URL("./json_export_worker.mjs?v=deed49b6987ca075", import.meta.url), { type: "module" });
           worker.onmessage = event => resolve(event.data);
           worker.onerror = reject;
           worker.onmessageerror = reject;

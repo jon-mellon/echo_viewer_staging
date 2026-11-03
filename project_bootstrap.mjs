@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=dadcff6720cc831b";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=dadcff6720cc831b";
-import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=dadcff6720cc831b";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=dadcff6720cc831b";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=dadcff6720cc831b";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=dadcff6720cc831b";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=dadcff6720cc831b";
-import { validateGroupingSchema } from "./data_validation.mjs?v=dadcff6720cc831b";
+import { dagDataSource } from "./dag_data_source.mjs?v=deed49b6987ca075";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=deed49b6987ca075";
+import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=deed49b6987ca075";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=deed49b6987ca075";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=deed49b6987ca075";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=deed49b6987ca075";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=deed49b6987ca075";
+import { validateGroupingSchema } from "./data_validation.mjs?v=deed49b6987ca075";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   resizeMap, initializeProject, loadLatestSchemaGroups,
@@ -102,6 +102,8 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
       || state.data.grouping_sets?.[0])?.finding_decisions || {});
     state.project.confounder_statuses = structuredClone((localRecord?.schema
       || state.data.grouping_sets?.[0])?.confounder_statuses || {});
+    state.project.collider_statuses = structuredClone((localRecord?.schema
+      || state.data.grouping_sets?.[0])?.collider_statuses || {});
     normalizeProjectDuplicateAssignments();
     if (state.interfaceMode === "dag2") {
       state.phase = "select_iv";
@@ -113,6 +115,8 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
       applyPermalink(permalink, state);
       if (state.project.iv_group_id && state.project.dv_group_id) state.phase = "build";
     } else if (TASKS.includes(requestedTask)) state.task = requestedTask;
+    // There is no start page: a new project, or an old link to it, opens Exploration.
+    if (!state.task) state.task = "causes";
     if (state.data.publication_source && !state.project.publication) {
       state.project.publication = {
         ...state.data.publication_source,
@@ -174,6 +178,7 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
         state.project.link_decisions = structuredClone(schema.link_decisions || {});
         state.project.finding_decisions = structuredClone(schema.finding_decisions || {});
         state.project.confounder_statuses = structuredClone(schema.confounder_statuses || {});
+        state.project.collider_statuses = structuredClone(schema.collider_statuses || {});
         loadLatestSchemaGroups();
         normalizeProjectDuplicateAssignments();
         // Membership hydration and the following DOM/canvas refresh are

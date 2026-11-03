@@ -1,7 +1,7 @@
-import { buildPermalink } from "./dag_permalink.mjs?v=dadcff6720cc831b";
-import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=dadcff6720cc831b";
-import { validateGroupingSchema } from "./data_validation.mjs?v=dadcff6720cc831b";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=dadcff6720cc831b";
+import { buildPermalink } from "./dag_permalink.mjs?v=deed49b6987ca075";
+import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=deed49b6987ca075";
+import { validateGroupingSchema } from "./data_validation.mjs?v=deed49b6987ca075";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=deed49b6987ca075";
 
 const RESET_HANDOFF_KEY = "echo-pending-reset-session";
 
@@ -131,7 +131,7 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
       committedSchema = structuredClone(schema);
       unsavedSchema = false;
       replaceUrl(url);
-      status("Saved locally · Unpublished changes");
+      status("Saved locally");
       return true;
     }).catch(error => {
       unsavedSchema = true;
@@ -186,7 +186,7 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
     editorBaseline = null;
     unsavedSchema = false;
     replaceUrl(url);
-    status("Saved independent local copy · Unpublished changes");
+    status("Saved independent local copy");
     return record;
   }
 

@@ -1,12 +1,12 @@
-import { withoutGroupReviewStatus, replaceSchemaGroups, normalizeDuplicateAssignments } from "./dag_project.mjs?v=dadcff6720cc831b";
-import { missingAnchorWorkflow, restoreWorkflowMode } from "./dag_workflow.mjs?v=dadcff6720cc831b";
-import { PROJECT_FORMAT_VERSION } from "./app_contracts.mjs?v=dadcff6720cc831b";
-import { validateProjectPayload } from "./data_validation.mjs?v=dadcff6720cc831b";
-export { restoreWorkflowMode } from "./dag_workflow.mjs?v=dadcff6720cc831b";
+import { withoutGroupReviewStatus, replaceSchemaGroups, normalizeDuplicateAssignments } from "./dag_project.mjs?v=deed49b6987ca075";
+import { missingAnchorWorkflow, restoreWorkflowMode } from "./dag_workflow.mjs?v=deed49b6987ca075";
+import { PROJECT_FORMAT_VERSION } from "./app_contracts.mjs?v=deed49b6987ca075";
+import { validateProjectPayload } from "./data_validation.mjs?v=deed49b6987ca075";
+export { restoreWorkflowMode } from "./dag_workflow.mjs?v=deed49b6987ca075";
 
-/** @typedef {import("./app_contracts.mjs?v=dadcff6720cc831b").Project} Project */
-/** @typedef {import("./app_contracts.mjs?v=dadcff6720cc831b").SerializedProjectPayload} SerializedProjectPayload */
-/** @typedef {import("./app_contracts.mjs?v=dadcff6720cc831b").GroupingSchema} GroupingSchema */
+/** @typedef {import("./app_contracts.mjs?v=deed49b6987ca075").Project} Project */
+/** @typedef {import("./app_contracts.mjs?v=deed49b6987ca075").SerializedProjectPayload} SerializedProjectPayload */
+/** @typedef {import("./app_contracts.mjs?v=deed49b6987ca075").GroupingSchema} GroupingSchema */
 
 export function applyCurrentSchema(loaded, schema, clusterOf, clusterMembers) {
   if (!schema) return loaded;
@@ -74,6 +74,7 @@ export function restoreProjectPayload(payload, defaults, currentLayoutSource) {
       link_decisions: serialized.link_decisions || {},
       finding_decisions: serialized.finding_decisions || {},
       confounder_statuses: serialized.confounder_statuses || {},
+      collider_statuses: serialized.collider_statuses || {},
       carve_outs: Array.isArray(serialized.carve_outs) ? serialized.carve_outs : [],
     },
     selectedUoa,
