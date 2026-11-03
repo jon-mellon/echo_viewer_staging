@@ -1,8 +1,8 @@
-import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=71d657acc153e84a";
-import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=71d657acc153e84a";
-import { setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=71d657acc153e84a";
-import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=71d657acc153e84a";
-export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=71d657acc153e84a";
+import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=fb116323ec978a0a";
+import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=fb116323ec978a0a";
+import { setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=fb116323ec978a0a";
+import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=fb116323ec978a0a";
+export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=fb116323ec978a0a";
 
 function showStatus(element, message, isError = false) {
   element.textContent = message;

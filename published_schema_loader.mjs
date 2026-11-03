@@ -1,17 +1,17 @@
-import { SCHEMA_SOURCE_PARAM, publishedReferenceUrl, schemaSource, schemaSourceRequested } from "./schema_source.mjs?v=71d657acc153e84a";
-import { supabase } from "./supabase_client.mjs?v=71d657acc153e84a";
-import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=71d657acc153e84a";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=71d657acc153e84a";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=71d657acc153e84a";
-import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=71d657acc153e84a";
-import { buildPermalink } from "./dag_permalink.mjs?v=71d657acc153e84a";
-import { deriveDagView } from "./dag_view.mjs?v=71d657acc153e84a";
+import { SCHEMA_SOURCE_PARAM, publishedReferenceUrl, schemaSource, schemaSourceRequested } from "./schema_source.mjs?v=fb116323ec978a0a";
+import { supabase } from "./supabase_client.mjs?v=fb116323ec978a0a";
+import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=fb116323ec978a0a";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=fb116323ec978a0a";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=fb116323ec978a0a";
+import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=fb116323ec978a0a";
+import { buildPermalink } from "./dag_permalink.mjs?v=fb116323ec978a0a";
+import { deriveDagView } from "./dag_view.mjs?v=fb116323ec978a0a";
 import { COMPILED_DAG_PATH, sha256Hex, stableJsonBytes,
-  validateCompiledArtifact } from "./compiled_dag.mjs?v=71d657acc153e84a";
+  validateCompiledArtifact } from "./compiled_dag.mjs?v=fb116323ec978a0a";
 
-export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=71d657acc153e84a";
+export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=fb116323ec978a0a";
 import { publicSchemaBaseUrl as sharedPublicSchemaBaseUrl,
-  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=71d657acc153e84a";
+  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=fb116323ec978a0a";
 
 export async function fetchPublishedFile(url, options, fetchImpl, sleep = ms => new Promise(resolve => setTimeout(resolve, ms))) {
   for (let attempt = 0; attempt < 5; attempt += 1) {
