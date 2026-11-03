@@ -1,49 +1,49 @@
 "use strict";
 
-import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=fa0b6dbcae25c909";
+import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=1bce1567858796e7";
 import { aggregateGroupLinks as deriveGroupLinks, rawLinksBetween as lookupRawLinks,
-  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=fa0b6dbcae25c909";
+  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=1bce1567858796e7";
 
-import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=fa0b6dbcae25c909";
-import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=fa0b6dbcae25c909";
-import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=fa0b6dbcae25c909";
-import * as mapGeometry from "/echo_viewer_staging/map_geometry.mjs?v=fa0b6dbcae25c909";
-import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=fa0b6dbcae25c909";
-import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=fa0b6dbcae25c909";
-import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=fa0b6dbcae25c909";
-import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=fa0b6dbcae25c909";
-import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=fa0b6dbcae25c909";
-import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=fa0b6dbcae25c909";
-import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=fa0b6dbcae25c909";
-import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=fa0b6dbcae25c909";
-import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=fa0b6dbcae25c909";
-import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=fa0b6dbcae25c909";
-import { createDagMapViewController } from "/echo_viewer_staging/dag_map_view_controller.mjs?v=fa0b6dbcae25c909";
-import { createDagMapUiController } from "/echo_viewer_staging/dag_map_ui_controller.mjs?v=fa0b6dbcae25c909";
-import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=fa0b6dbcae25c909";
-import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=fa0b6dbcae25c909";
-import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=fa0b6dbcae25c909";
-import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=fa0b6dbcae25c909";
-import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=fa0b6dbcae25c909";
-import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=fa0b6dbcae25c909";
-import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=fa0b6dbcae25c909";
-import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=fa0b6dbcae25c909";
-import { createCustomVariablesPresenter } from "/echo_viewer_staging/custom_variables_presenter.mjs?v=fa0b6dbcae25c909";
-import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=fa0b6dbcae25c909";
-import { directionalPaperCounter, linksNeedingExactCounts } from "/echo_viewer_staging/causal_neighborhood.mjs?v=fa0b6dbcae25c909";
-import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=fa0b6dbcae25c909";
-import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=fa0b6dbcae25c909";
-import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=fa0b6dbcae25c909";
-import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=fa0b6dbcae25c909";
-import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=fa0b6dbcae25c909";
-import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=fa0b6dbcae25c909";
-import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=fa0b6dbcae25c909";
-import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=fa0b6dbcae25c909";
-import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=fa0b6dbcae25c909";
-import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=fa0b6dbcae25c909";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "/echo_viewer_staging/confounder_status.mjs?v=fa0b6dbcae25c909";
-import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=fa0b6dbcae25c909";
-import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=fa0b6dbcae25c909";
+import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=1bce1567858796e7";
+import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=1bce1567858796e7";
+import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=1bce1567858796e7";
+import * as mapGeometry from "/echo_viewer_staging/map_geometry.mjs?v=1bce1567858796e7";
+import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=1bce1567858796e7";
+import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=1bce1567858796e7";
+import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=1bce1567858796e7";
+import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=1bce1567858796e7";
+import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=1bce1567858796e7";
+import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=1bce1567858796e7";
+import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=1bce1567858796e7";
+import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=1bce1567858796e7";
+import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=1bce1567858796e7";
+import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=1bce1567858796e7";
+import { createDagMapViewController } from "/echo_viewer_staging/dag_map_view_controller.mjs?v=1bce1567858796e7";
+import { createDagMapUiController } from "/echo_viewer_staging/dag_map_ui_controller.mjs?v=1bce1567858796e7";
+import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=1bce1567858796e7";
+import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=1bce1567858796e7";
+import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=1bce1567858796e7";
+import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=1bce1567858796e7";
+import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=1bce1567858796e7";
+import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=1bce1567858796e7";
+import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=1bce1567858796e7";
+import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=1bce1567858796e7";
+import { createCustomVariablesPresenter } from "/echo_viewer_staging/custom_variables_presenter.mjs?v=1bce1567858796e7";
+import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=1bce1567858796e7";
+import { directionalPaperCounter, linksNeedingExactCounts } from "/echo_viewer_staging/causal_neighborhood.mjs?v=1bce1567858796e7";
+import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=1bce1567858796e7";
+import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=1bce1567858796e7";
+import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=1bce1567858796e7";
+import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=1bce1567858796e7";
+import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=1bce1567858796e7";
+import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=1bce1567858796e7";
+import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=1bce1567858796e7";
+import { listPreviousSessions } from "/echo_viewer_staging/local_schema_store.mjs?v=1bce1567858796e7";
+import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=1bce1567858796e7";
+import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=1bce1567858796e7";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "/echo_viewer_staging/confounder_status.mjs?v=1bce1567858796e7";
+import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=1bce1567858796e7";
+import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=1bce1567858796e7";
 
 
 const ROLE_LABELS = {
@@ -56,20 +56,24 @@ const ROLE_LABELS = {
 };
 
 const GROUP_COLORS = {
-  iv: "#315f9d",
-  dv: "#9b5c2e",
-  assigned: "#1f7a67",
+  iv: "#0072B2",
+  dv: "#E69F00",
+  assigned: "#009E73",
   active: "#b83b5e",
 };
 
-// Distinct colors for groups (Ind var and Dep var use GROUP_COLORS above).
-const GROUP_PALETTE = [
-  "#0f766e", "#9f1239", "#1d4ed8", "#b45309", "#4d7c0f",
-  "#176b80", "#be123c", "#0369a1", "#92400e", "#047857",
-  "#4338ca", "#c2410c", "#166534", "#a21caf", "#7e22ce",
-  "#b91c1c", "#1e40af", "#a16207", "#065f46", "#6d28d9",
-  "#0ea5e9", "#ca8a04", "#15803d", "#db2777",
-];
+// Distinct colors for groups (Ind var and Dep var use GROUP_COLORS above): the Okabe-Ito
+// hues in roughly the original order (teal, rose, blue, amber, ...), then deeper and lighter variants.
+const GROUP_PALETTE = (() => {
+  const base = ["#009E73", "#CC79A7", "#0072B2", "#E69F00", "#56B4E9", "#D55E00", "#999999"];
+  const mix = (hex, target, t) => {
+    const n = parseInt(hex.slice(1), 16);
+    const t0 = parseInt(target.slice(1), 16);
+    const ch = shift => Math.round(((n >> shift) & 255) + (((t0 >> shift) & 255) - ((n >> shift) & 255)) * t).toString(16).padStart(2, "0");
+    return `#${ch(16)}${ch(8)}${ch(0)}`;
+  };
+  return [...base, ...base.map(c => mix(c, "#000000", 0.35)), ...base.map(c => mix(c, "#ffffff", 0.3))];
+})();
 
 // The current interface has one canonical entry point at the site root.
 const state = createDagAppState("dag2");

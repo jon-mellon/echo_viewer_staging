@@ -1,4 +1,4 @@
-import { attachGraphTouchGuard } from "./graph_touch.mjs?v=fa0b6dbcae25c909";
+import { attachGraphTouchGuard } from "./graph_touch.mjs?v=1bce1567858796e7";
 
 export function constrainViewPosition(position, scale, contentBounds, viewport, minimumVisible = 32) {
   if (!contentBounds || !Number.isFinite(scale) || scale <= 0) return { ...position };
@@ -106,6 +106,7 @@ export function attachDagInteractions(network, element, actions) {
     dragging: () => { constrainViewport(); actions.onViewportChange?.(true); },
     dragEnd: () => { constrainViewport(); actions.onViewportChange?.(false); },
     beforeDrawing: context => actions.drawPathLanes(context),
+    afterDrawing: context => actions.drawRouteJoins?.(context),
     hoverEdge: event => actions.highlightEdge(event.edge),
     // Ignore a late blur for an old edge after a newer hover has already won.
     blurEdge: event => actions.clearEdgeHover(event.edge),
