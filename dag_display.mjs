@@ -1,6 +1,6 @@
-import { confounderPathNodeRole } from "./dag_graph.mjs?v=bd323460e30fdcab";
-import { wrapDagLabel } from "./dag_layout.mjs?v=bd323460e30fdcab";
-import { directedGroupLabels } from "./dag_exports.mjs?v=bd323460e30fdcab";
+import { confounderPathNodeRole } from "./dag_graph.mjs?v=2fa5416e6498bdbe";
+import { wrapDagLabel } from "./dag_layout.mjs?v=2fa5416e6498bdbe";
+import { directedGroupLabels } from "./dag_exports.mjs?v=2fa5416e6498bdbe";
 
 // Display records only: no renderer, DOM or viewer-state access.
 
