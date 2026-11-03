@@ -1,8 +1,7 @@
-import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=fb116323ec978a0a";
-import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=fb116323ec978a0a";
-import { setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=fb116323ec978a0a";
-import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=fb116323ec978a0a";
-export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=fb116323ec978a0a";
+import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=f084d5dc680598e5";
+import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=f084d5dc680598e5";
+import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=f084d5dc680598e5";
+export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=f084d5dc680598e5";
 
 function showStatus(element, message, isError = false) {
   element.textContent = message;
@@ -115,13 +114,9 @@ export function createPublicationController({
   }
 
   function renderPublicationState(published, hasLocalChanges = false) {
-    const permalink = stablePermalink(published);
     hasPublishableChanges = !published?.publication_id || hasLocalChanges;
     refreshPublishVisibility();
     setBadge(publicationStatus(published, hasLocalChanges));
-    elements.permalink.hidden = !permalink || hasLocalChanges;
-    if (permalink && !hasLocalChanges) setSafeUrl(elements.permalink, "href", permalink);
-    else elements.permalink.removeAttribute("href");
   }
 
   async function refreshPublicationState() {
@@ -321,11 +316,6 @@ export function createPublicationController({
     if (published?.publication_id) {
       // Until the hash comparison finishes, assume the copy matches what was loaded.
       setBadge(publicationStatus(published, false));
-      const currentUrl = new URL(windowApi.location.href);
-      if (currentUrl.searchParams.get("schema") === published.publication_id) {
-        setSafeUrl(elements.permalink, "href", currentUrl.href);
-        elements.permalink.hidden = false;
-      }
     }
     if (canPublish()) void refreshPublicationState();
     void refreshAuthVisibility();

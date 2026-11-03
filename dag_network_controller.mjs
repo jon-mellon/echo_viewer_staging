@@ -1,16 +1,16 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=fb116323ec978a0a";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=fb116323ec978a0a";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=fb116323ec978a0a";
-import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=fb116323ec978a0a";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=fb116323ec978a0a";
-import * as dagDisplay from "./dag_display.mjs?v=fb116323ec978a0a";
-import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=fb116323ec978a0a";
-import * as workflow from "./dag_workflow.mjs?v=fb116323ec978a0a";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=fb116323ec978a0a";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=fb116323ec978a0a";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=fb116323ec978a0a";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=fb116323ec978a0a";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "./confounder_status.mjs?v=fb116323ec978a0a";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=f084d5dc680598e5";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=f084d5dc680598e5";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=f084d5dc680598e5";
+import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=f084d5dc680598e5";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=f084d5dc680598e5";
+import * as dagDisplay from "./dag_display.mjs?v=f084d5dc680598e5";
+import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=f084d5dc680598e5";
+import * as workflow from "./dag_workflow.mjs?v=f084d5dc680598e5";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=f084d5dc680598e5";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=f084d5dc680598e5";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=f084d5dc680598e5";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=f084d5dc680598e5";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "./confounder_status.mjs?v=f084d5dc680598e5";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -52,6 +52,21 @@ function visOptionSignature(params = {}) {
 // vis-network's fit() defaults to maxZoomLevel: 1, leaving small DAGs surrounded
 // by empty canvas even when there is room to display them larger.
 export const DAG_FIT_OPTIONS = { animation: false, maxZoomLevel: Number.MAX_VALUE };
+
+// Fitting a large DAG into the viewport can shrink labels to a few pixels, which is
+// unreadable (vis-network stops drawing text entirely below ~3px). Never fit tighter
+// than this on-screen label size; the user pans to the parts that overflow.
+const MIN_READABLE_FONT_PX = 9;
+let _dagFontSize = 14;
+
+export function fitDagNetwork(network) {
+  if (!network) return;
+  network.fit(DAG_FIT_OPTIONS);
+  const minScale = MIN_READABLE_FONT_PX / _dagFontSize;
+  if (network.getScale() < minScale) {
+    network.moveTo({ position: network.getViewPosition(), scale: minScale, animation: false });
+  }
+}
 
 export function isDagDisplayGroup(group) {
   return group?.type !== "other"
@@ -490,7 +505,7 @@ function hoverExploreRow(row) {
   if (_exploreRowHoverNode && _visNodes?.get(_exploreRowHoverNode.id)) _visNodes.update(_exploreRowHoverNode);
   _exploreRowHoverNode = null;
   if (!row) { clearLogicalDagEdgeHover(); return; }
-  highlightLogicalDagEdges([row.edgeId]);
+  highlightLogicalDagEdges(row.pathEdgeIds?.length ? row.pathEdgeIds : [row.edgeId]);
   const node = _visNodes?.get(row.groupId);
   if (!node) return;
   _exploreRowHoverNode = { id: node.id, shadow: node.shadow || false };
@@ -499,6 +514,9 @@ function hoverExploreRow(row) {
 
 function highlightConnectedDagEdges(nodeId) {
   if (!_visNetwork) return;
+  // In Explore a variable beyond the first hop lights its whole route to the focus.
+  const route = exploring() ? exploreRows().find(item => item.groupId === nodeId)?.pathEdgeIds : null;
+  if (route?.length > 1) { highlightLogicalDagEdges(route); return; }
   const logicalIds = _visNetwork.getConnectedEdges(nodeId)
     .map(edgeId => _dagEdgeSegments.get(edgeId) || edgeId);
   highlightLogicalDagEdges(logicalIds);
@@ -683,7 +701,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=fb116323ec978a0a", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=f084d5dc680598e5", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -740,10 +758,11 @@ async function applyDagRender(groups, layout, routes) {
       visNetworkOptions(layout.params)
     );
     _dagLayoutSignature = layout.signature;
+    _dagFontSize = layout.params.fontSize ?? 14;
     _visOptionSignature = visOptionSignature(layout.params);
     patchBoxBorderDistance(_visNetwork);
     attachDagNetworkHandlers(_visNetwork);
-    setTimeout(() => _visNetwork?.fit(DAG_FIT_OPTIONS), 80);
+    setTimeout(() => fitDagNetwork(_visNetwork), 80);
   } else {
     // Update the existing network in place. Destroying/recreating the network
     // synchronously here is unsafe when renderDag() is called from inside a visApi.js
@@ -811,6 +830,7 @@ async function applyDagRender(groups, layout, routes) {
     const optionSignature = visOptionSignature(layout.params);
     if (optionSignature !== _visOptionSignature) {
       _visNetwork.setOptions(visNetworkOptions(layout.params));
+      _dagFontSize = layout.params.fontSize ?? 14;
       _visOptionSignature = optionSignature;
     }
     // Only refit when the node set changed; refitting on every edge selection
@@ -818,7 +838,7 @@ async function applyDagRender(groups, layout, routes) {
     const layoutChanged = layout.signature !== _dagLayoutSignature;
     _dagLayoutSignature = layout.signature;
     if (nodeSetChanged || layoutChanged) {
-      setTimeout(() => _visNetwork?.fit(DAG_FIT_OPTIONS), 120);
+      setTimeout(() => fitDagNetwork(_visNetwork), 120);
     }
   }
   els.dagNetwork.style.visibility = "";
