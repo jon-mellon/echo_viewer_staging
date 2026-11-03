@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=2fa5416e6498bdbe">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=71d657acc153e84a">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -502,6 +502,18 @@
         </form>
       </dialog>
 
+      <dialog id="shareUnpublishedDialog" class="publication-dialog">
+        <form method="dialog">
+          <h2>Schema is unpublished</h2>
+          <p data-share-warning-message>This schema has unpublished changes.</p>
+          <p>Publish it now to create a public link, or cancel to keep it private.</p>
+          <div class="publication-dialog-actions">
+            <button class="btn" value="cancel" type="submit">Cancel</button>
+            <button class="btn btn--primary" value="publish" type="submit">Publish and share</button>
+          </div>
+        </form>
+      </dialog>
+
       <!-- Drag handle between the left panel and the main area -->
       <div id="leftResizer" class="panel-resizer"></div>
 
@@ -632,7 +644,7 @@
 
     </main>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=2fa5416e6498bdbe"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=2fa5416e6498bdbe"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=71d657acc153e84a"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=71d657acc153e84a"></script>
   </body>
 </html>

@@ -1,16 +1,16 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=2fa5416e6498bdbe";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=2fa5416e6498bdbe";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=2fa5416e6498bdbe";
-import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=2fa5416e6498bdbe";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=2fa5416e6498bdbe";
-import * as dagDisplay from "./dag_display.mjs?v=2fa5416e6498bdbe";
-import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=2fa5416e6498bdbe";
-import * as workflow from "./dag_workflow.mjs?v=2fa5416e6498bdbe";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=2fa5416e6498bdbe";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=2fa5416e6498bdbe";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=2fa5416e6498bdbe";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=2fa5416e6498bdbe";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "./confounder_status.mjs?v=2fa5416e6498bdbe";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=71d657acc153e84a";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=71d657acc153e84a";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=71d657acc153e84a";
+import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=71d657acc153e84a";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=71d657acc153e84a";
+import * as dagDisplay from "./dag_display.mjs?v=71d657acc153e84a";
+import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=71d657acc153e84a";
+import * as workflow from "./dag_workflow.mjs?v=71d657acc153e84a";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=71d657acc153e84a";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=71d657acc153e84a";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=71d657acc153e84a";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=71d657acc153e84a";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "./confounder_status.mjs?v=71d657acc153e84a";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -94,6 +94,8 @@ let _visEdges = null;
 let _dagLayoutSignature = "";
 let _visOptionSignature = "";
 const DAG_INSTALL_SLICE = 1000;
+// Exploration views show one fixed pastel per task instead of the per-group palette.
+const EXPLORATION_NODE_COLORS = { causes: dagDisplay.OKABE_ITO.sky, consequences: dagDisplay.OKABE_ITO.purple };
 let _dagGeometry = null;
 let _dagBoundsCache = null;
 let _dagEdgeSegments = new Map();
@@ -191,7 +193,8 @@ function visNodeData(group, layoutPoint, layoutParams = {}) {
     colliderGroupIds: state.colliderGroupIds, colliderPathGroupIds: state.colliderPathGroupIds,
     confounderGroupIds: state.confounderGroupIds, confounderPathGroupIds: state.confounderPathGroupIds,
     ivId: studyAnchors().ivId, dvId: studyAnchors().dvId,
-    activeGroupId: state.activeGroupId, groupColor: groupColor(group),
+    activeGroupId: state.activeGroupId,
+    groupColor: exploring() && group.type === "candidate" ? EXPLORATION_NODE_COLORS[state.task] || groupColor(group) : groupColor(group),
   });
 }
 
@@ -680,7 +683,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=2fa5416e6498bdbe", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=71d657acc153e84a", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
