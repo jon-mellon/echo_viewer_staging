@@ -1,7 +1,7 @@
-import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=f084d5dc680598e5";
-import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=f084d5dc680598e5";
-import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=f084d5dc680598e5";
-export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=f084d5dc680598e5";
+import { supabase } from "/echo_viewer_staging/supabase_client.mjs?v=72fbe7272c2e493a";
+import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=72fbe7272c2e493a";
+import { canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=72fbe7272c2e493a";
+export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatSupabaseError } from "./dag_publication_core.mjs?v=72fbe7272c2e493a";
 
 function showStatus(element, message, isError = false) {
   element.textContent = message;

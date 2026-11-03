@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=f084d5dc680598e5">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=72fbe7272c2e493a">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -17,7 +17,7 @@
       </div>
     </div>
     <header id="taskBar" class="task-bar" hidden>
-      <span class="task-bar-brand">ECHO</span>
+      <button id="taskHome" class="task-bar-brand" type="button" title="Back to start" aria-label="ECHO — back to start">ECHO</button>
       <!-- Where the working copy is saved: a quiet note beside the brand, not a panel section. -->
       <span id="localSaveIndicator" class="save-indicator" role="img" data-state="saved" hidden><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle class="save-icon-saved" cx="12" cy="12" r="10"/><path class="save-icon-saved" d="m9 12 2 2 4-4"/><path class="save-icon-saving" d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></span>
       <span id="localSaveStatus" class="task-bar-status" role="status" aria-live="polite"></span>
@@ -223,6 +223,9 @@
             <div id="focusGroupPicker" class="setup-group-picker" hidden></div>
           </div>
           <div id="exploreResultsBlock" class="explore-results-block" hidden>
+            <div id="identifyBrowserIntro" class="identify-browser-intro" hidden>
+              <h2>Variables on map</h2>
+            </div>
             <p id="exploreSummary" class="explore-summary" aria-live="polite" hidden></p>
             <div id="exploreResults" class="explore-results"></div>
           </div>
@@ -275,43 +278,44 @@
               <strong id="definitionTitle">Create a variable</strong>
               <!-- Which step is current comes from which step panel is shown (see styles.css). -->
               <ol class="definition-stepper" aria-label="Steps">
-                <li data-step="describe"><span>Describe</span></li>
                 <li data-step="sources"><span>Start from</span></li>
+                <li data-step="describe"><span>Describe</span></li>
                 <li data-step="sort"><span>Choose concepts</span></li>
               </ol>
             </div>
-            <!-- 1 · Describe: what the new variable is. Its name and definition are
-                 also what the AI sorts against, so they come first. -->
+            <!-- 1 · Start from: the existing variables whose concepts it takes, and splits others made from them. -->
+            <div id="definitionSourcesStep" hidden>
+              <h2>Which existing variables contain these concepts?</h2>
+              <p class="small-note definition-explainer">Pick every variable the new one should take concepts from. Then name and define it, and choose the exact concepts.</p>
+              <label class="dag-label" for="definitionSourceSearch">Search variables</label>
+              <input id="definitionSourceSearch" class="search-input" type="search" placeholder="Search variables or the concepts in them">
+              <div id="definitionSourceList" class="setup-group-picker-list"></div>
+              <div id="definitionBrowsePanel" hidden>
+                <h3>Previous published splits from these variables</h3>
+                <p id="definitionBrowseStatus" class="small-note" role="status"></p>
+                <div id="definitionBrowseResults" class="definition-browse-results"></div>
+              </div>
+              <div id="definitionSourceLoadStatus" class="small-note" role="alert" hidden></div>
+              <div id="definitionResumeList" class="definition-resume-list" hidden></div>
+              <div class="mini-toolbar">
+                <button id="definitionCancel" class="btn definition-cancel" type="button">Cancel</button>
+                <button id="definitionContinue" class="btn btn--primary" type="button" disabled>Next</button>
+              </div>
+            </div>
+            <!-- 2 · Describe: what the new variable is. Its name and definition are
+                 also what the AI sorts against. A split chosen in step 1 fills them in. -->
             <div id="definitionDescribeStep" class="definition-describe-step">
               <h2>Name and define your variable</h2>
-              <p class="small-note definition-explainer">It will be built from concepts that now sit in other variables. Next you'll choose those variables, then the concepts to move. Anything you don't move stays where it is.</p>
+              <p class="small-note definition-explainer">It will be built from concepts that now sit in the variables you picked. Next you'll choose the concepts to move. Anything you don't move stays where it is.</p>
               <label class="dag-label" for="definitionNewLabel">Name</label>
               <input id="definitionNewLabel" class="search-input" type="text" placeholder="For example: school grades" autocomplete="off">
               <label class="dag-label" for="definitionNewDescription">Definition</label>
               <textarea id="definitionNewDescription" class="search-input" rows="3" minlength="20" maxlength="1000" aria-describedby="definitionValidation" placeholder="What belongs in it, and what does not (at least 20 characters)"></textarea>
               <div id="definitionValidation" class="small-note" aria-live="polite">At least 20 characters.</div>
-              <div id="definitionResumeList" class="definition-resume-list" hidden></div>
               <div class="mini-toolbar">
-                <button id="definitionCancel" class="btn definition-cancel" type="button">Cancel</button>
-                <button id="definitionDescribeNext" class="btn btn--primary" type="button">Next</button>
-              </div>
-            </div>
-            <!-- 2 · Start from: the existing variables whose concepts it takes. -->
-            <div id="definitionSourcesStep" hidden>
-              <h2>Which existing variables contain these concepts?</h2>
-              <p class="small-note definition-explainer">Pick every variable the new one should take concepts from. You choose the exact concepts next.</p>
-              <label class="dag-label" for="definitionSourceSearch">Search variables</label>
-              <input id="definitionSourceSearch" class="search-input" type="search" placeholder="Search variables or the concepts in them">
-              <div id="definitionSourceList" class="setup-group-picker-list"></div>
-              <div id="definitionBrowsePanel" hidden>
-                <h3>Already made by others from these variables</h3>
-                <p id="definitionBrowseStatus" class="small-note" role="status"></p>
-                <div id="definitionBrowseResults" class="definition-browse-results"></div>
-              </div>
-              <div class="mini-toolbar">
-                <button id="definitionSourcesBack" class="btn" type="button">Back</button>
+                <button id="definitionDescribeBack" class="btn" type="button">Back</button>
                 <button class="btn definition-cancel" type="button">Cancel</button>
-                <button id="definitionContinue" class="btn btn--primary" type="button" disabled>Next</button>
+                <button id="definitionDescribeNext" class="btn btn--primary" type="button">Next</button>
               </div>
             </div>
             <!-- 3 · Choose concepts: the AI suggests them (or an existing split supplies them), then save. -->
@@ -643,7 +647,7 @@
 
     </main>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=f084d5dc680598e5"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=f084d5dc680598e5"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=72fbe7272c2e493a"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=72fbe7272c2e493a"></script>
   </body>
 </html>
