@@ -1,10 +1,10 @@
-import * as projectOps from "./dag_project.mjs?v=3912537ef3df588a";
-import { groupingSchemaUrl } from "./dag_data_config.mjs?v=3912537ef3df588a";
-import { buildPermalink, CUSTOM_SCHEMA_INSTRUCTIONS, schemaMatchesProject } from "./dag_permalink.mjs?v=3912537ef3df588a";
-import { writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=3912537ef3df588a";
-import { makeZip } from "./dag_export_zip.mjs?v=3912537ef3df588a";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=3912537ef3df588a";
-import { createGroupingSetPresenter } from "./grouping_set_presenter.mjs?v=3912537ef3df588a";
+import * as projectOps from "./dag_project.mjs?v=dadcff6720cc831b";
+import { groupingSchemaUrl } from "./dag_data_config.mjs?v=dadcff6720cc831b";
+import { buildPermalink, CUSTOM_SCHEMA_INSTRUCTIONS, schemaMatchesProject } from "./dag_permalink.mjs?v=dadcff6720cc831b";
+import { writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=dadcff6720cc831b";
+import { makeZip } from "./dag_export_zip.mjs?v=dadcff6720cc831b";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=dadcff6720cc831b";
+import { createGroupingSetPresenter } from "./grouping_set_presenter.mjs?v=dadcff6720cc831b";
 
 export function createGroupingSetController({ state, elements, publicationController, exportController,
   rejectedVariableEntries, rejectedVariableIdSet, applyProjectOperation, normalizeProjectDuplicateAssignments,

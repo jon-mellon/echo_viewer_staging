@@ -1,9 +1,9 @@
-import { supabase } from "./supabase_client.mjs?v=3912537ef3df588a";
-import { schemaSource } from "./schema_source.mjs?v=3912537ef3df588a";
-import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=3912537ef3df588a";
-import { getSplits } from "./cloudflare_api.mjs?v=3912537ef3df588a";
-import { publicSchemaBaseUrl } from "./publication_access.mjs?v=3912537ef3df588a";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=3912537ef3df588a";
+import { supabase } from "./supabase_client.mjs?v=dadcff6720cc831b";
+import { schemaSource } from "./schema_source.mjs?v=dadcff6720cc831b";
+import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=dadcff6720cc831b";
+import { getSplits } from "./cloudflare_api.mjs?v=dadcff6720cc831b";
+import { publicSchemaBaseUrl } from "./publication_access.mjs?v=dadcff6720cc831b";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=dadcff6720cc831b";
 
 export async function browsePublishedSplits(sourceGroupIds, client = supabase,
   { source = schemaSource(), apiUrl = CLOUDFLARE_API_URL, fetchImpl } = {}) {
@@ -30,9 +30,9 @@ export async function browsePublishedSplits(sourceGroupIds, client = supabase,
   return [...unique.values()].sort((a, b) => b.published_at.localeCompare(a.published_at));
 }
 
-export async function loadPublishedSplitMembership(row, client = supabase, fetchImpl = fetch) {
-  if (!client) throw new Error("Supabase is not configured.");
-  const base = publicSchemaBaseUrl(client, row.storage_prefix);
+export async function loadPublishedSplitMembership(row, client = supabase, fetchImpl = fetch, source = schemaSource()) {
+  if (!client && source !== "cloudflare") throw new Error("Supabase is not configured.");
+  const base = publicSchemaBaseUrl(client, row.storage_prefix, source);
   const staged = await loadGroupingSchemaStructure(base, fetchImpl);
   if (staged.manifest.group_membership_files[row.group_id] !== row.membership_path) {
     throw new Error("The published split pointer no longer matches its schema.");
