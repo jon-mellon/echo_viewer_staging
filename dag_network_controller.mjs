@@ -1,14 +1,14 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=deed49b6987ca075";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=deed49b6987ca075";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=deed49b6987ca075";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=deed49b6987ca075";
-import * as dagDisplay from "./dag_display.mjs?v=deed49b6987ca075";
-import * as workflow from "./dag_workflow.mjs?v=deed49b6987ca075";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=deed49b6987ca075";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=deed49b6987ca075";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=deed49b6987ca075";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=deed49b6987ca075";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "./confounder_status.mjs?v=deed49b6987ca075";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=fa0b6dbcae25c909";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=fa0b6dbcae25c909";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=fa0b6dbcae25c909";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=fa0b6dbcae25c909";
+import * as dagDisplay from "./dag_display.mjs?v=fa0b6dbcae25c909";
+import * as workflow from "./dag_workflow.mjs?v=fa0b6dbcae25c909";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=fa0b6dbcae25c909";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=fa0b6dbcae25c909";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=fa0b6dbcae25c909";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=fa0b6dbcae25c909";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "./confounder_status.mjs?v=fa0b6dbcae25c909";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -583,7 +583,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=deed49b6987ca075", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=fa0b6dbcae25c909", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;

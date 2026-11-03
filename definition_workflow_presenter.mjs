@@ -1,5 +1,5 @@
-import { reviewTerms } from "./definition_batch_review.mjs?v=deed49b6987ca075";
-import { h, replaceChildren } from "./dom_builder.mjs?v=deed49b6987ca075";
+import { reviewTerms } from "./definition_batch_review.mjs?v=fa0b6dbcae25c909";
+import { h, replaceChildren } from "./dom_builder.mjs?v=fa0b6dbcae25c909";
 
 export function createDefinitionWorkflowPresenter({ state, elements: els, normalized, clusterRep, truncate,
   definitionSources, definitionResidualIds, definitionCanReview, searchSourceGroups,

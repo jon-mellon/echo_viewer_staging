@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=deed49b6987ca075";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=deed49b6987ca075";
-import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=deed49b6987ca075";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=deed49b6987ca075";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=deed49b6987ca075";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=deed49b6987ca075";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=deed49b6987ca075";
-import { validateGroupingSchema } from "./data_validation.mjs?v=deed49b6987ca075";
+import { dagDataSource } from "./dag_data_source.mjs?v=fa0b6dbcae25c909";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=fa0b6dbcae25c909";
+import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=fa0b6dbcae25c909";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=fa0b6dbcae25c909";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=fa0b6dbcae25c909";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=fa0b6dbcae25c909";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=fa0b6dbcae25c909";
+import { validateGroupingSchema } from "./data_validation.mjs?v=fa0b6dbcae25c909";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   resizeMap, initializeProject, loadLatestSchemaGroups,
@@ -115,8 +115,7 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
       applyPermalink(permalink, state);
       if (state.project.iv_group_id && state.project.dv_group_id) state.phase = "build";
     } else if (TASKS.includes(requestedTask)) state.task = requestedTask;
-    // There is no start page: a new project, or an old link to it, opens Exploration.
-    if (!state.task) state.task = "causes";
+    // A new project, or a link that names no task, opens the start page (state.task stays null).
     if (state.data.publication_source && !state.project.publication) {
       state.project.publication = {
         ...state.data.publication_source,

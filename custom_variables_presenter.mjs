@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=deed49b6987ca075";
+import { h, replaceChildren } from "./dom_builder.mjs?v=fa0b6dbcae25c909";
 
 /**
  * The Custom variables page: a filterable table of the variables the user made

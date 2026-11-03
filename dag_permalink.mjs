@@ -1,5 +1,5 @@
-import { MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=deed49b6987ca075";
-import { SCHEMA_SOURCE_PARAM, schemaSource, schemaSourceRequested } from "./schema_source.mjs?v=deed49b6987ca075";
+import { MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=fa0b6dbcae25c909";
+import { SCHEMA_SOURCE_PARAM, schemaSource, schemaSourceRequested } from "./schema_source.mjs?v=fa0b6dbcae25c909";
 
 export const PERMALINK_VERSION = "1";
 export const TASKS = ["identify", "causes", "consequences"];
@@ -60,7 +60,7 @@ export function buildPermalink({ location, schemaUrl, dataVersion, state,
     dy: String(state.dagViewport?.position?.y ?? ""),
   };
   for (const [parameter, field] of Object.entries(booleanFields)) values[parameter] = state[field] ? "1" : "0";
-  // Every view has a task; "home" (the old start page) now opens Exploration.
+  // "home" marks the start page, so a reload there does not open a task.
   values.task = state.task || "home";
   // A page that named its schema source keeps naming it in the links it makes.
   if (schemaSourceRequested(location)) values[SCHEMA_SOURCE_PARAM] = schemaSource(location);
