@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=9ceeaf415d8ff6e5";
+import { h, replaceChildren } from "./dom_builder.mjs?v=09c0117c0fa7d3da";
 
 export function createDefinitionWorkflowPresenter({ state, elements: els, normalized, clusterRep, truncate,
   definitionSources, definitionResidualIds, definitionCanReview, searchSourceGroups,
@@ -210,7 +210,6 @@ export function createDefinitionWorkflowPresenter({ state, elements: els, normal
         replaceChildren(els.definitionBrowseResults, browseState.rows.map((row, index) =>
           h("article", { className: "definition-browse-card" },
             h("strong", { textContent: row.name }),
-            ...(row.is_own ? [h("span", { className: "small-note", textContent: "Your published split" })] : []),
             h("p", { textContent: row.description }),
             h("button", { type: "button", className: "btn", dataset: { splitIndex: String(index) },
               textContent: "Start from this", disabled: browseState.loading }))));

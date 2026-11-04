@@ -1,6 +1,6 @@
 // Parse large catalogs off the UI thread; send small batches with backpressure
 // so structured cloning cannot turn into another long main-thread task.
-import { readSearchCatalogPayload } from "./variable_search_catalog.mjs?v=9ceeaf415d8ff6e5";
+import { readSearchCatalogPayload } from "./variable_search_catalog.mjs?v=09c0117c0fa7d3da";
 let records = null;
 let offset = 0;
 function next() {
