@@ -1,6 +1,6 @@
-import * as exportData from "./dag_exports.mjs?v=8335ce2210054e67";
-import { makeZip } from "./dag_export_zip.mjs?v=8335ce2210054e67";
-import { setSafeUrl } from "./dom_builder.mjs?v=8335ce2210054e67";
+import * as exportData from "./dag_exports.mjs?v=9ceeaf415d8ff6e5";
+import { makeZip } from "./dag_export_zip.mjs?v=9ceeaf415d8ff6e5";
+import { setSafeUrl } from "./dom_builder.mjs?v=9ceeaf415d8ff6e5";
 
 export const MAX_REFERENCE_ENRICHMENTS = 24;
 
@@ -170,7 +170,7 @@ export function createDagExportController({
       let worker;
       try {
         const blob = await new Promise((resolve, reject) => {
-          worker = new Worker(new URL("./json_export_worker.mjs?v=8335ce2210054e67", import.meta.url), { type: "module" });
+          worker = new Worker(new URL("./json_export_worker.mjs?v=9ceeaf415d8ff6e5", import.meta.url), { type: "module" });
           worker.onmessage = event => resolve(event.data);
           worker.onerror = reject;
           worker.onmessageerror = reject;
