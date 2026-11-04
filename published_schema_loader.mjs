@@ -1,17 +1,16 @@
-import { SCHEMA_SOURCE_PARAM, publishedReferenceUrl, schemaSource, schemaSourceRequested } from "./schema_source.mjs?v=09c0117c0fa7d3da";
-import { supabase } from "./supabase_client.mjs?v=09c0117c0fa7d3da";
-import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=09c0117c0fa7d3da";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=09c0117c0fa7d3da";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=09c0117c0fa7d3da";
-import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=09c0117c0fa7d3da";
-import { buildPermalink } from "./dag_permalink.mjs?v=09c0117c0fa7d3da";
-import { deriveDagView } from "./dag_view.mjs?v=09c0117c0fa7d3da";
+import { publishedReferenceUrl } from "./schema_source.mjs?v=093a2b95ac35463e";
+import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=093a2b95ac35463e";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=093a2b95ac35463e";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=093a2b95ac35463e";
+import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=093a2b95ac35463e";
+import { buildPermalink } from "./dag_permalink.mjs?v=093a2b95ac35463e";
+import { deriveDagView } from "./dag_view.mjs?v=093a2b95ac35463e";
 import { COMPILED_DAG_PATH, sha256Hex, stableJsonBytes,
-  validateCompiledArtifact } from "./compiled_dag.mjs?v=09c0117c0fa7d3da";
+  validateCompiledArtifact } from "./compiled_dag.mjs?v=093a2b95ac35463e";
 
-export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=09c0117c0fa7d3da";
+export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=093a2b95ac35463e";
 import { publicSchemaBaseUrl as sharedPublicSchemaBaseUrl,
-  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=09c0117c0fa7d3da";
+  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=093a2b95ac35463e";
 
 export async function fetchPublishedFile(url, options, fetchImpl, sleep = ms => new Promise(resolve => setTimeout(resolve, ms))) {
   for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -51,8 +50,6 @@ export function publicationPermalink(publicationId, location = globalThis.locati
       }))
     : new URL(base);
   url.searchParams.delete("schema_url");
-  // A page that named its schema source keeps naming it in the links it shares.
-  if (schemaSourceRequested(location)) url.searchParams.set(SCHEMA_SOURCE_PARAM, schemaSource(location));
   url.searchParams.set("schema", publicationId);
   return url.href;
 }
@@ -65,11 +62,11 @@ export function publicSchemaBaseUrl(client, storagePrefix) {
   return sharedPublicSchemaBaseUrl(client, storagePrefix);
 }
 
-export async function lookupPublishedSchema(publicationId, client = supabase) {
+export async function lookupPublishedSchema(publicationId, client = null) {
   return sharedLookupPublishedSchema(publicationId, client);
 }
 
-export async function loadPublishedSchema(publicationId, client = supabase, fetchImpl = globalThis.fetch) {
+export async function loadPublishedSchema(publicationId, client = null, fetchImpl = globalThis.fetch) {
   const publication = await lookupPublishedSchema(publicationId, client);
   const baseUrl = publicSchemaBaseUrl(client, publication.storage_prefix);
   const memory = new Map();
@@ -193,7 +190,7 @@ export async function loadPublishedSchema(publicationId, client = supabase, fetc
       delete logicalManifest.group_membership_references;
       schemaFiles.set("manifest.json", new TextEncoder().encode(stableJson(logicalManifest)));
       for (const [groupId, reference] of Object.entries(references)) {
-        // Manifests name a parent's file by its Supabase address; it was fetched (and remembered) under the page's source.
+        // Resolve a parent's membership reference through R2.
         const referenceUrl = publishedReferenceUrl(reference, baseUrl)?.href;
         const bytes = referenceUrl && memory.get(referenceUrl);
         if (!bytes || !staged.manifest.group_membership_files[groupId]) throw new Error(`Missing referenced membership for ${groupId}.`);

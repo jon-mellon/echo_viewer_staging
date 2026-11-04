@@ -1,7 +1,7 @@
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=09c0117c0fa7d3da";
-import { validateGroupingSchema } from "./data_validation.mjs?v=09c0117c0fa7d3da";
-import { publishedReferenceUrl } from "./schema_source.mjs?v=09c0117c0fa7d3da";
-/** @typedef {import("./app_contracts.mjs?v=09c0117c0fa7d3da").GroupingSchema} GroupingSchema */
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=093a2b95ac35463e";
+import { validateGroupingSchema } from "./data_validation.mjs?v=093a2b95ac35463e";
+import { publishedReferenceUrl } from "./schema_source.mjs?v=093a2b95ac35463e";
+/** @typedef {import("./app_contracts.mjs?v=093a2b95ac35463e").GroupingSchema} GroupingSchema */
 const LIST_COLUMNS = new Set(["member_variable_ids", "previous_group_ids"]);
 
 function parseYamlMapping(text, source) {
@@ -139,7 +139,7 @@ export async function loadGroupingSchemaStructure(baseUrl, fetchImpl = fetch) {
     const membershipRows = await mapWithConcurrency(wanted, 16, async groupId => {
       const relative = manifest.group_membership_files[groupId];
       const reference = manifest.group_membership_references?.[groupId];
-      // A parent's file is named by its Supabase address in the manifest; read it from the same source as this schema.
+      // Resolve a parent's membership reference through R2.
       const url = reference ? publishedReferenceUrl(reference, base) : new URL(relative, base);
       if (!url) throw new Error(`Invalid published membership reference for ${groupId}.`);
       return { groupId, rows: parseTsv(await fetchText(url, fetchImpl), relative) };
