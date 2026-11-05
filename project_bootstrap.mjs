@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=cfaa26183bc7c73f";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=cfaa26183bc7c73f";
-import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=cfaa26183bc7c73f";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=cfaa26183bc7c73f";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=cfaa26183bc7c73f";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=cfaa26183bc7c73f";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=cfaa26183bc7c73f";
-import { validateGroupingSchema } from "./data_validation.mjs?v=cfaa26183bc7c73f";
+import { dagDataSource } from "./dag_data_source.mjs?v=588edb73ef9b5c1c";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=588edb73ef9b5c1c";
+import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=588edb73ef9b5c1c";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=588edb73ef9b5c1c";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=588edb73ef9b5c1c";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=588edb73ef9b5c1c";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=588edb73ef9b5c1c";
+import { validateGroupingSchema } from "./data_validation.mjs?v=588edb73ef9b5c1c";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   initializeProject, loadLatestSchemaGroups,
@@ -103,6 +103,8 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
       || state.data.grouping_sets?.[0])?.confounder_statuses || {});
     state.project.collider_statuses = structuredClone((localRecord?.schema
       || state.data.grouping_sets?.[0])?.collider_statuses || {});
+    state.project.exclusion_statuses = structuredClone((localRecord?.schema
+      || state.data.grouping_sets?.[0])?.exclusion_statuses || {});
     normalizeProjectDuplicateAssignments();
     if (state.interfaceMode === "dag2") {
       state.phase = "select_iv";
@@ -171,6 +173,7 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
         state.project.finding_decisions = structuredClone(schema.finding_decisions || {});
         state.project.confounder_statuses = structuredClone(schema.confounder_statuses || {});
         state.project.collider_statuses = structuredClone(schema.collider_statuses || {});
+        state.project.exclusion_statuses = structuredClone(schema.exclusion_statuses || {});
         loadLatestSchemaGroups();
         normalizeProjectDuplicateAssignments();
         // Membership hydration and the following DOM/canvas refresh are

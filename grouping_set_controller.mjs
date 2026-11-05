@@ -1,10 +1,10 @@
-import * as projectOps from "./dag_project.mjs?v=cfaa26183bc7c73f";
-import { groupingSchemaUrl } from "./dag_data_config.mjs?v=cfaa26183bc7c73f";
-import { buildPermalink, CUSTOM_SCHEMA_INSTRUCTIONS, schemaMatchesProject } from "./dag_permalink.mjs?v=cfaa26183bc7c73f";
-import { writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=cfaa26183bc7c73f";
-import { makeZip } from "./dag_export_zip.mjs?v=cfaa26183bc7c73f";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=cfaa26183bc7c73f";
-import { createGroupingSetPresenter } from "./grouping_set_presenter.mjs?v=cfaa26183bc7c73f";
+import * as projectOps from "./dag_project.mjs?v=588edb73ef9b5c1c";
+import { groupingSchemaUrl } from "./dag_data_config.mjs?v=588edb73ef9b5c1c";
+import { buildPermalink, CUSTOM_SCHEMA_INSTRUCTIONS, schemaMatchesProject } from "./dag_permalink.mjs?v=588edb73ef9b5c1c";
+import { writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=588edb73ef9b5c1c";
+import { makeZip } from "./dag_export_zip.mjs?v=588edb73ef9b5c1c";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=588edb73ef9b5c1c";
+import { createGroupingSetPresenter } from "./grouping_set_presenter.mjs?v=588edb73ef9b5c1c";
 
 export function createGroupingSetController({ state, elements, publicationController, exportController,
   rejectedVariableEntries, rejectedVariableIdSet, applyProjectOperation, normalizeProjectDuplicateAssignments,
@@ -101,6 +101,8 @@ export function createGroupingSetController({ state, elements, publicationContro
         ? { confounder_statuses: structuredClone(state.project.confounder_statuses) } : {}),
       ...(Object.keys(state.project.collider_statuses || {}).length
         ? { collider_statuses: structuredClone(state.project.collider_statuses) } : {}),
+      ...(Object.keys(state.project.exclusion_statuses || {}).length
+        ? { exclusion_statuses: structuredClone(state.project.exclusion_statuses) } : {}),
       ...(Object.hasOwn(source, "hidden_variable_ids") || hidden_variable_ids.length
         ? { hidden_variable_ids }
         : {}),

@@ -1,49 +1,52 @@
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "/echo_viewer_staging/published_split_browser.mjs?v=cfaa26183bc7c73f";
-import { previousSplitsForRole } from "/echo_viewer_staging/previous_split_candidates.mjs?v=cfaa26183bc7c73f";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "/echo_viewer_staging/published_split_browser.mjs?v=588edb73ef9b5c1c";
+import { previousSplitsForRole } from "/echo_viewer_staging/previous_split_candidates.mjs?v=588edb73ef9b5c1c";
 "use strict";
 
-import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=cfaa26183bc7c73f";
+import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=588edb73ef9b5c1c";
 import { aggregateGroupLinks as deriveGroupLinks, rawLinksBetween as lookupRawLinks,
-  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=cfaa26183bc7c73f";
+  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=588edb73ef9b5c1c";
 
-import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=cfaa26183bc7c73f";
-import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=cfaa26183bc7c73f";
-import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=cfaa26183bc7c73f";
-import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=cfaa26183bc7c73f";
-import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=cfaa26183bc7c73f";
-import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=cfaa26183bc7c73f";
-import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=cfaa26183bc7c73f";
-import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=cfaa26183bc7c73f";
-import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=cfaa26183bc7c73f";
-import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=cfaa26183bc7c73f";
-import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=cfaa26183bc7c73f";
-import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=cfaa26183bc7c73f";
-import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=cfaa26183bc7c73f";
-import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=cfaa26183bc7c73f";
-import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=cfaa26183bc7c73f";
-import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=cfaa26183bc7c73f";
-import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=cfaa26183bc7c73f";
-import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=cfaa26183bc7c73f";
-import { createGroupPalette } from "/echo_viewer_staging/group_palette.mjs?v=cfaa26183bc7c73f";
-import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=cfaa26183bc7c73f";
-import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=cfaa26183bc7c73f";
-import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=cfaa26183bc7c73f";
-import { createCustomVariablesPresenter } from "/echo_viewer_staging/custom_variables_presenter.mjs?v=cfaa26183bc7c73f";
-import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=cfaa26183bc7c73f";
-import { directionalPaperCounter, linksNeedingExactCounts } from "/echo_viewer_staging/causal_neighborhood.mjs?v=cfaa26183bc7c73f";
-import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=cfaa26183bc7c73f";
-import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=cfaa26183bc7c73f";
-import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=cfaa26183bc7c73f";
-import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=cfaa26183bc7c73f";
-import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=cfaa26183bc7c73f";
-import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=cfaa26183bc7c73f";
-import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=cfaa26183bc7c73f";
-import { listPreviousSessions, listLocalSchemas } from "/echo_viewer_staging/local_schema_store.mjs?v=cfaa26183bc7c73f";
-import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=cfaa26183bc7c73f";
-import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=cfaa26183bc7c73f";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "/echo_viewer_staging/confounder_status.mjs?v=cfaa26183bc7c73f";
-import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=cfaa26183bc7c73f";
-import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=cfaa26183bc7c73f";
+import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=588edb73ef9b5c1c";
+import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=588edb73ef9b5c1c";
+import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=588edb73ef9b5c1c";
+import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=588edb73ef9b5c1c";
+import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=588edb73ef9b5c1c";
+import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=588edb73ef9b5c1c";
+import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=588edb73ef9b5c1c";
+import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=588edb73ef9b5c1c";
+import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=588edb73ef9b5c1c";
+import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=588edb73ef9b5c1c";
+import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=588edb73ef9b5c1c";
+import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=588edb73ef9b5c1c";
+import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=588edb73ef9b5c1c";
+import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=588edb73ef9b5c1c";
+import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=588edb73ef9b5c1c";
+import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=588edb73ef9b5c1c";
+import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=588edb73ef9b5c1c";
+import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=588edb73ef9b5c1c";
+import { createGroupPalette } from "/echo_viewer_staging/group_palette.mjs?v=588edb73ef9b5c1c";
+import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=588edb73ef9b5c1c";
+import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=588edb73ef9b5c1c";
+import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=588edb73ef9b5c1c";
+import { createCustomVariablesPresenter } from "/echo_viewer_staging/custom_variables_presenter.mjs?v=588edb73ef9b5c1c";
+import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=588edb73ef9b5c1c";
+import { directionalPaperCounter, linksNeedingExactCounts } from "/echo_viewer_staging/causal_neighborhood.mjs?v=588edb73ef9b5c1c";
+import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=588edb73ef9b5c1c";
+import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=588edb73ef9b5c1c";
+import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=588edb73ef9b5c1c";
+import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=588edb73ef9b5c1c";
+import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=588edb73ef9b5c1c";
+import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=588edb73ef9b5c1c";
+import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=588edb73ef9b5c1c";
+import { listPreviousSessions, listLocalSchemas } from "/echo_viewer_staging/local_schema_store.mjs?v=588edb73ef9b5c1c";
+import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=588edb73ef9b5c1c";
+import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=588edb73ef9b5c1c";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "/echo_viewer_staging/confounder_status.mjs?v=588edb73ef9b5c1c";
+import { diagnosticKey } from "/echo_viewer_staging/confounder_status.mjs?v=588edb73ef9b5c1c";
+import { effectiveStudyGraph } from "/echo_viewer_staging/study_graph.mjs?v=588edb73ef9b5c1c";
+import { createVariableReviewController } from "/echo_viewer_staging/variable_review_controller.mjs?v=588edb73ef9b5c1c";
+import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=588edb73ef9b5c1c";
+import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=588edb73ef9b5c1c";
 
 
 const ROLE_LABELS = {
@@ -566,62 +569,30 @@ function statusKind() {
 
 /** Record how a confounder or collider is handled; shared by the side panel and the table. Undoable. */
 function setDiagnosticStatus(kind, groupId, status, text = "") {
+  variableReviewController.edit(kind, groupId, status);
+}
+
+function commitDiagnosticReview(kind, groupId, decision) {
   const spec = DIAGNOSTIC_STATUSES[kind];
-  const row = diagnosticStatusRows(state.project, [groupId], kind)[0];
-  if (!spec || !row || !Object.hasOwn(spec.statuses, status)) return;
-  const note = status === "other" ? text.trim() : "";
-  if (row.status === status && row.text === note) return;
+  if (!spec || !groupById(groupId)) return;
+  const key = diagnosticKey(state.project, kind, groupId);
   const before = takeSnapshot();
   state.project[spec.field] = { ...(state.project[spec.field] || {}),
-    [row.key]: { status, ...(note ? { text: note } : {}) } };
-  projectController.record(`Set ${spec.noun} status: ${row.label}`, before);
+    [key]: decision };
+  projectController.record(`Set ${spec.noun} status: ${groupById(groupId).label}`, before);
   publicationController.workingCopyChanged();
   void persistentViewer.commitDecision().catch(error => console.error(`Could not save ${spec.noun} status`, error));
-  renderConfounderStatuses();
-  void dagNetworkController.renderDag({ reuseGeometry: true });
+  updateDagFilters();
+  void dagNetworkController.whenRendered().then(() => {
+    const selector = dagNetworkController.dagDisplay() === "table" ? ".dag-table-status" : ".variable-disposition";
+    document.querySelector(`${selector}[data-group-id="${CSS.escape(groupId)}"]`)?.focus();
+  });
 }
 
 function renderConfounderStatuses() {
-  const kind = statusKind();
-  const visible = state.interfaceMode === "dag2" && Boolean(kind)
-    && !els.dagWorkspaceSection.hidden && !state.project.instrument_group_id
-    && Boolean(groupById(state.project.iv_group_id)?.variable_ids?.length)
-    && Boolean(groupById(state.project.dv_group_id)?.variable_ids?.length);
-  els.confounderConfig.hidden = !visible;
-  if (!visible) return;
-  const spec = DIAGNOSTIC_STATUSES[kind];
-  const rows = diagnosticStatusRows(state.project, kind === "confounders" ? state.confounderGroupIds : state.colliderGroupIds, kind);
-  const title = kind === "confounders" ? "Confounder" : "Collider";
-  els.confounderSummary.textContent = `${title} status (${rows.length})`;
-  const note = els.confounderDisclosure.querySelector(".small-note");
-  if (note) note.textContent = `Record how each potential ${spec.noun} is handled in this study.`;
-  if (!els.confounderDisclosure.open) {
-    els.confounderStatusList.replaceChildren();
-    return;
-  }
-  if (!rows.length) {
-    replaceChildren(els.confounderStatusList,
-      h("p", { className: "small-note", textContent: `No potential ${spec.noun}s in this view.` }));
-    return;
-  }
-  replaceChildren(els.confounderStatusList, rows.map(row => {
-    const select = h("select", { className: "select-input", attrs: { "aria-label": `Status for ${row.label}` } },
-      Object.entries(spec.statuses).map(([value, label]) =>
-        h("option", { value, textContent: STATUS_MENU_LABELS[value] || label })));
-    select.value = row.status;
-    select.title = spec.statuses[row.status];
-    const explanation = h("input", { className: "search-input", type: "text",
-      value: row.text, placeholder: `Describe how this ${spec.noun} is handled`,
-      attrs: { "aria-label": `Other status for ${row.label}` } });
-    explanation.hidden = row.status !== "other";
-    select.addEventListener("change", () => {
-      explanation.hidden = select.value !== "other";
-      setDiagnosticStatus(kind, row.groupId, select.value, explanation.value);
-    });
-    explanation.addEventListener("change", () => setDiagnosticStatus(kind, row.groupId, select.value, explanation.value));
-    return h("div", { className: "confounder-status-row" },
-      h("label", { textContent: row.label }, select), explanation);
-  }));
+  // Review controls now live in the variable list.
+  els.confounderConfig.hidden = true;
+  els.confounderStatusList.replaceChildren();
 }
 
 // ─── Setup phase rendering ────────────────────────────────────────────────────
@@ -1289,6 +1260,9 @@ const persistentViewer = createPersistentViewer({
   onDiscard: invalidateVisibleCaches,
 });
 
+const variableReviewController = createVariableReviewController({ state, onCommit: commitDiagnosticReview,
+  onCancel: () => { taskViews.render(); if (dagNetworkController.dagDisplay() === "table") void dagNetworkController.renderDag({ reuseGeometry: true }); } });
+
 const taskViews = createTaskViews({
   state, searchGroups: searchExploreGroups, searchStatus: () => state.variableSearchStatus,
   paperSupport: linkPaperSupport, loadPaperSupport: () => void loadLinkSupport(linkPaperSupport().links),
@@ -1313,6 +1287,8 @@ const taskViews = createTaskViews({
   onIdentifyRowHover: groupId => groupId ? dagNetworkController.highlightConfounderPaths(groupId)
     : dagNetworkController.clearConfounderPathHover(),
   onIdentifyExcludedChange: () => updateDagFilters(),
+  onReviewVariable: (kind, id, status) => variableReviewController.edit(kind, id, status),
+  onEditVariableSchema: () => customVariablesPresenter.open(),
   // A row opens the variable's definition and concepts in the evidence pane, as clicking its node does.
   onOpenIdentifyVariable: groupId => {
     if (state.fullscreenPanel) setFullscreenPanel(null);
@@ -1515,6 +1491,7 @@ function linkPaperSupport() {
 // Causes and consequences draw one variable's neighborhood through the same
 // graph and evidence pane as Identify; the diagnostics belong to Identify.
 function computeExploreLinks() {
+  state.studyGraph = null;
   const { graph } = taskViews.neighborhood();
   state.componentGroupIds = graph.groupIds;
   state.visibleLinks = graph.links;
@@ -1560,14 +1537,11 @@ function computeVisibleLinks() {
   const excludedFindingCount = Object.keys(state.project.finding_decisions || {}).length;
   els.showExcludedFindings.hidden = excludedFindingCount === 0;
   els.showExcludedFindings.textContent = `Excluded findings (${excludedFindingCount})`;
-  // Variables unticked in Identify's list are left off the map, and no path runs through them.
-  const studyIds = new Set([state.project.iv_group_id, state.project.dv_group_id, state.project.instrument_group_id]);
-  const identifyExcluded = new Set([...taskViews.identifyExcluded()].filter(id => !studyIds.has(id)));
+  const studyGraph = effectiveStudyGraph({ ...state.project, groups: dagGroups() });
+  state.studyGraph = studyGraph;
   const view = deriveDagView({
-    groups: identifyExcluded.size
-      ? dagGroups().filter(group => !identifyExcluded.has(group.group_id)) : dagGroups(),
-    links: identifyExcluded.size ? state.project.links.filter(link =>
-      !identifyExcluded.has(link.group_a) && !identifyExcluded.has(link.group_b)) : state.project.links,
+    groups: studyGraph.groups,
+    links: studyGraph.links,
     ivId: state.project.iv_group_id,
     dvId: state.project.dv_group_id,
     instrumentId: state.project.instrument_group_id,
@@ -1586,6 +1560,19 @@ function computeVisibleLinks() {
     hideIrrelevantDiagnosticLinks: state.hideIrrelevantConfounderLinks,
     showAllExclusionLinks: state.showAllExclusionLinks,
   });
+  // Keep a confirmed claim visible even when it removes its subject from the
+  // candidate set. Its dotted arrow explains the recorded rejection.
+  const claimKind = state.showExclusionViolations ? "exclusion" : state.showConfoundersOnly ? "confounders" : null;
+  const assertions = studyGraph.claims.filter(row => row.kind === claimKind).flatMap(row => row.asserted_effects || []);
+  for (const effect of assertions) {
+    if (studyGraph.removed.has(effect.sourceId) || studyGraph.removed.has(effect.targetId)) continue;
+    view.componentGroupIds.add(effect.sourceId); view.componentGroupIds.add(effect.targetId);
+    for (const link of studyGraph.links) {
+      const forward = link.group_a === effect.sourceId && link.group_b === effect.targetId && ["A_TO_B", "BIDIRECTIONAL"].includes(link.direction_type);
+      const backward = link.group_b === effect.sourceId && link.group_a === effect.targetId && ["B_TO_A", "BIDIRECTIONAL"].includes(link.direction_type);
+      if ((forward || backward) && link.display_status !== "excluded" && !view.visibleLinks.some(current => current.edge_id === link.edge_id)) view.visibleLinks.push(link);
+    }
+  }
   state.componentGroupIds = view.componentGroupIds;
   state.visibleLinks = view.visibleLinks;
   state.confounderGroupIds = view.confounders.confounderIds;
@@ -1997,6 +1984,11 @@ const customVariablesPresenter = createCustomVariablesPresenter({
   state, elements: els, truncate, normalized,
   customVariables: () => (state.project?.groups || []).filter(group => group.source === "user_split")
     .sort((a, b) => String(a.label || "").localeCompare(String(b.label || ""))),
+  schemaVariables: () => [...(state.project?.groups || [])].sort((a, b) => String(a.label || "").localeCompare(String(b.label || ""))),
+  getSchema: currentWorkingGroupingSchema,
+  loadDetails: ids => hydrateVariableDetails(ids, { skipNeighbors: true }),
+  conceptLabel: id => state.variableById.get(id)?.display_label || state.variableById.get(id)?.concept_label || id,
+  onSplitSource: id => definitionWorkflowController.browsePreviousForSource("candidate", id),
   sourceLabels: group => (group.provenance?.source_group_ids || []).map(id => groupById(id)?.label).filter(Boolean),
   canChange: group => Boolean(projectOps.customVariableContext(state.project, group.group_id)),
   onCreate: () => startDefinition("candidate"),

@@ -1,11 +1,11 @@
-import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=cfaa26183bc7c73f";
-import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=cfaa26183bc7c73f";
-import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl } from "./schema_source.mjs?v=cfaa26183bc7c73f";
-import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=cfaa26183bc7c73f";
-import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=cfaa26183bc7c73f";
+import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=588edb73ef9b5c1c";
+import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=588edb73ef9b5c1c";
+import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl } from "./schema_source.mjs?v=588edb73ef9b5c1c";
+import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=588edb73ef9b5c1c";
+import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=588edb73ef9b5c1c";
 import { createCompiledArtifacts, evidenceSnapshotForSchema, fullCompileDag,
-  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=cfaa26183bc7c73f";
-import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=cfaa26183bc7c73f";
+  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=588edb73ef9b5c1c";
+import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=588edb73ef9b5c1c";
 
 export const CANONICAL_BASELINE_ID = "a0118906-2366-4cc8-8809-bafdf3860c23";
 export const CANONICAL_BASELINE_HASH = "0afd5f28c1b5456c47cfba84467bea1d62c6dc923a5851281a98d461f60066b4";
@@ -19,8 +19,8 @@ export function formatPublicationError(error) {
   return parts.join(" | ");
 }
 
-export async function canonicalizeWorkingSchema(schema, cryptoApi = globalThis.crypto) {
-  const files = await writeGroupingSchemaFolder(publicSchemaProjection(schema), cryptoApi);
+export async function canonicalizeWorkingSchema(schema, cryptoApi = globalThis.crypto, { views = true } = {}) {
+  const files = await writeGroupingSchemaFolder(publicSchemaProjection(schema), cryptoApi, { views });
   return { files, contentHash: await canonicalFolderHash(files, cryptoApi) };
 }
 

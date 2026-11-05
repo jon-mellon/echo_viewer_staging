@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=cfaa26183bc7c73f";
+import { h, replaceChildren } from "./dom_builder.mjs?v=588edb73ef9b5c1c";
 
 export function diagnosticViewTitle(state, anchorsReady) {
   if (!anchorsReady) return "";
@@ -33,8 +33,12 @@ export function createToolbarPresenter({ state, elements, groupById }) {
           keyItem("diagnostic-key-cause", "Potential common cause")]
         : state.showExclusionViolations
           ? [...anchorItems, keyItem("diagnostic-key-instrument", "Instrument"),
-            keyItem("diagnostic-key-violation", "Potential violation")]
+            keyItem("diagnostic-key-violation", "Potential violation"),
+            keyItem("diagnostic-key-addressed", "Explicitly controlled for ⚠"),
+            keyItem("diagnostic-key-claim", "Study-claimed direct effect")]
           : [...anchorItems, keyItem("diagnostic-key-fill", state.showConfoundersOnly ? "Confounder" : "Collider"),
+            ...(state.showConfoundersOnly ? [keyItem("diagnostic-key-addressed", "Controlled / by design / outside minimal set")] : []),
+            keyItem("diagnostic-key-claim", "Study-claimed direct effect"),
             keyItem("diagnostic-key-outline", state.showConfoundersOnly ? "Also a collider" : "Also a confounder")]);
     }
     const confounderCount = state.confounderGroupIds?.size || 0;
