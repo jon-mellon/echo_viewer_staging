@@ -1,7 +1,7 @@
-import * as projectOps from "./dag_project.mjs?v=093a2b95ac35463e";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=093a2b95ac35463e";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=093a2b95ac35463e";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=093a2b95ac35463e";
+import * as projectOps from "./dag_project.mjs?v=9e3fc2d320547c86";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=9e3fc2d320547c86";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=9e3fc2d320547c86";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=9e3fc2d320547c86";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateVisibleCaches, renderAll, groupById, persistProjectLocally, getReturnUrl = () => location.href,
@@ -72,11 +72,12 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       draft.new_variable_ids = [...new Set(ids.map(clusterRep))];
       draft.reviewed_variable_ids = [...draft.eligible_variable_ids];
       draft.published_split = { publication_id: row.publication_id, group_id: row.group_id };
+      draft.step = "partition";
       state.selectedVariableIds = new Set(draft.new_variable_ids);
       persistProjectLocally();
       invalidateVisibleCaches();
       renderDraft();
-      els.definitionNewLabel.focus();
+      els.definitionSave.focus();
     } catch (error) {
       if (state.definitionDraft === draft) {
         browseState.error = `Could not use this split: ${error.message || error}`;
