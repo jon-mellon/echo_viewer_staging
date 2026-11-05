@@ -1,7 +1,7 @@
-import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=9e3fc2d320547c86";
-import { getOwnPublications } from "./cloudflare_api.mjs?v=9e3fc2d320547c86";
-import { publicSchemaBaseUrl } from "./publication_access.mjs?v=9e3fc2d320547c86";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=9e3fc2d320547c86";
+import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=fe3412b40402e2ad";
+import { getOwnPublications } from "./cloudflare_api.mjs?v=fe3412b40402e2ad";
+import { publicSchemaBaseUrl } from "./publication_access.mjs?v=fe3412b40402e2ad";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=fe3412b40402e2ad";
 
 export async function listOwnPublishedSplits({ apiUrl = CLOUDFLARE_API_URL, fetchImpl, storage } = {}) {
   if (!cloudflareApiConfigured(apiUrl)) throw new Error("Cloudflare publishing service is not configured.");
@@ -18,7 +18,10 @@ export async function listOwnPublishedSplits({ apiUrl = CLOUDFLARE_API_URL, fetc
         && staged.manifest.group_membership_files[group.group_id]).map(group => ({
           publication_id: publication.id, group_id: group.group_id,
           split_id: group.provenance.split_id || group.group_id,
+          origin_split_id: group.provenance.reused_from_split_id || group.provenance.split_id || group.group_id,
+          origin_group_id: group.provenance.reused_from_group_id || group.group_id,
           source_group_ids: group.provenance.source_group_ids,
+          source_group_by_variable: group.provenance.source_group_by_variable,
           source_labels: group.provenance.source_group_ids.map(id => {
             const source = staged.schema.groups.find(candidate => candidate.group_id === id);
             return source && group.provenance.split_id && source.provenance?.split_id === group.provenance.split_id
@@ -33,13 +36,7 @@ export async function listOwnPublishedSplits({ apiUrl = CLOUDFLARE_API_URL, fetc
     }));
     pages.push(ownRows.flat());
   }
-  const unique = new Map();
-  for (const row of pages.flat()) {
-    const key = `${row.owner_id}:${row.split_id || row.group_id}`;
-    if (!unique.has(key) || row.published_at > unique.get(key).published_at
-      || row.published_at === unique.get(key).published_at && row.is_own) unique.set(key, row);
-  }
-  return [...unique.values()].sort((a, b) => b.published_at.localeCompare(a.published_at));
+  return pages.flat().sort((a, b) => b.published_at.localeCompare(a.published_at));
 }
 
 export async function browsePublishedSplits(sourceGroupIds, _client = null, options = {}) {

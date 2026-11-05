@@ -1,14 +1,14 @@
-import { rawLinksBetween } from "./dag_link_aggregation.mjs?v=9e3fc2d320547c86";
+import { rawLinksBetween } from "./dag_link_aggregation.mjs?v=fe3412b40402e2ad";
 
 // Project data operations. Callers supply timestamps/IDs and duplicate-cluster
 // members; no operation reads UI state, storage, the clock or the network.
 // Unchanged records are shared. Treat all returned data as read-only until the
 // UI adapter applies it; copying entire projects per variable would be wasteful.
 
-import * as visibility from "./variable_visibility.mjs?v=9e3fc2d320547c86";
+import * as visibility from "./variable_visibility.mjs?v=fe3412b40402e2ad";
 
-/** @typedef {import("./app_contracts.mjs?v=9e3fc2d320547c86").Project} Project */
-/** @typedef {import("./app_contracts.mjs?v=9e3fc2d320547c86").Group} Group */
+/** @typedef {import("./app_contracts.mjs?v=fe3412b40402e2ad").Project} Project */
+/** @typedef {import("./app_contracts.mjs?v=fe3412b40402e2ad").Group} Group */
 
 export function withoutGroupReviewStatus(group) {
   const { status, ...definition } = group;
@@ -291,7 +291,7 @@ export function setFindingDecision(project, rawId, decision) {
 
 export function splitCategories(project, {
   sourceGroupIds, newGroupId, newLabel, newDescription, residualLabels = {}, newVariableIds,
-  timestamp, role, splitId = null,
+  timestamp, role, splitId = null, reusedFrom = null,
 }) {
   splitId ||= `split_${newGroupId}`;
   const sourceIds = [...new Set(sourceGroupIds || [])];
@@ -336,6 +336,7 @@ export function splitCategories(project, {
     created_at: timestamp, updated_at: timestamp,
     provenance: { operation: "split_categories", split_id: splitId, source_group_ids: sourceIds,
       source_group_by_variable: sourceGroupByVariable,
+      ...(reusedFrom ? { reused_from_split_id: reusedFrom.split_id, reused_from_group_id: reusedFrom.group_id } : {}),
       source_group_ids_retained_as_residuals: true, edited_at: timestamp },
   };
   const next = { ...project, groups: [...nextGroups, newGroup],

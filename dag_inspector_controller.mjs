@@ -1,6 +1,6 @@
-import * as inspector from "./dag_inspector.mjs?v=9e3fc2d320547c86";
-import * as projectOps from "./dag_project.mjs?v=9e3fc2d320547c86";
-import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=9e3fc2d320547c86";
+import * as inspector from "./dag_inspector.mjs?v=fe3412b40402e2ad";
+import * as projectOps from "./dag_project.mjs?v=fe3412b40402e2ad";
+import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=fe3412b40402e2ad";
 
 export const STUDY_DESIGN_EDGE_ID = "__study_design_iv_to_dv__";
 export const STUDY_INSTRUMENT_EDGE_ID = "__study_design_instrument_to_iv__";
