@@ -1,7 +1,7 @@
-import { confounderPathNodeRole } from "./dag_graph.mjs?v=1374a87899f73a1f";
-import { wrapDagLabel } from "./dag_layout.mjs?v=1374a87899f73a1f";
-import { directedGroupLabels } from "./dag_exports.mjs?v=1374a87899f73a1f";
-import { LIGHT_STATUSES } from "./confounder_status.mjs?v=1374a87899f73a1f";
+import { confounderPathNodeRole } from "./dag_graph.mjs?v=5be733015f667722";
+import { wrapDagLabel } from "./dag_layout.mjs?v=5be733015f667722";
+import { directedGroupLabels } from "./dag_exports.mjs?v=5be733015f667722";
+import { LIGHT_STATUSES } from "./confounder_status.mjs?v=5be733015f667722";
 
 // Display records only: no renderer, DOM or viewer-state access.
 
@@ -137,7 +137,7 @@ export function edgeVisualData(link, selectedEdgeId) {
       inherit: false,
       opacity: isSelected || isTarget ? 1 : PLAIN_EDGE_OPACITY,
     },
-    dashes: link.is_user_claim ? [2, 5] : false,
+    dashes: false,
     width: isSelected ? 3.6 : isTarget ? 2.6 : 1.0,
   };
 }

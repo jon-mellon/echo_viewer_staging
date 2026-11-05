@@ -1,4 +1,4 @@
-import { isPresentLink } from "./dag_link_aggregation.mjs?v=1374a87899f73a1f";
+import { isPresentLink } from "./dag_link_aggregation.mjs?v=5be733015f667722";
 
 import {
   connectedComponentGraph,
@@ -9,7 +9,7 @@ import {
   filterGraphByLinkPairs,
   filterGraphLinks,
   filterGraphNodes,
-} from "./dag_graph.mjs?v=1374a87899f73a1f";
+} from "./dag_graph.mjs?v=5be733015f667722";
 
 /** Distinct papers with a present finding among these raw links. */
 export function presentPaperIds(rawLinkIds, edgeSupportById, rawLinksById = edgeSupportById) {
@@ -50,7 +50,6 @@ const backwardDirections = new Set(["B_TO_A", "BIDIRECTIONAL"]);
  * Explore and the Papers column count it: findings for b → a do not support a → b.
  */
 function sparseFiltered(link, minimum, papersFor) {
-  if (link.is_user_claim) return link;
   const forward = forwardDirections.has(link.direction_type) && papersFor(link, true) >= minimum;
   const backward = backwardDirections.has(link.direction_type) && papersFor(link, false) >= minimum;
   if (forward && backward) return link;

@@ -1,6 +1,6 @@
-import { expandBox, pointInsideBox, simplifyRoute } from "./dag_routing_geometry.mjs?v=1374a87899f73a1f";
-import { pairKey, pathPairKeys } from "./edge_keys.mjs?v=1374a87899f73a1f";
-export { pathPairKeys } from "./edge_keys.mjs?v=1374a87899f73a1f";
+import { expandBox, pointInsideBox, simplifyRoute } from "./dag_routing_geometry.mjs?v=5be733015f667722";
+import { pairKey, pathPairKeys } from "./edge_keys.mjs?v=5be733015f667722";
+export { pathPairKeys } from "./edge_keys.mjs?v=5be733015f667722";
 
 const EDGE_PALETTE = {
   iv: { color: "#d32f2f", shadow: "rgba(211,47,47,0.34)" },
@@ -90,8 +90,7 @@ export function buildPathHighlightModel({
     const link = visibleLinkById.get(logicalEdgeId);
     const relevantTargets = directionTargetsByPair.get(link ? pairKey(link.group_a, link.group_b) : "");
     const arrows = highlightedSegmentArrows(edge, link, relevantTargets);
-    laneSegments.push({ logicalEdgeId, from: edge.from, to: edge.to, role, color: palette.color, arrows,
-      ...(link?.is_user_claim ? { dashes: [2, 5] } : {}) });
+    laneSegments.push({ logicalEdgeId, from: edge.from, to: edge.to, role, color: palette.color, arrows });
     edgeUpdates.push({
       id: edge.id,
       color: { color: palette.color, highlight: palette.color, hover: palette.color,

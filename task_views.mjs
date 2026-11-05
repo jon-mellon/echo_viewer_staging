@@ -1,9 +1,8 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=1374a87899f73a1f";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=1374a87899f73a1f";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=1374a87899f73a1f";
-import { pathView } from "./dag_table.mjs?v=1374a87899f73a1f";
-import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, CLAIM_STATUSES, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=1374a87899f73a1f";
-import { claimConflicts } from "./study_graph.mjs?v=1374a87899f73a1f";
+import { h, replaceChildren } from "./dom_builder.mjs?v=5be733015f667722";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=5be733015f667722";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=5be733015f667722";
+import { pathView } from "./dag_table.mjs?v=5be733015f667722";
+import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=5be733015f667722";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -655,12 +654,9 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
       const between = [...new Set(routes.flatMap(route => route.slice(1, -1)).filter(step => step !== row.groupId && !anchors.has(step)))];
       const counts = routes.flatMap(route => route.slice(1).map((step, index) => {
         const link = pairs.get([route[index], step].sort().join("\u0000"));
-        return link && counter && !link.is_user_claim ? counter(link, link.group_a === route[index]) : null;
+        return link && counter ? counter(link, link.group_a === route[index]) : null;
       })).filter(Number.isFinite);
-      const decision = reviewable ? state.project[DIAGNOSTIC_STATUSES[view].field]?.[row.key] : null;
-      const conflicts = decision && CLAIM_STATUSES.has(decision.status)
-        ? claimConflicts(state.project, { key: row.key, asserted: decision.asserted_effects || [] }, decision.rejected_effects || []) : [];
-      return { ...row, between, papers: counts.length ? Math.min(...counts) : null, conflicts: conflicts.length };
+      return { ...row, between, papers: counts.length ? Math.min(...counts) : null };
     });
     rows.sort((a, b) => labelFor(a.groupId).localeCompare(labelFor(b.groupId)));
     return { view, noun: spec?.noun || "variables", reviewable, rows };
@@ -714,11 +710,8 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
                 item.between.length ? h("span", { className: "explore-row-path", textContent: `via ${item.between.map(labelFor).join(", ")}` }) : null),
               h("span", { className: "explore-row-papers", textContent: item.papers === null ? "" : String(item.papers) })),
             select ? h("div", { className: "variable-disposition-line" }, select, warning) : null,
-            item.noLongerCandidate && item.rejected && item.status !== "removed_other" ? h("p", { className: "small-note review-row-note", textContent: "Not a candidate under the current study claims." }) : null,
+            item.noLongerCandidate && item.rejected && item.status !== "removed_other" ? h("p", { className: "small-note review-row-note", textContent: "Not a candidate with the current filters." }) : null,
             item.text && ["removed_other", "other"].includes(item.status) ? h("p", { className: "small-note review-row-note", textContent: `Private note: ${item.text}` }) : null,
-            item.conflicts ? h("p", { className: "review-conflicts small-note", textContent: "⚠ Direct contradiction with another recorded claim. Review the claim to inspect it." }) : null,
-            CLAIM_STATUSES.has(item.status) ? h("button", { type: "button", className: "btn btn--ghost btn--sm review-edit-note", textContent: "Review claim",
-              onclick: () => onReviewVariable(view, item.groupId, item.status) }) : null,
             item.status === "removed_other" ? h("button", { type: "button", className: "btn btn--ghost btn--sm review-edit-note", textContent: "Edit reason",
               onclick: () => onReviewVariable(view, item.groupId, "removed_other") }) : null);
         })),

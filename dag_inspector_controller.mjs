@@ -1,6 +1,6 @@
-import * as inspector from "./dag_inspector.mjs?v=1374a87899f73a1f";
-import * as projectOps from "./dag_project.mjs?v=1374a87899f73a1f";
-import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=1374a87899f73a1f";
+import * as inspector from "./dag_inspector.mjs?v=5be733015f667722";
+import * as projectOps from "./dag_project.mjs?v=5be733015f667722";
+import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=5be733015f667722";
 
 export const STUDY_DESIGN_EDGE_ID = "__study_design_iv_to_dv__";
 export const STUDY_INSTRUMENT_EDGE_ID = "__study_design_instrument_to_iv__";
@@ -257,7 +257,7 @@ export function createDagInspectorController({
     elements.edgeInspector.hidden = false;
     elements.closeEvidencePane.hidden = false;
     const records = `${model.rawCount} evidence record${model.rawCount === 1 ? "" : "s"}`;
-    const meta = [link.is_user_claim ? "User-asserted direct effect · Study-specific claim, not an evidence record" : link.is_target_relation ? "Target relationship" : null,
+    const meta = [link.is_target_relation ? "Target relationship" : null,
       sourcesLoading ? null : model.rawCount ? records : "No evidence records"].filter(Boolean).join(" · ");
     replaceChildren(elements.edgeInspector,
       h("header", { className: "evidence-header" },
