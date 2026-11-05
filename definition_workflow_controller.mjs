@@ -1,8 +1,8 @@
-import * as projectOps from "./dag_project.mjs?v=588edb73ef9b5c1c";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=588edb73ef9b5c1c";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=588edb73ef9b5c1c";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=588edb73ef9b5c1c";
-import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=588edb73ef9b5c1c";
+import * as projectOps from "./dag_project.mjs?v=1374a87899f73a1f";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=1374a87899f73a1f";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=1374a87899f73a1f";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=1374a87899f73a1f";
+import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=1374a87899f73a1f";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateVisibleCaches, renderAll, groupById, persistProjectLocally, getReturnUrl = () => location.href,
@@ -67,8 +67,17 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     browseState.error = "Loading the previous split…";
     draft.step = "loading_saved";
     renderDraft();
+    const start = performance.now();
+    // Load the sources' variable details while the saved membership downloads; the review step needs both.
+    for (const source of definitionSources()) {
+      if (sourceHydrations.has(source.group_id) || !source.variable_ids?.length) continue;
+      const loading = hydrateVariableDetails(source.variable_ids, { skipNeighbors: true });
+      sourceHydrations.set(source.group_id, loading);
+      void loading.catch(() => sourceHydrations.delete(source.group_id));
+    }
     try {
       const ids = row.local_variable_ids || await loadPublishedSplitMembership(row);
+      performance.measure("echo:saved-split:membership", { start, end: performance.now() });
       if (state.definitionDraft !== draft) return;
       const sources = definitionSources();
       const eligible = new Set(sources.flatMap(group => group.variable_ids));
@@ -77,6 +86,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
         throw new Error("This split does not fit the current source category assignments.");
       }
       await continueDefinition({ saved: true });
+      performance.measure("echo:saved-split:details", { start, end: performance.now() });
       if (state.definitionDraft !== draft) return;
       if (draft.details_loading || draft.step !== "loading_saved") throw new Error("Could not load the current source variables.");
       draft.new_label = row.name;
@@ -92,6 +102,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       persistProjectLocally();
       invalidateVisibleCaches();
       renderDraft();
+      performance.measure("echo:saved-split:review", { start, end: performance.now() });
       els.definitionSave.focus();
     } catch (error) {
       if (state.definitionDraft === draft) {

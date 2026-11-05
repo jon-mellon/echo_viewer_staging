@@ -1,16 +1,16 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=588edb73ef9b5c1c";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=588edb73ef9b5c1c";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=588edb73ef9b5c1c";
-import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=588edb73ef9b5c1c";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=588edb73ef9b5c1c";
-import * as dagDisplay from "./dag_display.mjs?v=588edb73ef9b5c1c";
-import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=588edb73ef9b5c1c";
-import * as workflow from "./dag_workflow.mjs?v=588edb73ef9b5c1c";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=588edb73ef9b5c1c";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=588edb73ef9b5c1c";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=588edb73ef9b5c1c";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=588edb73ef9b5c1c";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=588edb73ef9b5c1c";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=1374a87899f73a1f";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=1374a87899f73a1f";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=1374a87899f73a1f";
+import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=1374a87899f73a1f";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=1374a87899f73a1f";
+import * as dagDisplay from "./dag_display.mjs?v=1374a87899f73a1f";
+import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=1374a87899f73a1f";
+import * as workflow from "./dag_workflow.mjs?v=1374a87899f73a1f";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=1374a87899f73a1f";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=1374a87899f73a1f";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=1374a87899f73a1f";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=1374a87899f73a1f";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=1374a87899f73a1f";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -63,9 +63,17 @@ export function fitDagNetwork(network) {
   if (!network) return;
   network.fit(DAG_FIT_OPTIONS);
   const minScale = MIN_READABLE_FONT_PX / _dagFontSize;
-  if (network.getScale() < minScale) {
-    network.moveTo({ position: network.getViewPosition(), scale: minScale, animation: false });
-  }
+  // The key floats over the top of the graph: fit into the space below it so it covers no node.
+  const key = globalThis.document?.getElementById?.("diagnosticOverlapKey");
+  const viewport = network.body?.container;
+  const reserved = key && viewport && key.offsetParent ? key.offsetTop + key.offsetHeight : 0;
+  const height = viewport?.clientHeight || 0;
+  let scale = network.getScale();
+  if (reserved && height > reserved * 2) scale *= (height - reserved) / height;
+  scale = Math.max(scale, minScale);
+  if (scale === network.getScale() && !reserved) return;
+  const center = network.getViewPosition();
+  network.moveTo({ position: { x: center.x, y: center.y - reserved / (2 * scale) }, scale, animation: false });
 }
 
 export function isDagDisplayGroup(group) {
@@ -708,7 +716,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=588edb73ef9b5c1c", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=1374a87899f73a1f", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;

@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=588edb73ef9b5c1c";
+import { h, replaceChildren } from "./dom_builder.mjs?v=1374a87899f73a1f";
 
 export function diagnosticViewTitle(state, anchorsReady) {
   if (!anchorsReady) return "";
@@ -37,7 +37,7 @@ export function createToolbarPresenter({ state, elements, groupById }) {
             keyItem("diagnostic-key-addressed", "Explicitly controlled for ⚠"),
             keyItem("diagnostic-key-claim", "Study-claimed direct effect")]
           : [...anchorItems, keyItem("diagnostic-key-fill", state.showConfoundersOnly ? "Confounder" : "Collider"),
-            ...(state.showConfoundersOnly ? [keyItem("diagnostic-key-addressed", "Controlled / by design / outside minimal set")] : []),
+            ...(state.showConfoundersOnly ? [keyItem("diagnostic-key-addressed", "Accounted for")] : []),
             keyItem("diagnostic-key-claim", "Study-claimed direct effect"),
             keyItem("diagnostic-key-outline", state.showConfoundersOnly ? "Also a collider" : "Also a confounder")]);
     }

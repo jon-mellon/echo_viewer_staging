@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=588edb73ef9b5c1c";
+import { h, replaceChildren } from "./dom_builder.mjs?v=1374a87899f73a1f";
 
 export function createDefinitionWorkflowPresenter({ state, elements: els, normalized, clusterRep, truncate,
   definitionSources, definitionResidualIds, definitionCanReview, searchSourceGroups,

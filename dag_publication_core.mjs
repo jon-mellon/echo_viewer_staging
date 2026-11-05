@@ -1,11 +1,11 @@
-import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=588edb73ef9b5c1c";
-import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=588edb73ef9b5c1c";
-import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl } from "./schema_source.mjs?v=588edb73ef9b5c1c";
-import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=588edb73ef9b5c1c";
-import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=588edb73ef9b5c1c";
+import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=1374a87899f73a1f";
+import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=1374a87899f73a1f";
+import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl } from "./schema_source.mjs?v=1374a87899f73a1f";
+import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=1374a87899f73a1f";
+import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=1374a87899f73a1f";
 import { createCompiledArtifacts, evidenceSnapshotForSchema, fullCompileDag,
-  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=588edb73ef9b5c1c";
-import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=588edb73ef9b5c1c";
+  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=1374a87899f73a1f";
+import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=1374a87899f73a1f";
 
 export const CANONICAL_BASELINE_ID = "a0118906-2366-4cc8-8809-bafdf3860c23";
 export const CANONICAL_BASELINE_HASH = "0afd5f28c1b5456c47cfba84467bea1d62c6dc923a5851281a98d461f60066b4";
@@ -22,6 +22,19 @@ export function formatPublicationError(error) {
 export async function canonicalizeWorkingSchema(schema, cryptoApi = globalThis.crypto, { views = true } = {}) {
   const files = await writeGroupingSchemaFolder(publicSchemaProjection(schema), cryptoApi, { views });
   return { files, contentHash: await canonicalFolderHash(files, cryptoApi) };
+}
+
+/** Both content hashes from one write: with the derived view files, and without them as older publications were made. */
+export async function workingSchemaHashes(schema, cryptoApi = globalThis.crypto) {
+  const files = await writeGroupingSchemaFolder(publicSchemaProjection(schema), cryptoApi);
+  const manifest = JSON.parse(new TextDecoder().decode(files.get("manifest.json")));
+  const legacy = new Map(files);
+  for (const key of ["variable_schema_file", "study_decisions_file"]) {
+    legacy.delete(manifest[key]);
+    delete manifest[key];
+  }
+  legacy.set("manifest.json", new TextEncoder().encode(stableJson(manifest)));
+  return [await canonicalFolderHash(files, cryptoApi), await canonicalFolderHash(legacy, cryptoApi)];
 }
 
 /** The browser and local agent use this exact publication path. */

@@ -1,7 +1,7 @@
-import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=588edb73ef9b5c1c";
-import { canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError } from "./dag_publication_core.mjs?v=588edb73ef9b5c1c";
-import { confirmPublicPublication } from "./publication_consent.mjs?v=588edb73ef9b5c1c";
-export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError } from "./dag_publication_core.mjs?v=588edb73ef9b5c1c";
+import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=1374a87899f73a1f";
+import { canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError, workingSchemaHashes } from "./dag_publication_core.mjs?v=1374a87899f73a1f";
+import { confirmPublicPublication } from "./publication_consent.mjs?v=1374a87899f73a1f";
+export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError } from "./dag_publication_core.mjs?v=1374a87899f73a1f";
 
 function showStatus(element, message, isError = false) {
   element.textContent = message;
@@ -95,8 +95,12 @@ export function createPublicationController({
   async function matchesPublished(published) {
     const hash = published?.content_hash;
     if (!hash) return false;
-    if ((await currentCanonical()).contentHash === hash) return true;
-    return (await canonicalizeWorkingSchema(getWorkingSchema(), cryptoApi, { views: false })).contentHash === hash;
+    const start = performance.now();
+    try {
+      return (await workingSchemaHashes(getWorkingSchema(), cryptoApi)).includes(hash);
+    } finally {
+      performance.measure("echo:publication:compare", { start, end: performance.now() });
+    }
   }
 
   function stablePermalink(published) {

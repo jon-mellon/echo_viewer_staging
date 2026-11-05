@@ -1,4 +1,4 @@
-import * as projectOps from "./dag_project.mjs?v=588edb73ef9b5c1c";
+import * as projectOps from "./dag_project.mjs?v=1374a87899f73a1f";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -238,7 +238,7 @@ function installHandlers() {
     const target = /** @type {Element} */ (event.target);
     // Switching view (Causes | Consequences, Graph | Table) shows the result at once.
     if (target.closest?.(".task-bar-view-controls button")) return setNavOpen(false);
-    const item = target.closest?.(".menu-item");
+    const item = target.closest?.(".menu-item, #taskReset");
     if (!item || item.matches("[data-keep-open], .file-button, .edit-history-entry")) return;
     setNavOpen(false);
   });

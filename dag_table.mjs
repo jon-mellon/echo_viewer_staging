@@ -1,5 +1,5 @@
-import { directedGroupLabels } from "./dag_exports.mjs?v=588edb73ef9b5c1c";
-import { CONTROL_WARNING } from "./confounder_status.mjs?v=588edb73ef9b5c1c";
+import { directedGroupLabels } from "./dag_exports.mjs?v=1374a87899f73a1f";
+import { CONTROL_WARNING } from "./confounder_status.mjs?v=1374a87899f73a1f";
 
 // A table of exactly what the graph draws. Each row is a path: the variables
 // along it are buttons that open their definitions, and the arrows between
@@ -192,7 +192,6 @@ export function dagTableModel({ view, groups, links, pathsByGroup = new Map(), e
         concepts: group?.variable_ids?.length || Number(group?.member_count) || 0,
         ...(statuses ? { status: statuses.byId[row.id] || { status: "unaddressed", text: "" } } : {}) };
     };
-    const isCustom = row => byId.get(row.id)?.source === "user_split";
     const rejected = new Set((statuses?.rejected || []).map(row => row.groupId));
     diagnostic = {
       title: spec.title({ iv: label(ivId), dv: label(dvId), instrument: label(instrumentId) }),
@@ -200,8 +199,8 @@ export function dagTableModel({ view, groups, links, pathsByGroup = new Map(), e
       // Confounders and colliders: how the study handles each, set from a menu in its row.
       status: statuses ? { kind: statuses.kind, noun: statuses.noun, options: statuses.options } : null,
       sections: [
-        { title: "Custom variables", rows: rows.filter(row => !rejected.has(row.id) && isCustom(row)).map(item) },
-        { title: "Built-in variables", rows: rows.filter(row => !rejected.has(row.id) && !isCustom(row)).map(item) },
+        // Where a variable came from is a schema question; review lists every candidate together.
+        { title: statuses?.noun ? `${statuses.noun[0].toUpperCase()}${statuses.noun.slice(1)}s` : "Candidates", rows: rows.filter(row => !rejected.has(row.id)).map(item) },
         ...(rejected.size ? [{ title: "Rejected candidates", rows: statuses.rejected.map(row => item({ id: row.groupId, label: row.label, lines: [], papers: null })) }] : []),
       ],
     };

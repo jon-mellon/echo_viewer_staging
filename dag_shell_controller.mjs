@@ -1,5 +1,5 @@
 // Owns cross-feature shell layout: fullscreen focus and draggable panel sizes.
-import { fitDagNetwork } from "./dag_network_controller.mjs?v=588edb73ef9b5c1c";
+import { fitDagNetwork } from "./dag_network_controller.mjs?v=1374a87899f73a1f";
 export function createDagShellController({ state, elements, renderDag, getNetwork, isDagFullyVisible, dismissEvidencePane }) {
   let showInstalledMobilePanel = null;
   // Set by installResizers; moves the evidence pane to where the current task reads it.
@@ -51,7 +51,9 @@ export function createDagShellController({ state, elements, renderDag, getNetwor
     showPanel(document.body.dataset.mobilePanel);
   }
 
-  function setFullscreen(panel) {
+  function setFullscreen(requested) {
+    // A phone hides the top bar in full screen, and with it the only way back; touch has no Escape key.
+    const panel = globalThis.window?.matchMedia?.("(max-width: 840px)").matches ? null : requested;
     state.fullscreenPanel = panel;
     document.body.classList.toggle("focus-dag", panel === "dag");
     elements.fullscreenDag.classList.toggle("active", panel === "dag");
@@ -87,6 +89,7 @@ export function createDagShellController({ state, elements, renderDag, getNetwor
       if (evidencePane && parent && evidencePane.parentElement !== parent) parent.append(evidencePane);
     };
     mobileLayout.addEventListener("change", placeEvidencePane);
+    mobileLayout.addEventListener("change", () => { if (mobileLayout.matches && state.fullscreenPanel) setFullscreen(null); });
     placeEvidencePane();
     // Creating a variable: on a wide screen the creation steps take the map's
     // place; on a phone they stay in the side panel where they were written.
