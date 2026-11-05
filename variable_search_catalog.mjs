@@ -37,7 +37,7 @@ export async function readSearchCatalogPayload(url, fetchImpl = globalThis.fetch
 
 function loadCatalogInWorker(url, snapshotId, onRecords) {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL("./variable_search_catalog_worker.mjs?v=fe3412b40402e2ad", import.meta.url), { type: "module" });
+    const worker = new Worker(new URL("./variable_search_catalog_worker.mjs?v=cfaa26183bc7c73f", import.meta.url), { type: "module" });
     let payload;
     const fail = error => { worker.terminate(); reject(error); };
     worker.onerror = event => fail(new Error(event.message || "Could not load search catalog worker."));

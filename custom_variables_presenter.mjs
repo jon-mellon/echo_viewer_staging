@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=fe3412b40402e2ad";
+import { h, replaceChildren } from "./dom_builder.mjs?v=cfaa26183bc7c73f";
 
 /**
  * The Custom variables page: a filterable table of the variables the user made
@@ -84,8 +84,7 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
         h("p", { className: "small-note", textContent: "Add a saved variable to this schema by splitting its source groups." }),
         ...previous.map(item => h("div", { className: "setup-group-picker-row" },
           h("div", {}, h("strong", { textContent: item.name }),
-            h("span", { textContent: `From: ${(item.source_labels || item.source_group_ids || []).join(", ")}` }),
-            h("span", { textContent: `${item.is_local ? "Local schema" : "Published schema"}${item.published_at ? ` · ${item.published_at.slice(0, 10)}` : ""}` })),
+            h("span", { textContent: `From: ${(item.source_labels || item.source_group_ids || []).join(", ")}` })),
           h("button", { type: "button", className: "btn btn--sm", textContent: "Add to schema",
             attrs: { "aria-label": `Add ${item.name} to schema` },
             onclick: () => reusePreviousSplit("candidate", item) })))));

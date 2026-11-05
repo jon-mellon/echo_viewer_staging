@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=fe3412b40402e2ad">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=cfaa26183bc7c73f">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -190,21 +190,21 @@
           <!-- Identification: the study's Cause, Outcome and optional Instrument; a field being searched opens the list below them. -->
           <div id="identifyFields" class="identify-fields" hidden>
             <div class="search-block identify-field" data-side="iv">
-              <label class="identify-field-label" for="identify-iv-input">Cause</label>
+              <label class="identify-field-label" for="identify-iv-input">Cause <span class="identify-selection-status" hidden>✓ Selected</span></label>
               <div class="focus-input-wrap">
                 <input id="identify-iv-input" class="search-input identify-input" type="search" data-side="iv" placeholder="Search group or constituent variable" autocomplete="off">
                 <button class="focus-clear identify-clear" type="button" data-side="iv" title="Clear the cause" aria-label="Clear the cause" hidden>×</button>
               </div>
             </div>
             <div class="search-block identify-field" data-side="dv">
-              <label class="identify-field-label" for="identify-dv-input">Outcome</label>
+              <label class="identify-field-label" for="identify-dv-input">Outcome <span class="identify-selection-status" hidden>✓ Selected</span></label>
               <div class="focus-input-wrap">
                 <input id="identify-dv-input" class="search-input identify-input" type="search" data-side="dv" placeholder="Search group or constituent variable" autocomplete="off">
                 <button class="focus-clear identify-clear" type="button" data-side="dv" title="Clear the outcome" aria-label="Clear the outcome" hidden>×</button>
               </div>
             </div>
             <div class="search-block identify-field" data-side="instrument">
-              <label class="identify-field-label" for="identify-instrument-input">Instrument</label>
+              <label class="identify-field-label" for="identify-instrument-input">Instrument <span class="identify-selection-status" hidden>✓ Selected</span></label>
               <div class="focus-input-wrap">
                 <input id="identify-instrument-input" class="search-input identify-input" type="search" data-side="instrument" placeholder="Optional" autocomplete="off">
                 <button class="focus-clear identify-clear" type="button" data-side="instrument" title="Clear the instrument" aria-label="Clear the instrument" hidden>×</button>
@@ -303,6 +303,11 @@
                 <button id="definitionBrowseJump" class="btn" type="button" hidden disabled></button>
                 <button id="definitionContinue" class="btn btn--primary" type="button" disabled>Next</button>
               </div>
+            </div>
+            <div id="definitionSavedLoading" hidden>
+              <h2>Loading saved variable</h2>
+              <p class="small-note" role="status">Preparing its concepts for review…</p>
+              <button class="btn definition-cancel" type="button">Cancel</button>
             </div>
             <!-- 2 · Describe: what the new variable is. Its name and definition are
                  also what the AI sorts against. A split chosen in step 1 fills them in. -->
@@ -655,7 +660,7 @@
 
     </main>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=fe3412b40402e2ad"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=fe3412b40402e2ad"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=cfaa26183bc7c73f"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=cfaa26183bc7c73f"></script>
   </body>
 </html>
