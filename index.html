@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=0267de401e5ece5a">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=03534cf56c040a37">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -651,8 +651,9 @@
             </div>
           </div>
           <div class="dag-network-wrapper">
+            <button id="dagTableSkip" class="btn dag-table-skip" type="button">Skip the diagram and open the table of variables and links</button>
             <div id="dagNetwork" class="dag-network"></div>
-            <div id="dagTable" class="dag-table-view" hidden tabindex="-1" aria-label="Variables and links as tables"></div>
+            <div id="dagTable" class="dag-table-view" role="region" hidden tabindex="-1" aria-label="Variables and links as tables"></div>
             <p id="exploreGraphHint" class="explore-graph-hint" hidden></p>
             <div id="diagnosticOverlapKey" class="diagnostic-overlap-key" hidden></div>
             <!-- Graph view controls float over the graph's bottom-right corner (Lucide icons). -->
@@ -678,7 +679,7 @@
 
     </main>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=0267de401e5ece5a"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=0267de401e5ece5a"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=03534cf56c040a37"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=03534cf56c040a37"></script>
   </body>
 </html>

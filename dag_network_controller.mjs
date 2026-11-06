@@ -1,17 +1,17 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=0267de401e5ece5a";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=0267de401e5ece5a";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=0267de401e5ece5a";
-import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=0267de401e5ece5a";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=0267de401e5ece5a";
-import { createStatusMenu } from "./dag_status_menu.mjs?v=0267de401e5ece5a";
-import * as dagDisplay from "./dag_display.mjs?v=0267de401e5ece5a";
-import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=0267de401e5ece5a";
-import * as workflow from "./dag_workflow.mjs?v=0267de401e5ece5a";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=0267de401e5ece5a";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=0267de401e5ece5a";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=0267de401e5ece5a";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=0267de401e5ece5a";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=0267de401e5ece5a";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=03534cf56c040a37";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=03534cf56c040a37";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=03534cf56c040a37";
+import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=03534cf56c040a37";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=03534cf56c040a37";
+import { createStatusMenu } from "./dag_status_menu.mjs?v=03534cf56c040a37";
+import * as dagDisplay from "./dag_display.mjs?v=03534cf56c040a37";
+import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=03534cf56c040a37";
+import * as workflow from "./dag_workflow.mjs?v=03534cf56c040a37";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=03534cf56c040a37";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=03534cf56c040a37";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=03534cf56c040a37";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=03534cf56c040a37";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=03534cf56c040a37";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -297,9 +297,18 @@ async function renderDagTable(groups, links) {
   await built;
 }
 
+/** The canvas is a picture to assistive technology; say what it holds and where the same facts are navigable. */
+function describeDagImage(groupCount, linkCount) {
+  const noun = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
+  els.dagNetwork.setAttribute("role", "img");
+  els.dagNetwork.setAttribute("aria-label",
+    `Diagram of ${noun(groupCount, "variable")} and ${noun(linkCount, "link")}. The Table view lists the same variables, links, definitions and evidence.`);
+}
+
 function showDagDisplay() {
   const table = tableShown();
   els.dagTable.hidden = !table;
+  els.dagTableSkip.hidden = table;
   els.dagNetwork.hidden = table;
   for (const [button, active] of [[els.dagViewGraph, !table], [els.dagViewTable, table]]) {
     button.classList.toggle("active", active);
@@ -307,14 +316,15 @@ function showDagDisplay() {
   }
 }
 
-async function setDagDisplay(mode) {
+async function setDagDisplay(mode, { focusTable = false } = {}) {
   const next = mode === "table" ? "table" : "graph";
-  if (state.dagDisplay === next) return;
+  if (state.dagDisplay === next) { if (focusTable && next === "table") els.dagTable.focus(); return; }
   state.dagDisplay = next;
   showDagDisplay();
   onViewportChange(false);
   await renderDag();
   if (next === "graph") _visNetwork?.redraw();
+  else if (focusTable) els.dagTable.focus();
 }
 
 function refreshEdgeSelection({ redraw = true } = {}) {
@@ -642,6 +652,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
 
   const links = state.visibleLinks.filter((link) => !link.is_target_relation
     && nextGroupIds.has(link.group_a) && nextGroupIds.has(link.group_b));
+  describeDagImage(groups.length, links.length);
   if (els.dagTable.hidden === tableShown()) showDagDisplay();
   if (tableShown()) {
     // No layout: the graph is rebuilt from the same groups and links when it is shown again.
@@ -724,7 +735,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=0267de401e5ece5a", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=03534cf56c040a37", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;

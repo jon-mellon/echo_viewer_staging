@@ -1,4 +1,4 @@
-import * as projectOps from "./dag_project.mjs?v=0267de401e5ece5a";
+import * as projectOps from "./dag_project.mjs?v=03534cf56c040a37";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -194,6 +194,7 @@ function installHandlers() {
     dagNetwork.fit();
   });
   els.fullscreenDag.addEventListener("click", () => toggleFullscreenPanel("dag"));
+  els.dagTableSkip.addEventListener("click", () => dagNetwork.setDagDisplay("table", { focusTable: true }));
   for (const [button, mode] of [[els.dagViewGraph, "graph"], [els.dagViewTable, "table"]]) {
     button.addEventListener("click", () => dagNetwork.setDagDisplay(mode));
   }
