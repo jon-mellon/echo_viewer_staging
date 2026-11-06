@@ -1,17 +1,17 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=720faab8df6727b3";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=720faab8df6727b3";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=720faab8df6727b3";
-import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=720faab8df6727b3";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=720faab8df6727b3";
-import { createStatusMenu } from "./dag_status_menu.mjs?v=720faab8df6727b3";
-import * as dagDisplay from "./dag_display.mjs?v=720faab8df6727b3";
-import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=720faab8df6727b3";
-import * as workflow from "./dag_workflow.mjs?v=720faab8df6727b3";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=720faab8df6727b3";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=720faab8df6727b3";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=720faab8df6727b3";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=720faab8df6727b3";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=720faab8df6727b3";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=0267de401e5ece5a";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=0267de401e5ece5a";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=0267de401e5ece5a";
+import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=0267de401e5ece5a";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=0267de401e5ece5a";
+import { createStatusMenu } from "./dag_status_menu.mjs?v=0267de401e5ece5a";
+import * as dagDisplay from "./dag_display.mjs?v=0267de401e5ece5a";
+import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=0267de401e5ece5a";
+import * as workflow from "./dag_workflow.mjs?v=0267de401e5ece5a";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=0267de401e5ece5a";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=0267de401e5ece5a";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=0267de401e5ece5a";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=0267de401e5ece5a";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=0267de401e5ece5a";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -50,9 +50,9 @@ function visOptionSignature(params = {}) {
   ]);
 }
 
-// vis-network's fit() defaults to maxZoomLevel: 1, leaving small DAGs surrounded
-// by empty canvas even when there is room to display them larger.
-export const DAG_FIT_OPTIONS = { animation: false, maxZoomLevel: Number.MAX_VALUE };
+// Allow small DAGs to grow beyond vis-network's default scale of 1, but avoid
+// enlarging a lone node until it fills the entire viewport when filters remove links.
+export const DAG_FIT_OPTIONS = { animation: false, maxZoomLevel: 2.5 };
 
 // Fitting a large DAG into the viewport can shrink labels to a few pixels, which is
 // unreadable (vis-network stops drawing text entirely below ~3px). Never fit tighter
@@ -724,7 +724,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=720faab8df6727b3", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=0267de401e5ece5a", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;

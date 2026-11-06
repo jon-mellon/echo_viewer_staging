@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=720faab8df6727b3";
-import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=720faab8df6727b3";
-import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=720faab8df6727b3";
-export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=720faab8df6727b3";
+import { h, replaceChildren } from "./dom_builder.mjs?v=0267de401e5ece5a";
+import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=0267de401e5ece5a";
+import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=0267de401e5ece5a";
+export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=0267de401e5ece5a";
 
 const OAUTH_PENDING_KEY = "echo-openrouter-pkce-v1";
 const OAUTH_DRAFT_KEY = "echo-openrouter-definition-draft-v1";
@@ -466,7 +466,7 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
     els.definitionAiApplyBottom.disabled = busy;
     els.definitionAiApplyBottom.textContent = els.definitionAiApply.textContent;
     els.definitionAiApplyNote.hidden = !fullDone || !manualChoices;
-    els.definitionAiApplyNote.textContent = `This replaces your ${manualChoices.toLocaleString()} existing choices: concepts suggested In become included and all others excluded. You can undo it in Choose manually.`;
+    els.definitionAiApplyNote.textContent = `This replaces your ${manualChoices.toLocaleString()} existing choices: concepts suggested In become included and all others excluded. Review the suggestions before continuing.`;
     els.definitionAiApplyNoteBottom.hidden = els.definitionAiApplyNote.hidden;
     els.definitionAiApplyNoteBottom.textContent = els.definitionAiApplyNote.textContent;
     els.definitionAiDiscard.hidden = !showPreview || busy;

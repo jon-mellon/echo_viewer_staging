@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=720faab8df6727b3";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=720faab8df6727b3";
-import { pathView } from "./dag_table.mjs?v=720faab8df6727b3";
-import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=720faab8df6727b3";
+import { h, replaceChildren } from "./dom_builder.mjs?v=0267de401e5ece5a";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=0267de401e5ece5a";
+import { pathView } from "./dag_table.mjs?v=0267de401e5ece5a";
+import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=0267de401e5ece5a";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -456,8 +456,8 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
       replaceChildren(els.results);
       return;
     }
-    notice(!rows.length ? `Nothing ${causes ? "causes" : "is caused by"} ${labelFor(focus)} at this distance and paper count. Try a greater distance or fewer papers.`
-      : status === "failed" ? "Some paper details could not load, so links changed by your edits may be missing." : "");
+    notice(status === "failed" ? "Some paper details could not load, so links changed by your edits may be missing."
+      : !rows.length ? `No ${causes ? "causes" : "consequences"} of ${labelFor(focus)} were found at this distance and paper count. Try a greater distance or fewer papers.` : "");
     // Schema origin does not affect exploration; put every variable in causal order.
     const ordered = rows.slice().sort((a, b) => a.distance - b.distance);
     const hover = item => onRowHover(item ? { edgeId: item.edgeId, groupId: item.groupId, pathEdgeIds: item.pathEdgeIds } : null);

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=720faab8df6727b3">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=0267de401e5ece5a">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -289,6 +289,7 @@
             <div id="definitionSourcesStep" hidden>
               <h2>Which existing variables contain these concepts?</h2>
               <p class="small-note definition-explainer">Pick every variable the new one should take concepts from. Then name and define it, and choose the exact concepts.</p>
+              <p id="definitionSourceChangeNote" class="small-note" hidden>Changing sources and continuing clears your current concept choices and names for what stays. Saved AI runs can be resumed from this step.</p>
               <label class="dag-label" for="definitionSourceSearch">Search variables</label>
               <input id="definitionSourceSearch" class="search-input" type="search" placeholder="Search variables or the concepts in them">
               <div id="definitionBrowsePanel" hidden>
@@ -316,7 +317,8 @@
               <h2>Name and define your variable</h2>
               <p class="small-note definition-explainer">It will be built from concepts that now sit in the variables you picked. Next you'll choose the concepts to move. Anything you don't move stays where it is.</p>
               <label class="dag-label" for="definitionNewLabel">Name</label>
-              <input id="definitionNewLabel" class="search-input" type="text" placeholder="For example: school grades" autocomplete="off">
+              <input id="definitionNewLabel" class="search-input" type="text" placeholder="For example: school grades" autocomplete="off" aria-describedby="definitionNameValidation">
+              <div id="definitionNameValidation" class="small-note" aria-live="polite" hidden></div>
               <label class="dag-label" for="definitionNewDescription">Definition</label>
               <textarea id="definitionNewDescription" class="search-input" rows="3" minlength="20" maxlength="1000" aria-describedby="definitionValidation" placeholder="What belongs in it, and what does not (at least 20 characters)"></textarea>
               <div id="definitionValidation" class="small-note" aria-live="polite">At least 20 characters.</div>
@@ -329,7 +331,7 @@
             <!-- 3 · Choose concepts: the AI suggests them (or an existing split supplies them), then save. -->
             <div id="definitionPartitionStep" hidden>
               <div class="definition-concepts-head">
-                <h2 id="definitionConceptsTitle">Choose concepts</h2>
+                <h2 id="definitionConceptsTitle" tabindex="-1">Choose concepts</h2>
                 <p id="definitionConceptsIntro" class="small-note"></p>
                 <p id="definitionSavedDescription" class="small-note" hidden></p>
               </div>
@@ -676,7 +678,7 @@
 
     </main>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=720faab8df6727b3"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=720faab8df6727b3"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=0267de401e5ece5a"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=0267de401e5ece5a"></script>
   </body>
 </html>
