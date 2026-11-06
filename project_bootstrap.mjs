@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=af38a60d7e7d1737";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=af38a60d7e7d1737";
-import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=af38a60d7e7d1737";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=af38a60d7e7d1737";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=af38a60d7e7d1737";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=af38a60d7e7d1737";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=af38a60d7e7d1737";
-import { validateGroupingSchema } from "./data_validation.mjs?v=af38a60d7e7d1737";
+import { dagDataSource } from "./dag_data_source.mjs?v=1b1cdbc472559e48";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=1b1cdbc472559e48";
+import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=1b1cdbc472559e48";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=1b1cdbc472559e48";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=1b1cdbc472559e48";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=1b1cdbc472559e48";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=1b1cdbc472559e48";
+import { validateGroupingSchema } from "./data_validation.mjs?v=1b1cdbc472559e48";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   initializeProject, loadLatestSchemaGroups,
@@ -48,6 +48,9 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
     await loadDagData(permalink?.get("vlayout") || "");
     performance.measure("echo:startup:data", { start: dataStart, end: performance.now() });
     if (localRecord) {
+      // The incident-link query below needs the evidence engine. Start it now so
+      // it runs alongside the complete-schema download instead of after it.
+      void dagDataSource.ensureEvidenceConnection({ variableIds: [] }).catch(() => {});
       const publishedSchema = state.data.grouping_sets?.[0];
       const complete = await state.data.load_published_schema?.();
       const base = complete?.schema || publishedSchema;
