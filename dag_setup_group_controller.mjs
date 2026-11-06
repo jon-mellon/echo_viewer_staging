@@ -1,9 +1,9 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=1b1cdbc472559e48";
-import * as groupListModel from "./dag_group_list.mjs?v=1b1cdbc472559e48";
-import * as searchModel from "./dag_search.mjs?v=1b1cdbc472559e48";
-import * as workflow from "./dag_workflow.mjs?v=1b1cdbc472559e48";
-import { h, replaceChildren } from "./dom_builder.mjs?v=1b1cdbc472559e48";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=1b1cdbc472559e48";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=31540b7153653be7";
+import * as groupListModel from "./dag_group_list.mjs?v=31540b7153653be7";
+import * as searchModel from "./dag_search.mjs?v=31540b7153653be7";
+import * as workflow from "./dag_workflow.mjs?v=31540b7153653be7";
+import { h, replaceChildren } from "./dom_builder.mjs?v=31540b7153653be7";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=31540b7153653be7";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);
@@ -527,10 +527,10 @@ export function createDagSetupGroupController({
       previous.length ? h("section", { className: "picker-section" },
         h("h3", { className: "picker-label" }, "Saved in other schemas", h("span", { className: "picker-count", textContent: ` · ${previous.length}` })),
         h("ol", { className: "explore-list" }, previous.map(item => h("li", { className: "explore-row picker-variable-row" },
-          h("button", { type: "button", className: "explore-row-open saved-variable-row", title: "Add this variable to the current schema",
-            attrs: { "aria-label": `Add ${item.name}` }, onclick: () => reusePreviousSplit(pick?.role || "candidate", item, { addDirectly: true }) },
+          h("button", { type: "button", className: "explore-row-open saved-variable-row", title: `Choose ${item.name}`,
+            attrs: { "aria-label": `Choose ${item.name}` }, onclick: () => reusePreviousSplit(pick?.role || "candidate", item, { addDirectly: true }) },
             h("span", { className: "explore-row-text" }, h("span", { className: "explore-row-label", textContent: item.name }),
-              h("span", { className: "explore-row-path", textContent: `From: ${(item.source_labels || []).join(", ")}` })), h("span", { className: "saved-variable-action", textContent: "Add" })),
+              h("span", { className: "explore-row-path", textContent: `From: ${(item.source_labels || []).join(", ")}` })), h("span", { className: "saved-variable-action", textContent: "Choose" })),
           h("button", { type: "button", className: "btn btn--icon btn--ghost picker-saved-info",
             title: `Review ${item.name}`, attrs: { "aria-label": `Review definition of ${item.name}` },
             onclick: () => reusePreviousSplit(pick?.role || "candidate", item) }, "ⓘ"))))) : null,

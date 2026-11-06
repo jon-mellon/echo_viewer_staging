@@ -1,6 +1,6 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=1b1cdbc472559e48";
-import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=1b1cdbc472559e48";
-import { publicSchemaProjection } from "./public_schema_projection.mjs?v=1b1cdbc472559e48";
+import { h, replaceChildren } from "./dom_builder.mjs?v=31540b7153653be7";
+import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=31540b7153653be7";
+import { publicSchemaProjection } from "./public_schema_projection.mjs?v=31540b7153653be7";
 
 /**
  * The Custom variables page: a filterable table of the variables the user made
@@ -11,7 +11,7 @@ import { publicSchemaProjection } from "./public_schema_projection.mjs?v=1b1cdbc
  */
 export function createCustomVariablesPresenter({ state, elements: els, truncate, normalized,
   customVariables, sourceLabels, canChange, onCreate, onEdit, onDelete,
-  canExplore = () => false, onExplore = () => {}, previousSplits = () => [],
+  previousSplits = () => [],
   loadPreviousSplits = () => {}, reusePreviousSplit = () => {}, splitsLoading = () => false, splitsError = () => false, schemaVariables = customVariables,
   onSplitSource = () => {}, getSchema = () => ({}), loadDetails = async () => {}, conceptLabel = id => id }) {
   let confirmingId = null;
@@ -95,7 +95,7 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
           h("span", { textContent: `From: ${(item.source_labels || item.source_group_ids || []).join(", ")}` })),
         h("button", { type: "button", className: "btn btn--sm", textContent: "Add to schema",
           attrs: { "aria-label": `Add ${item.name} to schema` },
-          onclick: () => reusePreviousSplit("candidate", item) }))),
+          onclick: () => reusePreviousSplit("candidate", item, { addDirectly: true }) }))),
       loadingSplits ? h("p", { className: "small-note concept-loading", role: "status" },
         h("span", { className: "inline-spinner", ariaHidden: "true" }), "Looking for saved variables…")
         : splitsError() ? h("div", { role: "status" },
@@ -128,14 +128,14 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
     const label = group.label || group.group_id;
     const custom = group.source === "user_split";
     const changeable = custom && canChange(group);
-    const lockedTitle = "Changed by a later edit; it can no longer be edited or deleted here.";
+    const lockedTitle = "Changed by a later edit; it can no longer be edited or removed here.";
     const sources = sourceLabels(group);
     if (confirmingId === group.group_id) {
       return h("tr", { className: "custom-variables-confirm" }, h("td", { colSpan: 3 },
         h("div", { className: "custom-variables-confirm-body" },
-          h("span", { textContent: `Delete “${label}”? Its ${group.variable_ids?.length || 0} concepts go back to ${sources.join(", ") || "where they came from"}. You can undo this.` }),
+          h("span", { textContent: `Remove “${label}” from this schema? Its ${group.variable_ids?.length || 0} concepts go back to ${sources.join(", ") || "where they came from"}. You can undo this.` }),
           h("button", { className: "btn btn--danger", type: "button", dataset: { action: "confirm-delete", groupId: group.group_id },
-            disabled: busy, textContent: deleting ? "Deleting…" : "Delete" }),
+            disabled: busy, textContent: deleting ? "Removing…" : "Remove" }),
           h("button", { className: "btn btn--ghost", type: "button", dataset: { action: "cancel-delete", groupId: group.group_id },
             disabled: deleting, textContent: "Keep" }))));
     }
@@ -151,14 +151,12 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
       h("td", { className: "actions" },
         h("button", { className: "btn btn--ghost", type: "button", dataset: { action: "inspect", groupId: group.group_id },
           textContent: "Inspect", attrs: { "aria-expanded": String(expandedId === group.group_id) } }),
-        canExplore() ? h("button", { className: "btn btn--ghost", type: "button", dataset: { action: "explore", groupId: group.group_id },
-          textContent: "Explore", title: `Show the causes or consequences of ${label}` }) : null,
         !custom ? h("button", { className: "btn btn--ghost", type: "button", dataset: { action: "split", groupId: group.group_id }, disabled: busy,
           textContent: "Create split" }) : null,
         custom ? h("button", { className: "btn btn--ghost", type: "button", dataset: { action: "edit", groupId: group.group_id },
           disabled: busy || !changeable, title: changeable ? `Edit ${label}` : lockedTitle, textContent: "Edit" }) : null,
         custom ? h("button", { className: "btn btn--ghost custom-variables-delete", type: "button", dataset: { action: "delete", groupId: group.group_id },
-          disabled: busy || !changeable, title: changeable ? `Delete ${label}` : lockedTitle, textContent: "Delete" }) : null));
+          disabled: busy || !changeable, title: changeable ? `Remove ${label} from schema` : lockedTitle, textContent: "Remove from schema" }) : null));
   }
 
   function detailsRow(group) {
@@ -188,16 +186,15 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
     if (action === "delete") { confirmingId = groupId; render(); return; }
     if (action === "cancel-delete") { confirmingId = null; render(); return; }
     if (action === "edit") { confirmingId = null; onEdit(groupId); return; }
-    if (action === "explore") { close(); onExplore(groupId); return; }
     if (action !== "confirm-delete" || deleting) return;
     const label = customVariables().find(group => group.group_id === groupId)?.label || groupId;
     deleting = true;
     render();
     try {
       await onDelete(groupId);
-      status = `Deleted “${label}”. Undo brings it back.`;
+      status = `Removed “${label}” from this schema. Undo brings it back.`;
     } catch (error) {
-      status = `Could not delete “${label}”: ${error?.message || error}`;
+      status = `Could not remove “${label}”: ${error?.message || error}`;
     } finally {
       deleting = false;
       confirmingId = null;
