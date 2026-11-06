@@ -1,4 +1,4 @@
-import { aggregateGroupLinks, linkKey } from "./dag_link_aggregation.mjs?v=24b23946d742f1ad";
+import { aggregateGroupLinks, linkKey } from "./dag_link_aggregation.mjs?v=af38a60d7e7d1737";
 
 export const COMPILED_DAG_FORMAT = "echo-compiled-dag-v1";
 export const DAG_COMPILER_VERSION = "1";

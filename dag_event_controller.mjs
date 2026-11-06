@@ -1,4 +1,4 @@
-import * as projectOps from "./dag_project.mjs?v=24b23946d742f1ad";
+import * as projectOps from "./dag_project.mjs?v=af38a60d7e7d1737";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,

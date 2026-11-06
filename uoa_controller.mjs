@@ -1,6 +1,6 @@
-import { projectForUoa, uoaCounts, uoaMatches } from "./dag_uoa.mjs?v=24b23946d742f1ad";
-import * as workflow from "./dag_workflow.mjs?v=24b23946d742f1ad";
-import { createUoaPresenter } from "./uoa_presenter.mjs?v=24b23946d742f1ad";
+import { projectForUoa, uoaCounts, uoaMatches } from "./dag_uoa.mjs?v=af38a60d7e7d1737";
+import * as workflow from "./dag_workflow.mjs?v=af38a60d7e7d1737";
+import { createUoaPresenter } from "./uoa_presenter.mjs?v=af38a60d7e7d1737";
 
 export function createUoaController({ state, elements, visibleVariables, groupById, clusterRep, truncate, renderAll }) {
   const matches = (variableUoa, selected) => uoaMatches(variableUoa, selected);

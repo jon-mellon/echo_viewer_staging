@@ -1,9 +1,9 @@
-import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=24b23946d742f1ad";
-import * as projectOps from "./dag_project.mjs?v=24b23946d742f1ad";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=24b23946d742f1ad";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=24b23946d742f1ad";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=24b23946d742f1ad";
-import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=24b23946d742f1ad";
+import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=af38a60d7e7d1737";
+import * as projectOps from "./dag_project.mjs?v=af38a60d7e7d1737";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=af38a60d7e7d1737";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=af38a60d7e7d1737";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=af38a60d7e7d1737";
+import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=af38a60d7e7d1737";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateVisibleCaches, renderAll, groupById, persistProjectLocally, getReturnUrl = () => location.href,
@@ -46,7 +46,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     browseState.loading = false;
     renderDefinition();
   }
-  async function choosePublishedSplit(row) {
+  async function choosePublishedSplit(row, { addDirectly = false } = {}) {
     if (!row || browseState.loading || state.definitionDraft?.step !== "sources") return;
     const draft = state.definitionDraft;
     const base = row.replaces_group_id ? selectedGroupForRole(draft.role) === row.replaces_group_id
@@ -105,7 +105,8 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       invalidateVisibleCaches();
       renderDraft();
       performance.measure("echo:saved-split:review", { start, end: performance.now() });
-      els.definitionSave.focus();
+      if (addDirectly) await saveDefinition();
+      else els.definitionSave.focus();
     } catch (error) {
       if (state.definitionDraft === draft) {
         draft.step = "sources";
@@ -153,7 +154,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     if (state.definitionDraft) setSourceSelection(sourceId, true);
   }
 
-  function reusePreviousSplit(role, row) {
+  function reusePreviousSplit(role, row, { addDirectly = false } = {}) {
     startDefinition(role, { render: false });
     if (!state.definitionDraft) return;
     const available = new Set((state.project?.groups || []).filter(group => group.variable_ids?.length).map(group => group.group_id));
@@ -164,7 +165,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       return;
     }
     state.definitionDraft.source_group_ids = [...row.source_group_ids];
-    void choosePublishedSplit(row);
+    void choosePublishedSplit(row, { addDirectly });
   }
 
   async function startEditSplit(groupId = null) {

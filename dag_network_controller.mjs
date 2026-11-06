@@ -1,16 +1,17 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=24b23946d742f1ad";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=24b23946d742f1ad";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=24b23946d742f1ad";
-import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=24b23946d742f1ad";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=24b23946d742f1ad";
-import * as dagDisplay from "./dag_display.mjs?v=24b23946d742f1ad";
-import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=24b23946d742f1ad";
-import * as workflow from "./dag_workflow.mjs?v=24b23946d742f1ad";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=24b23946d742f1ad";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=24b23946d742f1ad";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=24b23946d742f1ad";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=24b23946d742f1ad";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=24b23946d742f1ad";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=af38a60d7e7d1737";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=af38a60d7e7d1737";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=af38a60d7e7d1737";
+import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=af38a60d7e7d1737";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=af38a60d7e7d1737";
+import { createStatusMenu } from "./dag_status_menu.mjs?v=af38a60d7e7d1737";
+import * as dagDisplay from "./dag_display.mjs?v=af38a60d7e7d1737";
+import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=af38a60d7e7d1737";
+import * as workflow from "./dag_workflow.mjs?v=af38a60d7e7d1737";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=af38a60d7e7d1737";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=af38a60d7e7d1737";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=af38a60d7e7d1737";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=af38a60d7e7d1737";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=af38a60d7e7d1737";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -716,7 +717,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=24b23946d742f1ad", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=af38a60d7e7d1737", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -963,6 +964,22 @@ function fitDag() {
 }
 
 let detachDagInteractions = null;
+let _statusMenu = null;
+let _statusMenuTarget = null;
+
+/** Right-click on a confounder (or exclusion violation) sets its status, as the list and table do. */
+function showStatusMenu(id, event) {
+  const view = pathView({ ...state, exploring: exploring() });
+  const statuses = tableStatuses(view);
+  if (!statuses || !event) return false;
+  const ids = view === "confounders" ? state.confounderGroupIds : state.exclusionViolationIds;
+  if (!ids?.has(id)) return false;
+  _statusMenu ||= createStatusMenu({ onChoose: value => _statusMenuTarget && onSetStatus(_statusMenuTarget.kind, _statusMenuTarget.id, value) });
+  _statusMenuTarget = { kind: statuses.kind, id };
+  _statusMenu.show({ title: `${groupById(id)?.label || id}: ${statuses.noun} status`, options: statuses.options,
+    current: statuses.byId[id]?.status, clientX: event.clientX, clientY: event.clientY });
+  return true;
+}
 
 function attachDagNetworkHandlers(network) {
   detachDagInteractions?.();
@@ -985,6 +1002,7 @@ function attachDagNetworkHandlers(network) {
       return (state.showConfoundersOnly || state.showCollidersOnly || state.showExclusionViolations || state.showExogeneity) && ids.has(id);
     },
     hasGroup: id => Boolean(groupById(id)),
+    onNodeContext: showStatusMenu,
     logicalEdgeId: id => _dagEdgeSegments.get(id) || id,
     focusGroup(id) {
       // In Explore a variable on the graph is a row in the list: open that row's link.

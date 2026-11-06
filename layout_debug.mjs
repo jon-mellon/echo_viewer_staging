@@ -1,4 +1,4 @@
-import { h } from "./dom_builder.mjs?v=24b23946d742f1ad";
+import { h } from "./dom_builder.mjs?v=af38a60d7e7d1737";
 
 /**
  * Add ?layout_debug=1 to the address for a small badge that reports what the browser actually did: the page
