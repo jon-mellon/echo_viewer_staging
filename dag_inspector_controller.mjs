@@ -1,6 +1,6 @@
-import * as inspector from "./dag_inspector.mjs?v=21298bed17f6ce2c";
-import * as projectOps from "./dag_project.mjs?v=21298bed17f6ce2c";
-import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=21298bed17f6ce2c";
+import * as inspector from "./dag_inspector.mjs?v=4c17e505cd4b4d61";
+import * as projectOps from "./dag_project.mjs?v=4c17e505cd4b4d61";
+import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=4c17e505cd4b4d61";
 
 export const STUDY_DESIGN_EDGE_ID = "__study_design_iv_to_dv__";
 export const STUDY_INSTRUMENT_EDGE_ID = "__study_design_instrument_to_iv__";
@@ -256,9 +256,12 @@ export function createDagInspectorController({
     elements.edgeInspector.className = "edge-inspector edge-evidence";
     elements.edgeInspector.hidden = false;
     elements.closeEvidencePane.hidden = false;
-    const records = `${model.rawCount} evidence record${model.rawCount === 1 ? "" : "s"}`;
+    const provenance = inspector.provenanceModel(link, state.project, state.rawLinksById, state.variableById, diagnosticView());
+    const rejectedCount = provenance.rows.filter(({ raw }) =>
+      state.project.finding_decisions?.[raw.raw_causal_link_id]?.display_status === "excluded").length;
+    const records = `${model.rawCount} evidence record${model.rawCount === 1 ? "" : "s"}${rejectedCount ? ` · ${rejectedCount} rejected` : ""}`;
     const meta = [link.is_target_relation ? "Target relationship" : null,
-      sourcesLoading ? null : model.rawCount ? records : "No evidence records"].filter(Boolean).join(" · ");
+      sourcesLoading ? null : model.rawCount || rejectedCount ? records : "No evidence records"].filter(Boolean).join(" · ");
     replaceChildren(elements.edgeInspector,
       h("header", { className: "evidence-header" },
         h("h2", { className: "evidence-title", textContent: `${model.sourceLabel} ${model.arrow} ${model.targetLabel}` }),
@@ -375,7 +378,9 @@ export function createDagInspectorController({
         pendingFindingId = null;
         renderProvenance();
       };
-      const records = `${section.rows.length} record${section.rows.length === 1 ? "" : "s"}`;
+      const rejectedCount = section.rows.filter(({ raw }) =>
+        state.project.finding_decisions?.[raw.raw_causal_link_id]?.display_status === "excluded").length;
+      const records = `${section.rows.length} record${section.rows.length === 1 ? "" : "s"}${rejectedCount ? ` · ${rejectedCount} rejected` : ""}`;
       return h("section", { className: "provenance-direction evidence-section" },
         h("h3", { className: "evidence-section-title" }, `Evidence for ${section.sourceLabel} → ${section.targetLabel}`,
           h("span", { className: "evidence-section-count", textContent: records })),
