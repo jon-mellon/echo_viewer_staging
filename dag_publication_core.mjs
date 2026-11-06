@@ -1,11 +1,11 @@
-import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=c0d5f49fa506a5eb";
-import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=c0d5f49fa506a5eb";
-import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl } from "./schema_source.mjs?v=c0d5f49fa506a5eb";
-import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=c0d5f49fa506a5eb";
-import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=c0d5f49fa506a5eb";
+import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=10f1053dd87595cf";
+import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=10f1053dd87595cf";
+import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl } from "./schema_source.mjs?v=10f1053dd87595cf";
+import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=10f1053dd87595cf";
+import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=10f1053dd87595cf";
 import { createCompiledArtifacts, evidenceSnapshotForSchema, fullCompileDag,
-  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=c0d5f49fa506a5eb";
-import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=c0d5f49fa506a5eb";
+  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=10f1053dd87595cf";
+import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=10f1053dd87595cf";
 
 export const CANONICAL_BASELINE_ID = "a0118906-2366-4cc8-8809-bafdf3860c23";
 export const CANONICAL_BASELINE_HASH = "0afd5f28c1b5456c47cfba84467bea1d62c6dc923a5851281a98d461f60066b4";
