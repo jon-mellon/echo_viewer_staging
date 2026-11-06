@@ -1,9 +1,9 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=480df48adae9192d";
-import * as groupListModel from "./dag_group_list.mjs?v=480df48adae9192d";
-import * as searchModel from "./dag_search.mjs?v=480df48adae9192d";
-import * as workflow from "./dag_workflow.mjs?v=480df48adae9192d";
-import { h, replaceChildren } from "./dom_builder.mjs?v=480df48adae9192d";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=480df48adae9192d";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=21298bed17f6ce2c";
+import * as groupListModel from "./dag_group_list.mjs?v=21298bed17f6ce2c";
+import * as searchModel from "./dag_search.mjs?v=21298bed17f6ce2c";
+import * as workflow from "./dag_workflow.mjs?v=21298bed17f6ce2c";
+import { h, replaceChildren } from "./dom_builder.mjs?v=21298bed17f6ce2c";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=21298bed17f6ce2c";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);
@@ -462,7 +462,8 @@ export function createDagSetupGroupController({
     const chosen = Boolean(focus.active && focus.groupId);
     elements.focusSearchBlock.hidden = !focus.active;
     elements.focusSearchBlock.classList.toggle("has-focus", chosen);
-    if (elements.focusInputLabel) elements.focusInputLabel.textContent = "Primary variable";
+    elements.focusSearchBlock.classList.toggle("is-selected", chosen && !picking);
+    if (elements.focusInputLabel) elements.focusInputLabel.textContent = "Variable";
     elements.focusInput.placeholder = chosen && picking ? `Search to replace ${focus.label}`
       : "Search group or constituent variable";
     if (chosen && !picking && document.activeElement !== elements.focusInput) elements.focusInput.value = focus.label;

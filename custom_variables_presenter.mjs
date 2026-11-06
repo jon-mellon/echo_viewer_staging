@@ -1,6 +1,6 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=480df48adae9192d";
-import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=480df48adae9192d";
-import { publicSchemaProjection } from "./public_schema_projection.mjs?v=480df48adae9192d";
+import { h, replaceChildren } from "./dom_builder.mjs?v=21298bed17f6ce2c";
+import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=21298bed17f6ce2c";
+import { publicSchemaProjection } from "./public_schema_projection.mjs?v=21298bed17f6ce2c";
 
 /**
  * The Custom variables page: a filterable table of the variables the user made

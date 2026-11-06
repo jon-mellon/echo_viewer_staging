@@ -1,5 +1,5 @@
-import { loadGroupingSchemaFolder } from "./grouping_schema_loader.mjs?v=480df48adae9192d";
-import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=480df48adae9192d";
+import { loadGroupingSchemaFolder } from "./grouping_schema_loader.mjs?v=21298bed17f6ce2c";
+import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=21298bed17f6ce2c";
 
 /** Read definitions or decisions independently, including older publications. */
 export async function loadSchemaView(baseUrl, view = "variables", fetchImpl = fetch) {
