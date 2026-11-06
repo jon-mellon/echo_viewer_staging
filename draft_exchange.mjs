@@ -1,6 +1,6 @@
-import { validateGroupingSchema } from "./data_validation.mjs?v=764c5f61c5e9c561";
-import { commitLocalSchema, urlSequence } from "./local_schema_store.mjs?v=764c5f61c5e9c561";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=764c5f61c5e9c561";
+import { validateGroupingSchema } from "./data_validation.mjs?v=39c4144a602f7d79";
+import { commitLocalSchema, urlSequence } from "./local_schema_store.mjs?v=39c4144a602f7d79";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=39c4144a602f7d79";
 
 export const DRAFT_FORMAT = "echo-local-draft-v1";
 
