@@ -1,8 +1,8 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=8932a6f79c11bd52";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=8932a6f79c11bd52";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=8932a6f79c11bd52";
-import { pathView } from "./dag_table.mjs?v=8932a6f79c11bd52";
-import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=8932a6f79c11bd52";
+import { h, replaceChildren } from "./dom_builder.mjs?v=6e52ed0c7552395d";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=6e52ed0c7552395d";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=6e52ed0c7552395d";
+import { pathView } from "./dag_table.mjs?v=6e52ed0c7552395d";
+import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=6e52ed0c7552395d";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;

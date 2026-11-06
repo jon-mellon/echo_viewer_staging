@@ -1,8 +1,8 @@
-import * as projectOps from "./dag_project.mjs?v=8932a6f79c11bd52";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=8932a6f79c11bd52";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=8932a6f79c11bd52";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=8932a6f79c11bd52";
-import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=8932a6f79c11bd52";
+import * as projectOps from "./dag_project.mjs?v=6e52ed0c7552395d";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=6e52ed0c7552395d";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=6e52ed0c7552395d";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=6e52ed0c7552395d";
+import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=6e52ed0c7552395d";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateVisibleCaches, renderAll, groupById, persistProjectLocally, getReturnUrl = () => location.href,

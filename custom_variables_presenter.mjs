@@ -1,6 +1,6 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=8932a6f79c11bd52";
-import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=8932a6f79c11bd52";
-import { publicSchemaProjection } from "./public_schema_projection.mjs?v=8932a6f79c11bd52";
+import { h, replaceChildren } from "./dom_builder.mjs?v=6e52ed0c7552395d";
+import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=6e52ed0c7552395d";
+import { publicSchemaProjection } from "./public_schema_projection.mjs?v=6e52ed0c7552395d";
 
 /**
  * The Custom variables page: a filterable table of the variables the user made
@@ -126,6 +126,7 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
       // Whether a variable is custom, and what it was split from, is what this page is for.
       h("td", {}, h("strong", { textContent: label }),
         custom ? h("span", { className: "custom-variables-tag", textContent: "Custom" }) : null,
+        h("span", { className: "custom-variables-count", textContent: `${(group.variable_ids?.length || Number(group.member_count) || 0).toLocaleString("en-US")} concepts` }),
         custom && sources.length ? h("span", { className: "custom-variables-sources", textContent: `Split from ${sources.join(", ")}` }) : null,
         group.description ? h("span", { className: "custom-variables-definition", title: group.description,
           textContent: truncate(group.description, 140) }) : null),
