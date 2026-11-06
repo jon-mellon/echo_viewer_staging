@@ -1,6 +1,6 @@
-import * as inspector from "./dag_inspector.mjs?v=0c0fe36466bb1c47";
-import * as projectOps from "./dag_project.mjs?v=0c0fe36466bb1c47";
-import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=0c0fe36466bb1c47";
+import * as inspector from "./dag_inspector.mjs?v=b2d29125b4fcf66f";
+import * as projectOps from "./dag_project.mjs?v=b2d29125b4fcf66f";
+import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=b2d29125b4fcf66f";
 
 export const STUDY_DESIGN_EDGE_ID = "__study_design_iv_to_dv__";
 export const STUDY_INSTRUMENT_EDGE_ID = "__study_design_instrument_to_iv__";
@@ -142,7 +142,7 @@ export function createDagInspectorController({
           const knownLabel = conceptLabels.get(id)
             || state.variableById?.get(id)?.concept_label
             || state.variableById?.get(id)?.display_label;
-          const label = knownLabel || (loading ? "Loading…" : id);
+          const label = knownLabel || (loading ? "Loading…" : failedConceptPages.has(pageKey) ? "Name unavailable" : id);
           const canExclude = Boolean(knownLabel && (resolvedConceptIds.has(id)
             || state.variableById?.get(id)?.concept_label || state.variableById?.get(id)?.display_label));
           return h("li", {
@@ -162,7 +162,7 @@ export function createDagInspectorController({
           className: "btn btn--ghost", type: "button", dataset: { conceptPriorityRetry: "" },
           textContent: "Could not prioritize concepts. Retry",
         }) : null,
-        failedConceptPages.has(pageKey) ? h("button", {
+        failedConceptPages.has(pageKey) && missing.length ? h("button", {
           className: "btn btn--ghost", type: "button", dataset: { conceptRetry: "" },
           textContent: "Could not load concepts. Retry",
         }) : null,

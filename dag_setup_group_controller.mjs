@@ -1,9 +1,9 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=0c0fe36466bb1c47";
-import * as groupListModel from "./dag_group_list.mjs?v=0c0fe36466bb1c47";
-import * as searchModel from "./dag_search.mjs?v=0c0fe36466bb1c47";
-import * as workflow from "./dag_workflow.mjs?v=0c0fe36466bb1c47";
-import { h, replaceChildren } from "./dom_builder.mjs?v=0c0fe36466bb1c47";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=0c0fe36466bb1c47";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=b2d29125b4fcf66f";
+import * as groupListModel from "./dag_group_list.mjs?v=b2d29125b4fcf66f";
+import * as searchModel from "./dag_search.mjs?v=b2d29125b4fcf66f";
+import * as workflow from "./dag_workflow.mjs?v=b2d29125b4fcf66f";
+import { h, replaceChildren } from "./dom_builder.mjs?v=b2d29125b4fcf66f";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=b2d29125b4fcf66f";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);
@@ -162,7 +162,7 @@ export function createDagSetupGroupController({
         const knownLabel = conceptLabels.get(id)
           || state.variableById?.get(id)?.concept_label
           || state.variableById?.get(id)?.display_label;
-        const label = knownLabel || (loading ? "Loading…" : id);
+        const label = knownLabel || (loading ? "Loading…" : failedConceptPages.has(pageKey) ? "Name unavailable" : id);
         const canExclude = Boolean(knownLabel && (resolvedConceptIds.has(id)
           || state.variableById?.get(id)?.concept_label || state.variableById?.get(id)?.display_label));
         const button = canExclude ? h("button", {
@@ -184,7 +184,7 @@ export function createDagSetupGroupController({
         className: "btn btn--ghost", type: "button", textContent: "Could not prioritize concepts. Retry",
         onclick: () => { failedConceptViews.delete(viewKey); renderVariableConcepts(group); },
       }) : null,
-      failedConceptPages.has(pageKey) ? h("button", {
+      failedConceptPages.has(pageKey) && missing.length ? h("button", {
         className: "btn btn--ghost", type: "button", textContent: "Could not load concepts. Retry",
         onclick: () => { failedConceptPages.delete(pageKey); renderVariableConcepts(group); },
       }) : null,

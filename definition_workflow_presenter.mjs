@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=0c0fe36466bb1c47";
+import { h, replaceChildren } from "./dom_builder.mjs?v=b2d29125b4fcf66f";
 
 export function createDefinitionWorkflowPresenter({ state, elements: els, normalized, clusterRep, truncate,
   definitionSources, definitionResidualIds, definitionCanReview, searchSourceGroups,
@@ -261,6 +261,11 @@ export function createDefinitionWorkflowPresenter({ state, elements: els, normal
     els.definitionValidation.textContent = "At least 20 characters.";
   }
 
+  /** Show that a saved variable is being added in place, with no page change. */
+  function setAddingSaved(on) {
+    document.body.classList.toggle("adding-saved-split", on);
+  }
+
   function setContinueLoading() {
     els.definitionContinue.disabled = true;
     els.definitionContinue.textContent = "Loading concepts…";
@@ -292,6 +297,6 @@ export function createDefinitionWorkflowPresenter({ state, elements: els, normal
       })] : []);
   }
 
-  return { render, install, showDescribeError, showSaveError, clearDescriptionValidation, setContinueLoading, showLoadError,
+  return { render, install, showDescribeError, showSaveError, clearDescriptionValidation, setAddingSaved, setContinueLoading, showLoadError,
     showSavedRuns };
 }
