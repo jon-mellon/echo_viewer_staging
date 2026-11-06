@@ -1,10 +1,10 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=03534cf56c040a37";
-import * as groupListModel from "./dag_group_list.mjs?v=03534cf56c040a37";
-import * as searchModel from "./dag_search.mjs?v=03534cf56c040a37";
-import * as workflow from "./dag_workflow.mjs?v=03534cf56c040a37";
-import { h, replaceChildren } from "./dom_builder.mjs?v=03534cf56c040a37";
-import { attachListKeyboardNav, resultCountText } from "./list_keyboard_nav.mjs?v=03534cf56c040a37";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=03534cf56c040a37";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=8641f63c033f440f";
+import * as groupListModel from "./dag_group_list.mjs?v=8641f63c033f440f";
+import * as searchModel from "./dag_search.mjs?v=8641f63c033f440f";
+import * as workflow from "./dag_workflow.mjs?v=8641f63c033f440f";
+import { h, replaceChildren } from "./dom_builder.mjs?v=8641f63c033f440f";
+import { attachListKeyboardNav, resultCountText } from "./list_keyboard_nav.mjs?v=8641f63c033f440f";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=8641f63c033f440f";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);
