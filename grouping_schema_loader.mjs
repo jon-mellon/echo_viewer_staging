@@ -1,7 +1,7 @@
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=bb093ce6729e75b7";
-import { validateGroupingSchema } from "./data_validation.mjs?v=bb093ce6729e75b7";
-import { publishedReferenceUrl } from "./schema_source.mjs?v=bb093ce6729e75b7";
-/** @typedef {import("./app_contracts.mjs?v=bb093ce6729e75b7").GroupingSchema} GroupingSchema */
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=a5df288131d97e01";
+import { validateGroupingSchema } from "./data_validation.mjs?v=a5df288131d97e01";
+import { publishedReferenceUrl } from "./schema_source.mjs?v=a5df288131d97e01";
+/** @typedef {import("./app_contracts.mjs?v=a5df288131d97e01").GroupingSchema} GroupingSchema */
 const LIST_COLUMNS = new Set(["member_variable_ids", "previous_group_ids"]);
 
 function parseYamlMapping(text, source) {

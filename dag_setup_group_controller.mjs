@@ -1,9 +1,9 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=bb093ce6729e75b7";
-import * as groupListModel from "./dag_group_list.mjs?v=bb093ce6729e75b7";
-import * as searchModel from "./dag_search.mjs?v=bb093ce6729e75b7";
-import * as workflow from "./dag_workflow.mjs?v=bb093ce6729e75b7";
-import { h, replaceChildren } from "./dom_builder.mjs?v=bb093ce6729e75b7";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=bb093ce6729e75b7";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=a5df288131d97e01";
+import * as groupListModel from "./dag_group_list.mjs?v=a5df288131d97e01";
+import * as searchModel from "./dag_search.mjs?v=a5df288131d97e01";
+import * as workflow from "./dag_workflow.mjs?v=a5df288131d97e01";
+import { h, replaceChildren } from "./dom_builder.mjs?v=a5df288131d97e01";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=a5df288131d97e01";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);
@@ -503,12 +503,10 @@ export function createDagSetupGroupController({
       : query && state.publishedSchemaHydrating ? "Loading group memberships…"
         : query && state.variableSearchStatus === "error" ? "Variable search is unavailable; matching names only." : "";
     const clearButton = () => h("button", { className: "btn btn--sm", type: "button", dataset: { clearFocusSearch: "true" }, textContent: "Clear search" });
-    const section = (title, items, emptyText, tools = null) => h("section", { className: "explore-group explore-picker-section" },
-      h("div", { className: "explore-group-header" },
-        h("h2", {}, title, " ", h("span", { className: "explore-subsection-count", textContent: `(${items.length})` })),
-        tools),
-      items.length ? h("ol", { className: "explore-list" }, items.map(row))
-        : emptyText ? h("p", { className: "explore-subsection-empty", textContent: emptyText }) : null);
+    // A quiet label over each list: the variables are what is being chosen, so they outrank their headings.
+    const section = (title, items) => items.length ? h("section", { className: "picker-section" },
+      h("h3", { className: "picker-label" }, title, h("span", { className: "picker-count", textContent: ` · ${items.length}` })),
+      h("ol", { className: "explore-list" }, items.map(row))) : null;
     const custom = groups.filter(({ group }) => group.source === "user_split");
     const builtIn = groups.filter(({ group }) => group.source !== "user_split");
     replaceChildren(container,
@@ -516,17 +514,17 @@ export function createDagSetupGroupController({
         h("h2", { textContent: pick.title }),
         replacing ? h("button", { className: "btn btn--ghost btn--sm", type: "button", textContent: "Cancel", onclick: onCancel }) : null) : null,
       status ? h("p", { className: "explore-subsection-empty", role: "status", textContent: status }) : null,
-      section("In this schema", custom, pick ? null : query ? "No custom variable matches." : "You have not made any custom variables yet.",
-        createVariableButton(onCreate)),
-      previous.length ? h("section", { className: "explore-group explore-picker-section" },
-        h("div", { className: "explore-group-header" }, h("h2", { textContent: "Saved elsewhere" })),
-        h("p", { className: "explore-subsection-empty", textContent: "Saved in another schema; reuse one to add it here." }),
+      // The one secondary action, above the lists instead of inside an empty section's heading.
+      createVariableButton(onCreate, { label: "Create a new variable", className: "btn picker-create" }),
+      section("Your variables", custom),
+      previous.length ? h("section", { className: "picker-section" },
+        h("h3", { className: "picker-label" }, "Saved in other schemas", h("span", { className: "picker-count", textContent: ` · ${previous.length}` })),
         h("ol", { className: "explore-list" }, previous.map(item => h("li", { className: "explore-row" },
           h("button", { type: "button", className: "explore-row-open saved-variable-row", title: "Review and add this variable to the current schema",
             attrs: { "aria-label": `Review and add ${item.name}` }, onclick: () => reusePreviousSplit(pick?.role || "candidate", item) },
             h("span", { className: "explore-row-text" }, h("span", { className: "explore-row-label", textContent: item.name }),
-              h("span", { className: "explore-row-path", textContent: `From: ${(item.source_labels || []).join(", ")}` })), h("span", { className: "saved-variable-action", textContent: "Review and add" })))))) : null,
-      section("Built-in variables", builtIn, query ? "No built-in variable matches." : "None available."),
+              h("span", { className: "explore-row-path", textContent: `From: ${(item.source_labels || []).join(", ")}` })), h("span", { className: "saved-variable-action", textContent: "Add" })))))) : null,
+      section(custom.length || previous.length ? "All other variables" : "Variables", builtIn),
       query && !groups.length ? h("div", { className: "explore-subsection-empty" }, clearButton()) : null);
     container.querySelectorAll("button[data-group-id]").forEach(button =>
       button.addEventListener("click", () => onChoose(button.dataset.groupId)));

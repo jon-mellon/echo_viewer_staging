@@ -1,4 +1,4 @@
-import { h } from "./dom_builder.mjs?v=bb093ce6729e75b7";
+import { h } from "./dom_builder.mjs?v=a5df288131d97e01";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 // Lucide "pencil" and "trash-2".
@@ -61,8 +61,8 @@ export function customVariableActions({ group, canChange = () => true, onEdit = 
 }
 
 /** The "Create" button in the side panel's Custom variables heading. */
-export function createVariableButton(onCreate) {
-  return h("button", { type: "button", className: "btn btn--sm btn--ghost custom-create",
+export function createVariableButton(onCreate, { label = "Create", className = "btn btn--sm btn--ghost" } = {}) {
+  return h("button", { type: "button", className: `${className} custom-create`,
     title: "Create a variable from concepts in existing variables", onclick: () => onCreate() },
-  icon("plus"), h("span", { textContent: "Create" }));
+  icon("plus"), h("span", { textContent: label }));
 }
