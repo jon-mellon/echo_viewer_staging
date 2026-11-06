@@ -1,6 +1,6 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=d1899fe751d9d990";
-import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=d1899fe751d9d990";
-import { publicSchemaProjection } from "./public_schema_projection.mjs?v=d1899fe751d9d990";
+import { h, replaceChildren } from "./dom_builder.mjs?v=a10e723d1c993db5";
+import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=a10e723d1c993db5";
+import { publicSchemaProjection } from "./public_schema_projection.mjs?v=a10e723d1c993db5";
 
 /**
  * The Custom variables page: a filterable table of the variables the user made
@@ -75,6 +75,7 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
       ...sourceLabels(group)].join(" ")).includes(query))
       .sort((a, b) => Number(b.source === "user_split") - Number(a.source === "user_split"));
     const highlight = state.customVariablesHighlight;
+    if (state.customVariablesNotice) { status = state.customVariablesNotice; state.customVariablesNotice = ""; }
     if (highlight && all.some(group => group.group_id === highlight) && !status) {
       status = `Added “${all.find(group => group.group_id === highlight).label}” to this schema.`;
     }

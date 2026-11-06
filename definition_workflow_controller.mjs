@@ -1,9 +1,9 @@
-import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=d1899fe751d9d990";
-import * as projectOps from "./dag_project.mjs?v=d1899fe751d9d990";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=d1899fe751d9d990";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=d1899fe751d9d990";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=d1899fe751d9d990";
-import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=d1899fe751d9d990";
+import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=a10e723d1c993db5";
+import * as projectOps from "./dag_project.mjs?v=a10e723d1c993db5";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=a10e723d1c993db5";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=a10e723d1c993db5";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=a10e723d1c993db5";
+import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=a10e723d1c993db5";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateVisibleCaches, renderAll, groupById, persistProjectLocally, getReturnUrl = () => location.href,
@@ -46,6 +46,12 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     browseState.loading = false;
     renderDefinition();
   }
+  // A direct add that fails stays on the manager page with a message, instead of opening the definition page.
+  function failDirectAdd(message) {
+    presenter.setAddingSaved(false);
+    state.customVariablesNotice = message;
+    cancelDefinition();
+  }
   async function choosePublishedSplit(row, { addDirectly = false } = {}) {
     if (!row || browseState.loading || state.definitionDraft?.step !== "sources") return;
     const draft = state.definitionDraft;
@@ -53,6 +59,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       && projectWithoutRoleSplit(state.project, draft.role, row.replaces_group_id) : state.project;
     if (!base || !eligiblePreviousSplits([row], base.groups).length) {
       browseState.error = "This saved variable no longer fits the current schema.";
+      if (addDirectly) return failDirectAdd(`Could not add “${row.name}”: ${browseState.error}`);
       renderDraft();
       return;
     }
@@ -61,6 +68,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     const available = new Set(base.groups.filter(group => group.variable_ids?.length).map(group => group.group_id));
     if (!row.source_group_ids?.length || row.source_group_ids.some(id => !available.has(id))) {
       browseState.error = "This split's source variables are not available in the current schema.";
+      if (addDirectly) return failDirectAdd(`Could not add “${row.name}”: ${browseState.error}`);
       renderDraft();
       return;
     }
@@ -113,7 +121,9 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       presenter.setAddingSaved(false);
     } catch (error) {
       presenter.setAddingSaved(false);
-      if (state.definitionDraft === draft) {
+      if (state.definitionDraft === draft && addDirectly) {
+        failDirectAdd(`Could not add “${row.name}”: ${error.message || error}`);
+      } else if (state.definitionDraft === draft) {
         draft.direct = false;
         draft.step = "sources";
         browseState.error = `Could not use this split: ${error.message || error}`;
@@ -168,6 +178,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     if (!row.source_group_ids?.length || row.source_group_ids.some(id => !available.has(id))) {
       state.definitionDraft.source_group_ids = [...(row.source_group_ids || [])];
       browseState.error = "This split's source variables are not available in the current schema.";
+      if (addDirectly) return failDirectAdd(`Could not add “${row.name}”: ${browseState.error}`);
       renderDraft();
       return;
     }
@@ -374,6 +385,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     draft.new_label = clean(draft.new_label);
     draft.new_description = clean(draft.new_description || "");
     const describeProblem = describeError(draft);
+    if (describeProblem && draft.direct) return failDirectAdd(`Could not add “${draft.new_label}”: ${describeProblem}`);
     if (describeProblem) {
       draft.direct = false;
       draft.step = "describe";
@@ -449,6 +461,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       state.project = previousProject;
       onCommitFailureRestored();
       invalidateVisibleCaches();
+      if (draft.direct) return failDirectAdd(`Could not add “${draft.new_label}”: ${error.message || error}`);
       draft.direct = false;
       renderDraft();
       showSaveError(error);
