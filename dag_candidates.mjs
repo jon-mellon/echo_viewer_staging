@@ -1,4 +1,4 @@
-import { pairKey } from "./dag_link_aggregation.mjs?v=17aede43db3da7ab";
+import { pairKey } from "./dag_link_aggregation.mjs?v=24b23946d742f1ad";
 
 const ROLE_PRIORITY = [
   "possible_confounder",

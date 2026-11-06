@@ -1,7 +1,7 @@
-import { confounderPathNodeRole } from "./dag_graph.mjs?v=17aede43db3da7ab";
-import { wrapDagLabel } from "./dag_layout.mjs?v=17aede43db3da7ab";
-import { directedGroupLabels } from "./dag_exports.mjs?v=17aede43db3da7ab";
-import { LIGHT_STATUSES } from "./confounder_status.mjs?v=17aede43db3da7ab";
+import { confounderPathNodeRole } from "./dag_graph.mjs?v=24b23946d742f1ad";
+import { wrapDagLabel } from "./dag_layout.mjs?v=24b23946d742f1ad";
+import { directedGroupLabels } from "./dag_exports.mjs?v=24b23946d742f1ad";
+import { LIGHT_STATUSES } from "./confounder_status.mjs?v=24b23946d742f1ad";
 
 // Display records only: no renderer, DOM or viewer-state access.
 

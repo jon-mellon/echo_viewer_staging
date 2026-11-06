@@ -1,4 +1,4 @@
-import { openLocalDatabase } from "./local_schema_store.mjs?v=17aede43db3da7ab";
+import { openLocalDatabase } from "./local_schema_store.mjs?v=24b23946d742f1ad";
 
 const RUNS = "jev_runs";
 const BATCHES = "jev_batches";

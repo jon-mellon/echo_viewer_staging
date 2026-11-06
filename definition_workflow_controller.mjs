@@ -1,9 +1,9 @@
-import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=17aede43db3da7ab";
-import * as projectOps from "./dag_project.mjs?v=17aede43db3da7ab";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=17aede43db3da7ab";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=17aede43db3da7ab";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=17aede43db3da7ab";
-import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=17aede43db3da7ab";
+import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=24b23946d742f1ad";
+import * as projectOps from "./dag_project.mjs?v=24b23946d742f1ad";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=24b23946d742f1ad";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=24b23946d742f1ad";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=24b23946d742f1ad";
+import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=24b23946d742f1ad";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateVisibleCaches, renderAll, groupById, persistProjectLocally, getReturnUrl = () => location.href,
