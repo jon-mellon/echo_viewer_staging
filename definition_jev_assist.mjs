@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=4c17e505cd4b4d61";
-import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=4c17e505cd4b4d61";
-import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=4c17e505cd4b4d61";
-export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=4c17e505cd4b4d61";
+import { h, replaceChildren } from "./dom_builder.mjs?v=17aede43db3da7ab";
+import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=17aede43db3da7ab";
+import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=17aede43db3da7ab";
+export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=17aede43db3da7ab";
 
 const OAUTH_PENDING_KEY = "echo-openrouter-pkce-v1";
 const OAUTH_DRAFT_KEY = "echo-openrouter-definition-draft-v1";
@@ -455,9 +455,15 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
     els.definitionAiApply.hidden = !fullDone;
     els.definitionAiApply.disabled = busy;
     els.definitionAiApply.textContent = manualChoices ? "Replace my choices with these suggestions" : "Use these suggestions";
+    els.definitionAiApplyBottom.hidden = !fullDone;
+    els.definitionAiApplyBottom.disabled = busy;
+    els.definitionAiApplyBottom.textContent = els.definitionAiApply.textContent;
     els.definitionAiApplyNote.hidden = !fullDone || !manualChoices;
     els.definitionAiApplyNote.textContent = `This replaces your ${manualChoices.toLocaleString()} existing choices: concepts suggested In become included and all others excluded. You can undo it in Choose manually.`;
+    els.definitionAiApplyNoteBottom.hidden = els.definitionAiApplyNote.hidden;
+    els.definitionAiApplyNoteBottom.textContent = els.definitionAiApplyNote.textContent;
     els.definitionAiDiscard.hidden = !showPreview || busy;
+    els.definitionAiDiscardBottom.hidden = !fullDone || busy;
 
     // Progress and errors sit with the step they belong to.
     const statusHost = !key ? (message ? els.definitionAiStepConnect.querySelector(".definition-ai-step-body") : null)
@@ -801,12 +807,15 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
       reviewPage += 1;
       if (preview && previewDraft === getDraft()) renderReviewRows(previewDraft);
     });
-    els.definitionAiApply.addEventListener("click", () => {
+    const applySuggestions = () => {
       if (!preview || busy || previewMode !== "full" || previewDraft !== getDraft()) return;
       onApply(preview.filter(item => item.side === "new").map(item => item.id), testDescription);
       clearPreview();
-    });
+    };
+    els.definitionAiApply.addEventListener("click", applySuggestions);
+    els.definitionAiApplyBottom.addEventListener("click", applySuggestions);
     els.definitionAiDiscard.addEventListener("click", clearPreview);
+    els.definitionAiDiscardBottom.addEventListener("click", clearPreview);
     void finishConnection();
   }
 

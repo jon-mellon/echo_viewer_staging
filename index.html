@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=4c17e505cd4b4d61">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=17aede43db3da7ab">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -416,6 +416,11 @@
                     <button id="definitionAiReviewNext" class="btn btn--sm" type="button">Next</button>
                   </div>
                   <div id="definitionAiRows" class="definition-ai-rows" role="list"></div>
+                  <div class="definition-ai-actions definition-ai-actions--after-results">
+                    <button id="definitionAiApplyBottom" class="btn btn--primary" type="button" hidden>Use these suggestions</button>
+                    <button id="definitionAiDiscardBottom" class="btn btn--ghost" type="button" hidden>Discard suggestions</button>
+                  </div>
+                  <p id="definitionAiApplyNoteBottom" class="small-note" hidden></p>
                 </div>
               </section>
               <!-- The concepts now included, whether they came from the AI or an existing split. -->
@@ -671,7 +676,7 @@
 
     </main>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=4c17e505cd4b4d61"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=4c17e505cd4b4d61"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=17aede43db3da7ab"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=17aede43db3da7ab"></script>
   </body>
 </html>
