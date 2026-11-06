@@ -1,10 +1,11 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=8641f63c033f440f";
-import * as groupListModel from "./dag_group_list.mjs?v=8641f63c033f440f";
-import * as searchModel from "./dag_search.mjs?v=8641f63c033f440f";
-import * as workflow from "./dag_workflow.mjs?v=8641f63c033f440f";
-import { h, replaceChildren } from "./dom_builder.mjs?v=8641f63c033f440f";
-import { attachListKeyboardNav, resultCountText } from "./list_keyboard_nav.mjs?v=8641f63c033f440f";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=8641f63c033f440f";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=601b1916bd347a3a";
+import * as groupListModel from "./dag_group_list.mjs?v=601b1916bd347a3a";
+import * as searchModel from "./dag_search.mjs?v=601b1916bd347a3a";
+import * as workflow from "./dag_workflow.mjs?v=601b1916bd347a3a";
+import { h, replaceChildren } from "./dom_builder.mjs?v=601b1916bd347a3a";
+import { excludeButton, excludedConcepts, exclusionNote, restoreList } from "./concept_exclusion_ui.mjs?v=601b1916bd347a3a";
+import { attachListKeyboardNav, resultCountText } from "./list_keyboard_nav.mjs?v=601b1916bd347a3a";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=601b1916bd347a3a";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);
@@ -33,6 +34,7 @@ export function createDagSetupGroupController({
   beginEditor = () => {},
   loadConceptLabels = async () => [], loadVisibleLinkEndpoints = async () => [],
   excludeConcept = () => {},
+  restoreConcept = () => {},
   // Causes and consequences reuse the anchor bar and picker for their one variable.
   exploreFocus = () => ({ active: false }), searchFocusGroups = () => [], onChooseFocus = () => {},
   // Identify's Cause, Outcome and Instrument fields share the Explore picker list.
@@ -153,6 +155,10 @@ export function createDagSetupGroupController({
 
     replaceChildren(host,
       h("strong", { textContent: `Underlying concepts${count ? ` (${count})` : ""}` }),
+      ids.length ? exclusionNote() : null,
+      restoreList({ items: excludedConcepts(state.project, group), groupLabel: group.label || group.group_id,
+        disabled: state.publishedSchemaHydrating || state.publishedSchemaLoadFailed,
+        onRestore: (id, label) => restoreConcept(group.group_id, id, label) }),
       priority?.matchedCount ? h("div", { className: "small-note",
         textContent: "Concepts used by visible DAG links first" }) : null,
       pageIds.length ? h("ol", {
@@ -166,12 +172,9 @@ export function createDagSetupGroupController({
         const label = knownLabel || (loading ? "Loading…" : failedConceptPages.has(pageKey) ? "Name unavailable" : id);
         const canExclude = Boolean(knownLabel && (resolvedConceptIds.has(id)
           || state.variableById?.get(id)?.concept_label || state.variableById?.get(id)?.display_label));
-        const button = canExclude ? h("button", {
-          className: "group-concept-exclude", type: "button",
-          attrs: { "aria-label": `Exclude ${label} from ${group.label || group.group_id}` },
-          title: `Exclude ${label}`,
+        const button = canExclude ? excludeButton({
+          label, groupLabel: group.label || group.group_id,
           disabled: state.publishedSchemaHydrating || state.publishedSchemaLoadFailed,
-          textContent: "×",
         }) : null;
         button?.addEventListener("click", () => excludeConcept(group.group_id, id, label));
         return h("li", {
