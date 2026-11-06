@@ -1,4 +1,4 @@
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=f3bc2efd9b94b6b8";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=480df48adae9192d";
 
 export function studyDesignEdgeData(groups, project, task = "identify") {
   if (task === "causes" || task === "consequences") return [];

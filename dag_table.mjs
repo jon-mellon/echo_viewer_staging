@@ -1,5 +1,5 @@
-import { directedGroupLabels } from "./dag_exports.mjs?v=f3bc2efd9b94b6b8";
-import { CONTROL_WARNING } from "./confounder_status.mjs?v=f3bc2efd9b94b6b8";
+import { directedGroupLabels } from "./dag_exports.mjs?v=480df48adae9192d";
+import { CONTROL_WARNING } from "./confounder_status.mjs?v=480df48adae9192d";
 
 // A table of exactly what the graph draws. Each row is a path: the variables
 // along it are buttons that open their definitions, and the arrows between
@@ -192,7 +192,6 @@ export function dagTableModel({ view, groups, links, pathsByGroup = new Map(), e
         concepts: group?.variable_ids?.length || Number(group?.member_count) || 0,
         ...(statuses ? { status: statuses.byId[row.id] || { status: "unaddressed", text: "" } } : {}) };
     };
-    const rejected = new Set((statuses?.rejected || []).map(row => row.groupId));
     diagnostic = {
       title: spec.title({ iv: label(ivId), dv: label(dvId), instrument: label(instrumentId) }),
       headers: spec.headers,
@@ -200,8 +199,7 @@ export function dagTableModel({ view, groups, links, pathsByGroup = new Map(), e
       status: statuses ? { kind: statuses.kind, noun: statuses.noun, options: statuses.options } : null,
       sections: [
         // Where a variable came from is a schema question; review lists every candidate together.
-        { title: statuses?.noun ? `${statuses.noun[0].toUpperCase()}${statuses.noun.slice(1)}s` : "Candidates", rows: rows.filter(row => !rejected.has(row.id)).map(item) },
-        ...(rejected.size ? [{ title: "Rejected candidates", rows: statuses.rejected.map(row => item({ id: row.groupId, label: row.label, lines: [], papers: null })) }] : []),
+        { title: statuses?.noun ? `${statuses.noun[0].toUpperCase()}${statuses.noun.slice(1)}s` : "Candidates", rows: [...rows.map(item), ...(statuses?.rejected || []).map(row => item({ id: row.groupId, label: row.label, lines: [], papers: null }))] },
       ],
     };
   }

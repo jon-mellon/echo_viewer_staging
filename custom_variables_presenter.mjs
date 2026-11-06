@@ -1,6 +1,6 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=f3bc2efd9b94b6b8";
-import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=f3bc2efd9b94b6b8";
-import { publicSchemaProjection } from "./public_schema_projection.mjs?v=f3bc2efd9b94b6b8";
+import { h, replaceChildren } from "./dom_builder.mjs?v=480df48adae9192d";
+import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=480df48adae9192d";
+import { publicSchemaProjection } from "./public_schema_projection.mjs?v=480df48adae9192d";
 
 /**
  * The Custom variables page: a filterable table of the variables the user made
@@ -12,7 +12,7 @@ import { publicSchemaProjection } from "./public_schema_projection.mjs?v=f3bc2ef
 export function createCustomVariablesPresenter({ state, elements: els, truncate, normalized,
   customVariables, sourceLabels, canChange, onCreate, onEdit, onDelete,
   canExplore = () => false, onExplore = () => {}, previousSplits = () => [],
-  loadPreviousSplits = () => {}, reusePreviousSplit = () => {}, splitsLoading = () => false, schemaVariables = customVariables,
+  loadPreviousSplits = () => {}, reusePreviousSplit = () => {}, splitsLoading = () => false, splitsError = () => false, schemaVariables = customVariables,
   onSplitSource = () => {}, getSchema = () => ({}), loadDetails = async () => {}, conceptLabel = id => id }) {
   let confirmingId = null;
   let deleting = false;
@@ -96,9 +96,13 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
         h("button", { type: "button", className: "btn btn--sm", textContent: "Add to schema",
           attrs: { "aria-label": `Add ${item.name} to schema` },
           onclick: () => reusePreviousSplit("candidate", item) }))),
-      previous.length ? null : h("p", { className: "small-note custom-variables-none", role: "status",
-        textContent: loadingSplits ? "Looking for saved variables…"
-          : query ? "No saved variable matches this filter."
+      loadingSplits ? h("p", { className: "small-note concept-loading", role: "status" },
+        h("span", { className: "inline-spinner", ariaHidden: "true" }), "Looking for saved variables…")
+        : splitsError() ? h("div", { role: "status" },
+          h("p", { className: "small-note custom-variables-none", textContent: "Some saved variables could not be loaded." }),
+          h("button", { type: "button", className: "btn btn--sm", textContent: "Retry", onclick: () => { loadPreviousSplits(true); render(); } }))
+        : previous.length ? null : h("p", { className: "small-note custom-variables-none", role: "status",
+          textContent: query ? "No saved variable matches this filter."
             : "Nothing saved in other schemas yet. Variables you create elsewhere will appear here, ready to add." })));
     sections.push(h("h2", { textContent: "In this schema" }), rows.length
       ? h("table", { className: "custom-variables-grid" },

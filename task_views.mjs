@@ -1,8 +1,8 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=f3bc2efd9b94b6b8";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=f3bc2efd9b94b6b8";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=f3bc2efd9b94b6b8";
-import { pathView } from "./dag_table.mjs?v=f3bc2efd9b94b6b8";
-import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=f3bc2efd9b94b6b8";
+import { h, replaceChildren } from "./dom_builder.mjs?v=480df48adae9192d";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=480df48adae9192d";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=480df48adae9192d";
+import { pathView } from "./dag_table.mjs?v=480df48adae9192d";
+import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=480df48adae9192d";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -51,9 +51,10 @@ function mapIcon() {
   }
   return svg;
 }
-function backToMapLabel() {
+function backLabel(text, className) {
   const label = document.createElement("span");
-  label.textContent = "Back to map";
+  label.className = className;
+  label.textContent = text;
   return label;
 }
 const clampDepth = value => Math.max(1, Math.min(MAX_NEIGHBORHOOD_DEPTH, Math.trunc(Number(value)) || 1));
@@ -682,13 +683,11 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
     if (filter && toolbar && filter.parentElement !== toolbar) toolbar.append(filter);
     if (key === identifyListKey) return;
     identifyListKey = key;
-    const active = rows.filter(row => !row.rejected), rejected = rows.filter(row => row.rejected);
-    els.summary.textContent = !active.length ? `No ${noun} at this path length and paper count. Reviewed decisions remain below.` : "";
-    els.summary.hidden = Boolean(active.length);
+    els.summary.textContent = !rows.length ? `No ${noun} at this path length and paper count. Reviewed decisions remain below.` : "";
+    els.summary.hidden = Boolean(rows.length);
     const sections = [
       // Where a variable came from is a schema question; review treats every variable alike.
-      { key: "candidates", title: noun.charAt(0).toUpperCase() + noun.slice(1), items: active, empty: "None." },
-      ...(rejected.length ? [{ key: "rejected", title: `Rejected candidates (${rejected.length})`, items: rejected, empty: "" }] : []),
+      { key: "candidates", title: noun.charAt(0).toUpperCase() + noun.slice(1), items: rows, empty: "None." },
     ];
     replaceChildren(els.results, ...sections.map(({ key, title, items, empty }) =>
       h("section", { className: "explore-group variable-review-section", dataset: { section: key } },
@@ -730,7 +729,7 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
               attrs: { "aria-label": `Definition of ${label}` }, onclick: () => onOpenIdentifyVariable(item.groupId) }, "ⓘ") : null,
             select ? h("div", { className: "variable-disposition-line" }, select, warning) : null,
             warningText,
-            item.noLongerCandidate && item.rejected && item.status !== "removed_other" ? h("p", { className: "small-note review-row-note", textContent: "Not a candidate with the current filters." }) : null,
+            item.noLongerCandidate ? h("p", { className: "small-note review-row-note", textContent: "Not a candidate with the current filters." }) : null,
             item.text && ["removed_other", "other"].includes(item.status) ? h("p", { className: "small-note review-row-note", textContent: `Private note: ${item.text}` }) : null,
             item.status === "removed_other" ? h("button", { type: "button", className: "btn btn--ghost btn--sm review-edit-note", textContent: "Edit reason",
               onclick: () => onReviewVariable(view, item.groupId, "removed_other") }) : null);
@@ -803,9 +802,11 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
     const closeEvidence = el("closeEvidencePane");
     if (closeEvidence) {
       // Lucide "map" icon, inline like the other toolbar icons.
-      if (task) closeEvidence.replaceChildren(mapIcon(), backToMapLabel());
+      if (task) closeEvidence.replaceChildren(mapIcon(), backLabel("Back to map", "evidence-back-map"),
+        backLabel("Back to variables", "evidence-back-variables"));
       else closeEvidence.textContent = "Close";
-      closeEvidence.setAttribute("aria-label", task ? "Back to the map" : "Close evidence or description");
+      if (task) closeEvidence.removeAttribute("aria-label");
+      else closeEvidence.setAttribute("aria-label", "Close evidence or description");
     }
     for (const [name, className] of Object.entries(TASK_CLASSES)) document.body.classList.toggle(className, task === name);
     document.body.classList.toggle("task-home", !task);

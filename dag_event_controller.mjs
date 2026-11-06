@@ -1,4 +1,4 @@
-import * as projectOps from "./dag_project.mjs?v=f3bc2efd9b94b6b8";
+import * as projectOps from "./dag_project.mjs?v=480df48adae9192d";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -284,7 +284,7 @@ function installHandlers() {
     // Leaving the wizard from its first step discards nothing typed elsewhere.
     () => shown(els.definitionSourcesStep) || shown(els.definitionDescribeStep) ? els.definitionCancel : null,
     () => els.customVariablesClose,
-    () => els.closeEvidencePane?.getAttribute("aria-label") === "Back to the map" ? els.closeEvidencePane : null,
+    () => state.task ? els.closeEvidencePane : null,
   ];
   let escapeClaimed = false;
   window.addEventListener("keydown", (event) => {
