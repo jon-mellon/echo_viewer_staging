@@ -1,17 +1,17 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=9b3377ba67b79d70";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=9b3377ba67b79d70";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=9b3377ba67b79d70";
-import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=9b3377ba67b79d70";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=9b3377ba67b79d70";
-import { createStatusMenu } from "./dag_status_menu.mjs?v=9b3377ba67b79d70";
-import * as dagDisplay from "./dag_display.mjs?v=9b3377ba67b79d70";
-import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=9b3377ba67b79d70";
-import * as workflow from "./dag_workflow.mjs?v=9b3377ba67b79d70";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=9b3377ba67b79d70";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=9b3377ba67b79d70";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=9b3377ba67b79d70";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=9b3377ba67b79d70";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=9b3377ba67b79d70";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=58344cc707719cf4";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=58344cc707719cf4";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=58344cc707719cf4";
+import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=58344cc707719cf4";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=58344cc707719cf4";
+import { createStatusMenu } from "./dag_status_menu.mjs?v=58344cc707719cf4";
+import * as dagDisplay from "./dag_display.mjs?v=58344cc707719cf4";
+import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=58344cc707719cf4";
+import * as workflow from "./dag_workflow.mjs?v=58344cc707719cf4";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=58344cc707719cf4";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=58344cc707719cf4";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=58344cc707719cf4";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=58344cc707719cf4";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=58344cc707719cf4";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -60,6 +60,10 @@ export const DAG_FIT_OPTIONS = { animation: false, maxZoomLevel: Number.MAX_VALU
 const MIN_READABLE_FONT_PX = 9;
 let _dagFontSize = 14;
 
+// A new network paints at vis-network's default scale until the first fit, so a
+// node reads as an enormous blob on reload. Keep the canvas hidden until then.
+let _dagAwaitingInitialFit = false;
+
 export function fitDagNetwork(network) {
   if (!network) return;
   network.fit(DAG_FIT_OPTIONS);
@@ -107,6 +111,9 @@ export function createDagNetworkController({
   // The causes and consequences views draw a neighborhood of one variable, not
   // a study design, so there are no IV, DV or instrument anchors to pin or style.
   const exploring = () => state.task === "causes" || state.task === "consequences";
+  const revealDagNetwork = () => {
+    if (!_dagAwaitingInitialFit) els.dagNetwork.style.visibility = "";
+  };
   const studyAnchors = () => exploring() ? { ivId: null, dvId: null, instrumentId: null }
     : { ivId: state.project?.iv_group_id, dvId: state.project?.dv_group_id, instrumentId: state.project?.instrument_group_id };
   const exploreFocusId = () => exploring() ? state.explore?.[state.task]?.focusId || null : null;
@@ -717,7 +724,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=9b3377ba67b79d70", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=58344cc707719cf4", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;
@@ -778,7 +785,13 @@ async function applyDagRender(groups, layout, routes) {
     _visOptionSignature = visOptionSignature(layout.params);
     patchBoxBorderDistance(_visNetwork);
     attachDagNetworkHandlers(_visNetwork);
-    setTimeout(() => fitDagNetwork(_visNetwork), 80);
+    _dagAwaitingInitialFit = true;
+    els.dagNetwork.style.visibility = "hidden";
+    setTimeout(() => {
+      fitDagNetwork(_visNetwork);
+      _dagAwaitingInitialFit = false;
+      els.dagNetwork.style.visibility = "";
+    }, 80);
   } else {
     // Update the existing network in place. Destroying/recreating the network
     // synchronously here is unsafe when renderDag() is called from inside a visApi.js
@@ -857,7 +870,7 @@ async function applyDagRender(groups, layout, routes) {
       setTimeout(() => fitDagNetwork(_visNetwork), 120);
     }
   }
-  els.dagNetwork.style.visibility = "";
+  revealDagNetwork();
 }
 
 function applyReusedDagRender(groups, layout, routes) {
@@ -912,7 +925,7 @@ function applyReusedDagRender(groups, layout, routes) {
   }
   if (changedNodes.length) _visNodes.update(changedNodes);
   _renderedSelectedEdgeId = state.selectedEdgeId;
-  els.dagNetwork.style.visibility = "";
+  revealDagNetwork();
   // DataSet additions/removals/updates schedule their own coalesced paint.
 }
 
