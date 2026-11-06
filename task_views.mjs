@@ -1,8 +1,8 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=39c4144a602f7d79";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=39c4144a602f7d79";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=39c4144a602f7d79";
-import { pathView } from "./dag_table.mjs?v=39c4144a602f7d79";
-import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=39c4144a602f7d79";
+import { h, replaceChildren } from "./dom_builder.mjs?v=f3bc2efd9b94b6b8";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=f3bc2efd9b94b6b8";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=f3bc2efd9b94b6b8";
+import { pathView } from "./dag_table.mjs?v=f3bc2efd9b94b6b8";
+import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=f3bc2efd9b94b6b8";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;

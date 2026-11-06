@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=39c4144a602f7d79";
-import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=39c4144a602f7d79";
-import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=39c4144a602f7d79";
-export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=39c4144a602f7d79";
+import { h, replaceChildren } from "./dom_builder.mjs?v=f3bc2efd9b94b6b8";
+import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=f3bc2efd9b94b6b8";
+import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=f3bc2efd9b94b6b8";
+export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=f3bc2efd9b94b6b8";
 
 const OAUTH_PENDING_KEY = "echo-openrouter-pkce-v1";
 const OAUTH_DRAFT_KEY = "echo-openrouter-definition-draft-v1";
@@ -567,13 +567,15 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
       if (typeof body.key !== "string" || !body.key) throw new Error("OpenRouter did not return a key.");
       key = body.key;
       settingsUrl = await keySettingsUrl(key);
-      await checkKey();
     } catch (error) {
       key = null;
       message = `Could not connect OpenRouter: ${error.message}`;
       render();
       onConnectionChange(false);
+      return;
     }
+    // Keep the issued key when the limit check fails so the user can retry it.
+    await checkKey().catch(() => {});
   }
 
   function showProgress(value) {
