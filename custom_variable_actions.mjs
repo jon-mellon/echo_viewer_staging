@@ -1,4 +1,4 @@
-import { h } from "./dom_builder.mjs?v=5be733015f667722";
+import { h } from "./dom_builder.mjs?v=bb093ce6729e75b7";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 // Lucide "pencil" and "trash-2".

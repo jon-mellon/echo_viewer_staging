@@ -1,6 +1,6 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=5be733015f667722";
-import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=5be733015f667722";
-import { publicSchemaProjection } from "./public_schema_projection.mjs?v=5be733015f667722";
+import { h, replaceChildren } from "./dom_builder.mjs?v=bb093ce6729e75b7";
+import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=bb093ce6729e75b7";
+import { publicSchemaProjection } from "./public_schema_projection.mjs?v=bb093ce6729e75b7";
 
 /**
  * The Custom variables page: a filterable table of the variables the user made
@@ -83,14 +83,10 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
       return;
     }
     const busy = state.publishedSchemaHydrating || state.publishedSchemaLoadFailed || deleting;
-    replaceChildren(els.customVariablesTable, h("h2", { textContent: "In this schema" }), h("table", { className: "custom-variables-grid" },
-      h("thead", {}, h("tr", {},
-        h("th", { scope: "col", textContent: "Name" }),
-        h("th", { scope: "col", className: "num", textContent: "Concepts" }),
-        h("th", { scope: "col", className: "actions" }, h("span", { className: "sr-only", textContent: "Actions" })))),
-      h("tbody", {}, rows.flatMap(group => [row(group, { busy, highlight }), group.group_id === expandedId ? detailsRow(group) : null]))));
+    // Saved variables from elsewhere come first: they are what you add; the schema list below is what you have.
+    const sections = [];
     if (previous.length) {
-      els.customVariablesTable.append(h("section", { className: "custom-variables-previous" },
+      sections.push(h("section", { className: "custom-variables-previous" },
         h("h2", { textContent: "Saved elsewhere" }),
         h("p", { className: "small-note", textContent: "Add a saved variable to this schema by splitting its source groups." }),
         ...previous.map(item => h("div", { className: "setup-group-picker-row" },
@@ -100,6 +96,13 @@ export function createCustomVariablesPresenter({ state, elements: els, truncate,
             attrs: { "aria-label": `Add ${item.name} to schema` },
             onclick: () => reusePreviousSplit("candidate", item) })))));
     }
+    sections.push(h("h2", { textContent: "In this schema" }), h("table", { className: "custom-variables-grid" },
+      h("thead", {}, h("tr", {},
+        h("th", { scope: "col", textContent: "Name" }),
+        h("th", { scope: "col", className: "num", textContent: "Concepts" }),
+        h("th", { scope: "col", className: "actions" }, h("span", { className: "sr-only", textContent: "Actions" })))),
+      h("tbody", {}, rows.flatMap(group => [row(group, { busy, highlight }), group.group_id === expandedId ? detailsRow(group) : null]))));
+    replaceChildren(els.customVariablesTable, ...sections);
     els.customVariablesTable.querySelectorAll("button[data-action]").forEach(button =>
       button.addEventListener("click", () => act(button.dataset.action, button.dataset.groupId)));
   }
