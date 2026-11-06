@@ -1,16 +1,16 @@
-import { publishedReferenceUrl } from "./schema_source.mjs?v=601b1916bd347a3a";
-import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=601b1916bd347a3a";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=601b1916bd347a3a";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=601b1916bd347a3a";
-import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=601b1916bd347a3a";
-import { buildPermalink } from "./dag_permalink.mjs?v=601b1916bd347a3a";
-import { deriveDagView } from "./dag_view.mjs?v=601b1916bd347a3a";
+import { publishedReferenceUrl } from "./schema_source.mjs?v=d1899fe751d9d990";
+import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=d1899fe751d9d990";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=d1899fe751d9d990";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=d1899fe751d9d990";
+import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=d1899fe751d9d990";
+import { buildPermalink } from "./dag_permalink.mjs?v=d1899fe751d9d990";
+import { deriveDagView } from "./dag_view.mjs?v=d1899fe751d9d990";
 import { COMPILED_DAG_PATH, sha256Hex, stableJsonBytes,
-  validateCompiledArtifact } from "./compiled_dag.mjs?v=601b1916bd347a3a";
+  validateCompiledArtifact } from "./compiled_dag.mjs?v=d1899fe751d9d990";
 
-export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=601b1916bd347a3a";
+export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=d1899fe751d9d990";
 import { publicSchemaBaseUrl as sharedPublicSchemaBaseUrl,
-  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=601b1916bd347a3a";
+  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=d1899fe751d9d990";
 
 export async function fetchPublishedFile(url, options, fetchImpl, sleep = ms => new Promise(resolve => setTimeout(resolve, ms))) {
   for (let attempt = 0; attempt < 5; attempt += 1) {
