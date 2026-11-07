@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=f08bc3258ea9355d";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=f08bc3258ea9355d";
-import { pathView } from "./dag_table.mjs?v=f08bc3258ea9355d";
-import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=f08bc3258ea9355d";
+import { h, replaceChildren } from "./dom_builder.mjs?v=f3c7c2810af82933";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=f3c7c2810af82933";
+import { pathView } from "./dag_table.mjs?v=f3c7c2810af82933";
+import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=f3c7c2810af82933";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -638,7 +638,7 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
     if (filter && toolbar && filter.parentElement !== toolbar) toolbar.append(filter);
     if (key === identifyListKey) return;
     identifyListKey = key;
-    els.summary.textContent = !rows.length ? `No ${noun} at this path length and paper count. Reviewed decisions remain below.` : "";
+    els.summary.textContent = !rows.length ? `No ${noun} were found with the current path length and paper count.` : "";
     els.summary.hidden = Boolean(rows.length);
     const sections = [
       // Where a variable came from is a schema question; review treats every variable alike.

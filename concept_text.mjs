@@ -1,4 +1,4 @@
-import { h } from "./dom_builder.mjs?v=f08bc3258ea9355d";
+import { h } from "./dom_builder.mjs?v=f3c7c2810af82933";
 
 // Source data writes concepts with "uoa" standing for the unit of analysis
 // ("uoa's self-reported amusement"). The abbreviation stays, and its first
