@@ -1,9 +1,9 @@
-import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=2ead2f1d53b282ea";
-import * as projectOps from "./dag_project.mjs?v=2ead2f1d53b282ea";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=2ead2f1d53b282ea";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=2ead2f1d53b282ea";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=2ead2f1d53b282ea";
-import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=2ead2f1d53b282ea";
+import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=710f80a253290383";
+import * as projectOps from "./dag_project.mjs?v=710f80a253290383";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=710f80a253290383";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=710f80a253290383";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=710f80a253290383";
+import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=710f80a253290383";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateVisibleCaches, renderAll, groupById, persistProjectLocally, getReturnUrl = () => location.href,
@@ -266,6 +266,9 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
     draft.eligible_variable_ids = [...new Set(sources.flatMap(group =>
       group.variable_ids.map(clusterRep)))];
     if (!sameSources) {
+      // Suggestions and samples belong to the old sources, even when this is
+      // the same draft object. Keep its checkpoint available for later resume.
+      jevAssist.clearPreview({ keepCheckpoint: true });
       draft.new_variable_ids = [];
       draft.reviewed_variable_ids = [];
       // What stays behind keeps its variable's name unless the user renames it.

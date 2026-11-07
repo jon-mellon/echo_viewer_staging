@@ -1,12 +1,12 @@
-import { buildPermalink } from "./dag_permalink.mjs?v=2ead2f1d53b282ea";
-import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=2ead2f1d53b282ea";
-import { validateGroupingSchema } from "./data_validation.mjs?v=2ead2f1d53b282ea";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=2ead2f1d53b282ea";
+import { buildPermalink } from "./dag_permalink.mjs?v=710f80a253290383";
+import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=710f80a253290383";
+import { validateGroupingSchema } from "./data_validation.mjs?v=710f80a253290383";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=710f80a253290383";
 
 const RESET_HANDOFF_KEY = "echo-pending-reset-session";
 
 export function createPersistentViewer({ state, getSchema, getViewport = () => {},
-  status = () => {}, onDiscard = () => {} }) {
+  status = () => {}, onDiscard = () => {}, onSessionSaved = () => {} }) {
   let localRecord = null;
   let committedSchema = null;
   let editorBaseline = null;
@@ -219,6 +219,7 @@ export function createPersistentViewer({ state, getSchema, getViewport = () => {
     const sequence = urlSequence();
     if (url !== window.location.href) replaceUrl(url);
     return mirrorSessionUrl(sessionId, url, sequence, sessionTitle())
+      .then(() => onSessionSaved())
       .catch(error => status(`Previous view not saved — ${error.message}`));
   }
 

@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=2ead2f1d53b282ea";
-import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=2ead2f1d53b282ea";
-import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=2ead2f1d53b282ea";
-export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=2ead2f1d53b282ea";
+import { h, replaceChildren } from "./dom_builder.mjs?v=710f80a253290383";
+import { jevRunId, loadJevRun, listJevRuns, saveJevRun, saveJevBatch, deleteJevRun } from "./definition_jev_checkpoint.mjs?v=710f80a253290383";
+import { JEV_MODEL as MODEL, JEV_BATCH_SIZE as BATCH_SIZE, JEV_TEST_SIZE as TEST_SIZE, cappedKeyStatus, randomSampleIds, jevRecords, jevRequest, jevResults, openRouterJson, parseJevPricing, jevRequestSizes, estimatedJevCharge } from "./definition_jev_core.mjs?v=710f80a253290383";
+export { cappedKeyStatus, randomSampleIds } from "./definition_jev_core.mjs?v=710f80a253290383";
 
 const OAUTH_PENDING_KEY = "echo-openrouter-pkce-v1";
 const OAUTH_DRAFT_KEY = "echo-openrouter-definition-draft-v1";
@@ -83,6 +83,7 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
   let restorePromise = null;
   // Serialize edits so a quick sequence of review choices is saved in order.
   let pendingReviewSaves = Promise.resolve();
+  const pendingDeletions = new Map();
 
   function eligibleSignature(draft) {
     return (draft?.eligible_variable_ids || []).join("\u0000");
@@ -96,8 +97,14 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
     checkpointDescription = null;
     checkpointSignature = null;
     restorePromise = null;
-    if (oldId && !keepCheckpoint) void pendingReviewSaves.then(() => deleteJevRun(oldId)).catch(error =>
-      console.warn("Could not remove Jev checkpoint.", error));
+    if (oldId && !keepCheckpoint) {
+      const deletion = pendingReviewSaves.then(() => deleteJevRun(oldId)).catch(error => {
+        console.warn("Could not remove Jev checkpoint.", error);
+        throw error;
+      }).finally(() => pendingDeletions.delete(oldId));
+      pendingDeletions.set(oldId, deletion);
+      void deletion.catch(() => {});
+    }
     preview = null;
     previewDraft = null;
     previewMode = null;
@@ -221,6 +228,7 @@ export function createDefinitionJevAssist({ elements: els, getDraft, getVariable
     restorePromise = (async () => {
       await pendingReviewSaves;
       const id = await jevRunId(checkpointSource(draft, description));
+      await pendingDeletions.get(id);
       const saved = await loadJevRun(id);
       if (revision !== runRevision || draft !== getDraft()
         || description !== String(draft.ai_description || "").trim()
