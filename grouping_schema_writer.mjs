@@ -1,6 +1,6 @@
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=42a75e489610903d";
-import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=42a75e489610903d";
-export { GROUPING_FORMAT_VERSION } from "./app_contracts.mjs?v=42a75e489610903d";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=b528c907735dc640";
+import { variableSchema, studyDecisionBundle } from "./schema_views.mjs?v=b528c907735dc640";
+export { GROUPING_FORMAT_VERSION } from "./app_contracts.mjs?v=b528c907735dc640";
 const SCHEMA_KEYS = ["schema_version", "grouping_set_id", "label", "description"];
 const REJECTED_COLUMNS = [
   "variable_id", "member_variable_ids", "label", "reason", "flagged_at", "previous_group_ids",
@@ -42,7 +42,7 @@ export function stableJson(value) {
 }
 
 function groupFilename(groupId) {
-  if (!groupId) throw new Error("Every published group must have a non-empty group_id.");
+  if (!groupId) throw new Error("Every published variable must have a non-empty group_id.");
   return `${encodeURIComponent(groupId).replace(/[!'()*]/g, character => `%${character.charCodeAt(0).toString(16).toUpperCase()}`)}.tsv`;
 }
 
@@ -67,7 +67,7 @@ function validateSchema(schema) {
     groupIds.add(group.group_id);
     for (const variableId of group.variable_ids) {
       if (!variableId || (owners.has(variableId) && owners.get(variableId) !== group.group_id)) {
-        throw new Error(`Canonical variable ${variableId} has conflicting group ownership.`);
+        throw new Error(`Canonical variable ${variableId} has conflicting variable ownership.`);
       }
       owners.set(variableId, group.group_id);
     }

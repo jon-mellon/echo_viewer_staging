@@ -1,5 +1,5 @@
-import { directedGroupLabels } from "./dag_exports.mjs?v=42a75e489610903d";
-import { displayPaperTableKey } from "./dag_display.mjs?v=42a75e489610903d";
+import { directedGroupLabels } from "./dag_exports.mjs?v=b528c907735dc640";
+import { displayPaperTableKey } from "./dag_display.mjs?v=b528c907735dc640";
 
 export function diagnosticEvidenceDirection(link, {
   showConfoundersOnly = false,
@@ -66,8 +66,8 @@ export function studyInspector(project, rawLinksById) {
     return raw ? displayPaperTableKey(`${raw.paper_id || "unknown"}::${raw.within_table_occurrence_id || "unknown"}`) : "";
   }).filter(Boolean))].slice(0, 8);
   return {
-    sourceLabel: project.groups.find(g => g.group_id === project.iv_group_id)?.label || "Ind var",
-    targetLabel: project.groups.find(g => g.group_id === project.dv_group_id)?.label || "Dep var",
+    sourceLabel: project.groups.find(g => g.group_id === project.iv_group_id)?.label || "Cause",
+    targetLabel: project.groups.find(g => g.group_id === project.dv_group_id)?.label || "Outcome",
     rawIds, keys,
   };
 }

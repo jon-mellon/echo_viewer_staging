@@ -1,8 +1,8 @@
-import * as exportData from "./dag_exports.mjs?v=42a75e489610903d";
-import * as history from "./project_history.mjs?v=42a75e489610903d";
-import * as persistence from "./project_persistence.mjs?v=42a75e489610903d";
-import * as projectOps from "./dag_project.mjs?v=42a75e489610903d";
-import * as workflow from "./dag_workflow.mjs?v=42a75e489610903d";
+import * as exportData from "./dag_exports.mjs?v=b528c907735dc640";
+import * as history from "./project_history.mjs?v=b528c907735dc640";
+import * as persistence from "./project_persistence.mjs?v=b528c907735dc640";
+import * as projectOps from "./dag_project.mjs?v=b528c907735dc640";
+import * as workflow from "./dag_workflow.mjs?v=b528c907735dc640";
 
 // Owns project lifecycle and the sole in-place mutation adapter used by the UI.
 export function createDagProjectController({
@@ -96,7 +96,7 @@ export function createDagProjectController({
     try {
       persistence.writeProject(storage, storageKey(), payload());
     } catch (error) {
-      warn("Could not autosave DAG project", error);
+      warn("Could not autosave project", error);
     }
   }
 
@@ -121,7 +121,7 @@ export function createDagProjectController({
       applyLoaded(saved);
       return true;
     } catch (error) {
-      warn("Could not restore autosaved DAG project", error);
+      warn("Could not restore autosaved project", error);
       return false;
     }
   }

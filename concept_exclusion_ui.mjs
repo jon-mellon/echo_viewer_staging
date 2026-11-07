@@ -1,4 +1,4 @@
-import { h } from "./dom_builder.mjs?v=42a75e489610903d";
+import { h } from "./dom_builder.mjs?v=b528c907735dc640";
 
 export const EXCLUSION_SCOPE_NOTE =
   "Exclude removes a concept from this variable in your schema, so the map and evidence update too. "
@@ -25,7 +25,7 @@ export function excludeButton({ label, groupLabel, disabled, dataset = {} }) {
   return h("button", {
     className: "group-concept-exclude", type: "button", dataset,
     attrs: { "aria-label": `Exclude ${label} from ${groupLabel}` },
-    title: `Remove ${label} from this variable`,
+    title: `Exclude ${label} from this variable`,
     disabled, textContent: "Exclude",
   });
 }

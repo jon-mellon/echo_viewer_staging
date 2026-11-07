@@ -1,6 +1,6 @@
-import * as exportData from "./dag_exports.mjs?v=42a75e489610903d";
-import { makeZip } from "./dag_export_zip.mjs?v=42a75e489610903d";
-import { setSafeUrl } from "./dom_builder.mjs?v=42a75e489610903d";
+import * as exportData from "./dag_exports.mjs?v=b528c907735dc640";
+import { makeZip } from "./dag_export_zip.mjs?v=b528c907735dc640";
+import { setSafeUrl } from "./dom_builder.mjs?v=b528c907735dc640";
 
 export const MAX_REFERENCE_ENRICHMENTS = 24;
 
@@ -170,7 +170,7 @@ export function createDagExportController({
       let worker;
       try {
         const blob = await new Promise((resolve, reject) => {
-          worker = new Worker(new URL("./json_export_worker.mjs?v=42a75e489610903d", import.meta.url), { type: "module" });
+          worker = new Worker(new URL("./json_export_worker.mjs?v=b528c907735dc640", import.meta.url), { type: "module" });
           worker.onmessage = event => resolve(event.data);
           worker.onerror = reject;
           worker.onmessageerror = reject;
@@ -203,7 +203,7 @@ export function createDagExportController({
       if (!input) setBusy(false);
     }
     if (!exportData.collectAllDagDois(input).length && !input.visibleLinks?.length) {
-      alertImpl("No links in the DAG yet.");
+      alertImpl("No links in the graph yet.");
       setBusy(false);
       return;
     }

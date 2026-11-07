@@ -1,11 +1,11 @@
-import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=42a75e489610903d";
-import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=42a75e489610903d";
-import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl } from "./schema_source.mjs?v=42a75e489610903d";
-import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=42a75e489610903d";
-import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=42a75e489610903d";
+import { canonicalFolderHash, stableJson, writeGroupingSchemaFolder } from "./grouping_schema_writer.mjs?v=b528c907735dc640";
+import { publicSchemaBaseUrl, lookupPublishedSchema } from "./publication_access.mjs?v=b528c907735dc640";
+import { canonicalPublishedReference, isPublishedFileUrl, publishedReferenceUrl } from "./schema_source.mjs?v=b528c907735dc640";
+import { cloudflareApiConfigured, CLOUDFLARE_API_URL } from "./cloudflare_config.mjs?v=b528c907735dc640";
+import { ensureOwner, publishFiles } from "./cloudflare_api.mjs?v=b528c907735dc640";
 import { createCompiledArtifacts, evidenceSnapshotForSchema, fullCompileDag,
-  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=42a75e489610903d";
-import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=42a75e489610903d";
+  COMPILED_DAG_PATH, COMPILED_MANIFEST_PATH, DAG_COMPILER_VERSION } from "./compiled_dag.mjs?v=b528c907735dc640";
+import { publicCompiledDag, publicLinkDecisions, publicFindingDecisions, publicSchemaProjection } from "./public_schema_projection.mjs?v=b528c907735dc640";
 
 export const CANONICAL_BASELINE_ID = "a0118906-2366-4cc8-8809-bafdf3860c23";
 export const CANONICAL_BASELINE_HASH = "0afd5f28c1b5456c47cfba84467bea1d62c6dc923a5851281a98d461f60066b4";
@@ -132,7 +132,7 @@ export async function publishWorkingSchema({
   try { storage?.setItem(pendingKey, JSON.stringify({ id: publicationId, fingerprint })); } catch { /* retry is limited to this attempt */ }
   const saved = await publishFiles({
     owner: user, publicationId, contentHash: canonical.contentHash, compilerVersion: compiled.manifest.compiler_version,
-    row: { title: schema.label || "Published grouping schema", description: schema.description || null,
+    row: { title: schema.label || "Published variable schema", description: schema.description || null,
       evidence_snapshot: evidenceSnapshot, parent_schema_id: parentSchemaId, compiled_manifest_path: COMPILED_MANIFEST_PATH,
       compiled_manifest_hash: compiledManifestHash },
     files: new Map(entries), onProgress, resume: Boolean(pending), apiUrl: cloudflare.apiUrl ?? CLOUDFLARE_API_URL,

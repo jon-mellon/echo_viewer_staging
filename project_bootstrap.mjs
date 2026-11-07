@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=42a75e489610903d";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=42a75e489610903d";
-import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=42a75e489610903d";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=42a75e489610903d";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=42a75e489610903d";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=42a75e489610903d";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=42a75e489610903d";
-import { validateGroupingSchema } from "./data_validation.mjs?v=42a75e489610903d";
+import { dagDataSource } from "./dag_data_source.mjs?v=b528c907735dc640";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=b528c907735dc640";
+import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=b528c907735dc640";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=b528c907735dc640";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=b528c907735dc640";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=b528c907735dc640";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=b528c907735dc640";
+import { validateGroupingSchema } from "./data_validation.mjs?v=b528c907735dc640";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   initializeProject, loadLatestSchemaGroups,
@@ -119,7 +119,7 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
           state.compiledDagUpdating = false;
           renderAll();
         } catch (error) {
-          console.warn("Could not apply the draft's edge changes; a full local recomputation is required.", error);
+          console.warn("Could not apply the draft's link changes; a full local recomputation is required.", error);
           state.compiledDagValid = false;
         } finally {
           state.compiledDagUpdating = false;

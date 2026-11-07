@@ -1,7 +1,7 @@
-import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=42a75e489610903d";
-import { canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError, workingSchemaHashes } from "./dag_publication_core.mjs?v=42a75e489610903d";
-import { confirmPublicPublication } from "./publication_consent.mjs?v=42a75e489610903d";
-export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError } from "./dag_publication_core.mjs?v=42a75e489610903d";
+import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=b528c907735dc640";
+import { canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError, workingSchemaHashes } from "./dag_publication_core.mjs?v=b528c907735dc640";
+import { confirmPublicPublication } from "./publication_consent.mjs?v=b528c907735dc640";
+export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError } from "./dag_publication_core.mjs?v=b528c907735dc640";
 
 function showStatus(element, message, isError = false) {
   element.textContent = message;
@@ -60,7 +60,7 @@ export function createPublicationController({
 
   function publishTitle() {
     if (busy) return "Publishing…";
-    if (!canPublish()) return "Publishing is unavailable while the schema is loading or a group edit is unsaved";
+    if (!canPublish()) return "Publishing is unavailable while the schema is loading or a variable edit is unsaved";
     return "Create an immutable public version";
   }
 
@@ -160,7 +160,7 @@ export function createPublicationController({
   async function publish() {
     if (busy) return null;
     if (!canPublish()) {
-      showStatus(elements.status, "Please wait for group memberships to finish loading before publishing.", true);
+      showStatus(elements.status, "Please wait for variable memberships to finish loading before publishing.", true);
       return null;
     }
     busy = true;
@@ -321,14 +321,14 @@ export function createPublicationController({
   function setSchemaReady(ready) {
     refreshPublishVisibility();
     elements.publish.disabled = !ready || busy;
-    if (!ready) showStatus(elements.status, "Loading group memberships…");
+    if (!ready) showStatus(elements.status, "Loading variable memberships…");
     else clearStatus();
   }
 
   function setSchemaLoadFailed() {
     elements.publish.disabled = true;
     elements.publish.title = publishTitle();
-    showStatus(elements.status, "Group memberships could not be verified. Editing and publishing remain disabled.", true);
+    showStatus(elements.status, "Variable memberships could not be verified. Editing and publishing remain disabled.", true);
   }
 
   return { initialize, publish, share, publicPermalink, currentCanonical, refreshPublicationState, workingCopyChanged, setSchemaReady, setSchemaLoadFailed };

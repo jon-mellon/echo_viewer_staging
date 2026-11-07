@@ -1,16 +1,16 @@
-import { publishedReferenceUrl } from "./schema_source.mjs?v=42a75e489610903d";
-import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=42a75e489610903d";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=42a75e489610903d";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=42a75e489610903d";
-import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=42a75e489610903d";
-import { buildPermalink } from "./dag_permalink.mjs?v=42a75e489610903d";
-import { deriveDagView } from "./dag_view.mjs?v=42a75e489610903d";
+import { publishedReferenceUrl } from "./schema_source.mjs?v=b528c907735dc640";
+import { PRODUCTION_APP_ORIGIN } from "./dag_data_config.mjs?v=b528c907735dc640";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=b528c907735dc640";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=b528c907735dc640";
+import { canonicalFolderHash, stableJson } from "./grouping_schema_writer.mjs?v=b528c907735dc640";
+import { buildPermalink } from "./dag_permalink.mjs?v=b528c907735dc640";
+import { deriveDagView } from "./dag_view.mjs?v=b528c907735dc640";
 import { COMPILED_DAG_PATH, sha256Hex, stableJsonBytes,
-  validateCompiledArtifact } from "./compiled_dag.mjs?v=42a75e489610903d";
+  validateCompiledArtifact } from "./compiled_dag.mjs?v=b528c907735dc640";
 
-export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=42a75e489610903d";
+export { PUBLISHED_SCHEMA_BUCKET } from "./publication_constants.mjs?v=b528c907735dc640";
 import { publicSchemaBaseUrl as sharedPublicSchemaBaseUrl,
-  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=42a75e489610903d";
+  lookupPublishedSchema as sharedLookupPublishedSchema } from "./publication_access.mjs?v=b528c907735dc640";
 
 export async function fetchPublishedFile(url, options, fetchImpl, sleep = ms => new Promise(resolve => setTimeout(resolve, ms))) {
   for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -102,14 +102,14 @@ export async function loadPublishedSchema(publicationId, client = null, fetchImp
   let compiledFallbackReason = null;
   try {
     if (!publication.compiled_manifest_path || !publication.compiler_version) {
-      throw new Error("Published schema has no compiled DAG artifact.");
+      throw new Error("Published schema has no compiled graph artifact.");
     }
     const manifestResponse = await cachingFetch(new URL(publication.compiled_manifest_path, baseUrl));
-    if (!manifestResponse.ok) throw new Error("Published schema has no compiled DAG artifact.");
+    if (!manifestResponse.ok) throw new Error("Published schema has no compiled graph artifact.");
     const manifest = await manifestResponse.json();
     const dagPath = manifest.artifacts?.dag?.path || COMPILED_DAG_PATH;
     const dagResponse = await cachingFetch(new URL(dagPath, baseUrl));
-    if (!dagResponse.ok) throw new Error("Published schema has no compiled DAG artifact.");
+    if (!dagResponse.ok) throw new Error("Published schema has no compiled graph artifact.");
     const dag = await dagResponse.json();
     if (publication.compiled_manifest_hash
         && await sha256Hex(stableJsonBytes(manifest)) !== publication.compiled_manifest_hash) {
@@ -120,12 +120,12 @@ export async function loadPublishedSchema(publicationId, client = null, fetchImp
     compiledFallbackReason = error instanceof Error ? error.message : String(error);
   }
   if (!compiledDag) {
-    throw new Error(`Published schema has no valid compiled DAG: ${compiledFallbackReason}`);
+    throw new Error(`Published schema has no valid compiled graph: ${compiledFallbackReason}`);
   }
   const schema = {
     schema_version: GROUPING_FORMAT_VERSION,
     grouping_set_id: publication.id,
-    label: publication.title || "Published grouping schema",
+    label: publication.title || "Published variable schema",
     description: publication.description || "",
     membership_unit: GROUPING_MEMBERSHIP_UNIT,
     built_against: { record_signature: publication.evidence_snapshot },

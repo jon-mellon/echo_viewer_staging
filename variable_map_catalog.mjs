@@ -1,4 +1,4 @@
-import { EvidencePanelCatalog, evidencePanelKey } from "./evidence_panel_catalog.mjs?v=42a75e489610903d";
+import { EvidencePanelCatalog, evidencePanelKey } from "./evidence_panel_catalog.mjs?v=b528c907735dc640";
 
 export const VARIABLE_MAP_BINDINGS = Object.freeze({
   "f7666b4f9c4537c3ecfef0e9dc096f00650040e4bd1b2360eea64c1d5fba3f7b": {

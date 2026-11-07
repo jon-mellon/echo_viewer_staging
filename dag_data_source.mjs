@@ -1,16 +1,16 @@
-import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=42a75e489610903d";
+import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=b528c907735dc640";
 import { evidenceManifestUrl, evidenceSnapshotIdFromManifestUrl, groupingSchemaUrl,
-  schemaPublicationId } from "./dag_data_config.mjs?v=42a75e489610903d";
+  schemaPublicationId } from "./dag_data_config.mjs?v=b528c907735dc640";
 import { browserV2ManifestLayout, browserV2ShardPath,
-  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=42a75e489610903d";
-import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=42a75e489610903d";
-import { loadPublishedSchema } from "./published_schema_loader.mjs?v=42a75e489610903d";
-import { variableSearchCatalog, searchCatalogs } from "./variable_search_catalog.mjs?v=42a75e489610903d";
-import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=42a75e489610903d";
-import { variableMapCatalog } from "./variable_map_catalog.mjs?v=42a75e489610903d";
-import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=42a75e489610903d";
-import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=42a75e489610903d";
-import { fetchViewerAssets, bindViewerAssets, missingViewerAssets } from "./viewer_assets.mjs?v=42a75e489610903d";
+  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=b528c907735dc640";
+import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=b528c907735dc640";
+import { loadPublishedSchema } from "./published_schema_loader.mjs?v=b528c907735dc640";
+import { variableSearchCatalog, searchCatalogs } from "./variable_search_catalog.mjs?v=b528c907735dc640";
+import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=b528c907735dc640";
+import { variableMapCatalog } from "./variable_map_catalog.mjs?v=b528c907735dc640";
+import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=b528c907735dc640";
+import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=b528c907735dc640";
+import { fetchViewerAssets, bindViewerAssets, missingViewerAssets } from "./viewer_assets.mjs?v=b528c907735dc640";
 
 // Reading many small remote Parquet shards incurs a separate metadata/range
 // round trip for each shard. The canonical snapshot is cheaper for wide groups.
@@ -96,7 +96,7 @@ export class ParquetManifestDagDataSource {
     // its binding when the same instance later opens the lazy evidence engine.
     if (publicationId && !(this.skipCompiledOnce && this.loadedPublication?.id === publicationId)) {
       const publicationStart = performance.now();
-      this.onStatus("Loading published schema and compiled DAG…");
+      this.onStatus("Loading published schema and compiled graph…");
       const loaded = await loadPublishedSchema(publicationId);
       performance.measure("echo:evidence:publication", { start: publicationStart, end: performance.now() });
       this.groupingSet = loaded.schema;
@@ -107,19 +107,19 @@ export class ParquetManifestDagDataSource {
         return;
       }
       this.skipCompiledOnce = false;
-      this.onStatus(`Compiled DAG unavailable (${loaded.compiledFallbackReason}); checking browser-v2 evidence…`);
+      this.onStatus(`Compiled graph unavailable (${loaded.compiledFallbackReason}); checking browser-v2 evidence…`);
     }
     const manifestUrl = new URL(this.manifestUrl, window.location.href);
     const manifestStart = performance.now();
     this.onStatus("Loading evidence manifest…");
     const response = await fetch(manifestUrl, { cache: "no-store" });
-    if (!response.ok) throw new Error(`Could not load DAG snapshot manifest ${manifestUrl.href}: HTTP ${response.status}`);
+    if (!response.ok) throw new Error(`Could not load graph snapshot manifest ${manifestUrl.href}: HTTP ${response.status}`);
     this.manifest = await response.json();
     performance.measure("echo:evidence:manifest", { start: manifestStart, end: performance.now() });
     this.manifestBaseUrl = manifestUrl;
     this.browserLayout = browserV2ManifestLayout(this.manifest);
     const evidenceDownloads = this.downloadEvidenceFiles();
-    this.onStatus("Loading grouping schema…");
+    this.onStatus("Loading variable schema…");
     if (!publicationId) {
       this.groupingSet = await loadGroupingSchema(this.schemaUrl);
       this.loadedPublication = null;
@@ -131,7 +131,7 @@ export class ParquetManifestDagDataSource {
     this.onStatus("Starting query engine…");
     const engineStart = performance.now();
     const mainModule = new URL("./vendor/duckdb/duckdb-eh.wasm", import.meta.url).href;
-    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=42a75e489610903d", import.meta.url).href;
+    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=b528c907735dc640", import.meta.url).href;
     const worker = new Worker(mainWorker);
     const database = new duckdb.AsyncDuckDB(
       new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),
@@ -180,7 +180,7 @@ export class ParquetManifestDagDataSource {
         load_metrics: { raw_r2_bytes_before_render: 0, raw_r2_rows_before_render: 0 },
       };
     }
-    throw new Error("Browser-v2 requires a compiled published DAG for startup; full-snapshot reconstruction is not part of the retrieval layout.");
+    throw new Error("Browser-v2 requires a compiled graph for startup; full-snapshot reconstruction is not part of the retrieval layout.");
   }
 
   async loadVariableSearchRecords() {
