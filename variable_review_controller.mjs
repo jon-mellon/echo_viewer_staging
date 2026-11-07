@@ -1,5 +1,5 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=5011153b137c506a";
-import { CONTROL_WARNING, diagnosticKey, DIAGNOSTIC_STATUSES } from "./confounder_status.mjs?v=5011153b137c506a";
+import { h, replaceChildren } from "./dom_builder.mjs?v=b6ca7b69fe550049";
+import { CONTROL_WARNING, diagnosticKey, DIAGNOSTIC_STATUSES } from "./confounder_status.mjs?v=b6ca7b69fe550049";
 
 /**
  * One review editor shared by the list and table. Every disposition saves at once and only changes how the

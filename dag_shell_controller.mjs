@@ -1,5 +1,5 @@
 // Owns cross-feature shell layout: fullscreen focus and draggable panel sizes.
-import { fitDagNetwork } from "./dag_network_controller.mjs?v=5011153b137c506a";
+import { fitDagNetwork } from "./dag_network_controller.mjs?v=b6ca7b69fe550049";
 export function createDagShellController({ state, elements, renderDag, getNetwork, isDagFullyVisible, dismissEvidencePane }) {
   let showInstalledMobilePanel = null;
   // Set by installResizers; moves the evidence pane to where the current task reads it.
