@@ -1,11 +1,11 @@
-import { dagDataSource } from "./dag_data_source.mjs?v=4128f3c37a8c3920";
-import { schemaPublicationId } from "./dag_data_config.mjs?v=4128f3c37a8c3920";
-import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=4128f3c37a8c3920";
-import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=4128f3c37a8c3920";
-import { loadLocalSchema } from "./local_schema_store.mjs?v=4128f3c37a8c3920";
-import { incrementCompiledDag } from "./compiled_dag.mjs?v=4128f3c37a8c3920";
-import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=4128f3c37a8c3920";
-import { validateGroupingSchema } from "./data_validation.mjs?v=4128f3c37a8c3920";
+import { dagDataSource } from "./dag_data_source.mjs?v=5011153b137c506a";
+import { schemaPublicationId } from "./dag_data_config.mjs?v=5011153b137c506a";
+import { applyPermalink, permalinkInput, TASKS } from "./dag_permalink.mjs?v=5011153b137c506a";
+import { createProjectBootstrapPresenter } from "./project_bootstrap_presenter.mjs?v=5011153b137c506a";
+import { loadLocalSchema } from "./local_schema_store.mjs?v=5011153b137c506a";
+import { incrementCompiledDag } from "./compiled_dag.mjs?v=5011153b137c506a";
+import { normalizeLinkDecision } from "./dag_link_aggregation.mjs?v=5011153b137c506a";
+import { validateGroupingSchema } from "./data_validation.mjs?v=5011153b137c506a";
 
 export function createProjectBootstrap({ state, initElements, installHandlers, installDefinitionHandlers,
   initializeProject, loadLatestSchemaGroups,
@@ -213,7 +213,9 @@ export function createProjectBootstrap({ state, initElements, installHandlers, i
       if (typeof globalThis.requestIdleCallback === "function") globalThis.requestIdleCallback(start, { timeout: 5000 });
       else setTimeout(start, 1000);
     });
-    const preload = () => void prewarmEvidenceEngine();
+    // Look for the snapshot's published viewer assets alongside, not before, the engine's idle-time start: waiting for that
+    // request first pushed the engine's multi-hundred-millisecond start into whatever the user did next.
+    const preload = () => { void dagDataSource.bindViewerAssets?.(); void prewarmEvidenceEngine(); };
     // A fresh project carries placeholder anchor IDs, so check for real groups.
     const anchored = side => (state.project.groups || []).some(group => group.group_id === state.project[`${side}_group_id`]);
     const catalogIfSettingUp = () => (!anchored("iv") || !anchored("dv")

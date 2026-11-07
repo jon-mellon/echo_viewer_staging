@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=4128f3c37a8c3920";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=4128f3c37a8c3920";
-import { pathView } from "./dag_table.mjs?v=4128f3c37a8c3920";
-import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=4128f3c37a8c3920";
+import { h, replaceChildren } from "./dom_builder.mjs?v=5011153b137c506a";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=5011153b137c506a";
+import { pathView } from "./dag_table.mjs?v=5011153b137c506a";
+import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=5011153b137c506a";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
