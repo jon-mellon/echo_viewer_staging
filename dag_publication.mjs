@@ -1,7 +1,7 @@
-import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=b528c907735dc640";
-import { canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError, workingSchemaHashes } from "./dag_publication_core.mjs?v=b528c907735dc640";
-import { confirmPublicPublication } from "./publication_consent.mjs?v=b528c907735dc640";
-export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError } from "./dag_publication_core.mjs?v=b528c907735dc640";
+import { publicationPermalink } from "/echo_viewer_staging/published_schema_loader.mjs?v=b0eb6f8d5eab9b81";
+import { canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError, workingSchemaHashes } from "./dag_publication_core.mjs?v=b0eb6f8d5eab9b81";
+import { confirmPublicPublication } from "./publication_consent.mjs?v=b0eb6f8d5eab9b81";
+export { CANONICAL_BASELINE_ID, CANONICAL_BASELINE_HASH, canonicalizeWorkingSchema, publishWorkingSchema, formatPublicationError } from "./dag_publication_core.mjs?v=b0eb6f8d5eab9b81";
 
 function showStatus(element, message, isError = false) {
   element.textContent = message;
@@ -140,6 +140,15 @@ export function createPublicationController({
     statusRevision += 1;
     hasPublishableChanges = true;
     refreshPublishVisibility();
+    statusTimer = setTimeout(() => void refreshPublicationState(), 150);
+  }
+
+  // The save machine moved (saving, saved, failed, editor opened or closed): re-derive what the controls allow.
+  // The visibility is cheap; the hash comparison is not, and a save starts and ends within one user action, so
+  // it runs once the interaction has settled, as it does after an edit.
+  function canPublishChanged() {
+    refreshPublishVisibility();
+    clearTimeout(statusTimer);
     statusTimer = setTimeout(() => void refreshPublicationState(), 150);
   }
 
@@ -331,5 +340,5 @@ export function createPublicationController({
     showStatus(elements.status, "Variable memberships could not be verified. Editing and publishing remain disabled.", true);
   }
 
-  return { initialize, publish, share, publicPermalink, currentCanonical, refreshPublicationState, workingCopyChanged, setSchemaReady, setSchemaLoadFailed };
+  return { initialize, publish, share, publicPermalink, currentCanonical, refreshPublicationState, workingCopyChanged, canPublishChanged, setSchemaReady, setSchemaLoadFailed };
 }

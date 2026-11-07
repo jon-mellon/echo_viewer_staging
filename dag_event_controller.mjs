@@ -1,4 +1,4 @@
-import * as projectOps from "./dag_project.mjs?v=b528c907735dc640";
+import * as projectOps from "./dag_project.mjs?v=b0eb6f8d5eab9b81";
 
 export function createDagEventController({
   state, elements: els, dagNetwork,
@@ -247,7 +247,7 @@ function installHandlers() {
     const target = /** @type {HTMLInputElement} */ (event.target);
     if (target.type === "file" || target.id === "groupingSetSelect") setNavOpen(false);
   });
-  window.matchMedia("(min-width: 841px)").addEventListener("change", () => setNavOpen(false));
+  window.matchMedia("(min-width: 961px)").addEventListener("change", () => setNavOpen(false));
 
   // Dropdown menus (Filters, task bar menus) close on an outside click or Escape.
   const openMenus = () => document.querySelectorAll("details.filter-dropdown[open], details.nav-menu[open], details.list-filter[open]");

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ECHO</title>
-    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=b528c907735dc640">
+    <link rel="stylesheet" href="/echo_viewer_staging/styles.css?v=b0eb6f8d5eab9b81">
   </head>
   <body class="dag-body dag2-mode viewer-loading">
     <div id="startupLoading" class="startup-loading" role="status" aria-live="polite">
@@ -142,6 +142,11 @@
       </div>
     </section>
 
+    <div id="appNotice" class="app-notice" role="alert" hidden>
+      <span id="appNoticeText"></span>
+      <button id="appNoticeReload" class="btn btn--ghost" type="button">Reload view</button>
+      <button id="appNoticeDismiss" class="btn btn--ghost" type="button">Dismiss</button>
+    </div>
     <main class="dag-shell">
 
       <!-- LEFT PANEL: Navigation + mode-specific content -->
@@ -679,7 +684,7 @@
 
     </main>
     <a class="legal-link" href="/echo_viewer_staging/privacy.html" target="_blank" rel="noopener">Privacy</a>
-    <script src="/echo_viewer_staging/visjs-min.js?v=b528c907735dc640"></script>
-  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=b528c907735dc640"></script>
+    <script src="/echo_viewer_staging/visjs-min.js?v=b0eb6f8d5eab9b81"></script>
+  <script type="module" src="/echo_viewer_staging/dag_builder.js?v=b0eb6f8d5eab9b81"></script>
   </body>
 </html>
