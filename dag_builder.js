@@ -1,54 +1,54 @@
-import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=710f80a253290383";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "/echo_viewer_staging/published_split_browser.mjs?v=710f80a253290383";
-import { previousSplitsForRole } from "/echo_viewer_staging/previous_split_candidates.mjs?v=710f80a253290383";
+import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=42a75e489610903d";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "/echo_viewer_staging/published_split_browser.mjs?v=42a75e489610903d";
+import { previousSplitsForRole } from "/echo_viewer_staging/previous_split_candidates.mjs?v=42a75e489610903d";
 "use strict";
 
-import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=710f80a253290383";
+import * as projectOps from "/echo_viewer_staging/dag_project.mjs?v=42a75e489610903d";
 import { aggregateGroupLinks as deriveGroupLinks, rawLinksBetween as lookupRawLinks,
-  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=710f80a253290383";
+  paperTableKeys as lookupPaperTableKeys, applyLinkDecisions, linkKey, pairKey } from "/echo_viewer_staging/dag_link_aggregation.mjs?v=42a75e489610903d";
 
-import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=710f80a253290383";
-import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=710f80a253290383";
-import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=710f80a253290383";
-import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=710f80a253290383";
-import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=710f80a253290383";
-import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=710f80a253290383";
-import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=710f80a253290383";
-import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=710f80a253290383";
-import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=710f80a253290383";
-import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=710f80a253290383";
-import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=710f80a253290383";
-import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=710f80a253290383";
-import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=710f80a253290383";
-import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=710f80a253290383";
-import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=710f80a253290383";
-import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=710f80a253290383";
-import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=710f80a253290383";
-import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=710f80a253290383";
-import { createGroupPalette } from "/echo_viewer_staging/group_palette.mjs?v=710f80a253290383";
-import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=710f80a253290383";
-import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=710f80a253290383";
-import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=710f80a253290383";
-import { createCustomVariablesPresenter } from "/echo_viewer_staging/custom_variables_presenter.mjs?v=710f80a253290383";
-import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=710f80a253290383";
-import { directionalPaperCounter, linksNeedingExactCounts } from "/echo_viewer_staging/causal_neighborhood.mjs?v=710f80a253290383";
-import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=710f80a253290383";
-import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=710f80a253290383";
-import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=710f80a253290383";
-import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=710f80a253290383";
-import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=710f80a253290383";
-import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=710f80a253290383";
-import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=710f80a253290383";
-import { listPreviousSessions, listLocalSchemas } from "/echo_viewer_staging/local_schema_store.mjs?v=710f80a253290383";
-import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=710f80a253290383";
-import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=710f80a253290383";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "/echo_viewer_staging/confounder_status.mjs?v=710f80a253290383";
-import { diagnosticKey } from "/echo_viewer_staging/confounder_status.mjs?v=710f80a253290383";
-import { effectiveStudyGraph } from "/echo_viewer_staging/study_graph.mjs?v=710f80a253290383";
-import { createVariableReviewController } from "/echo_viewer_staging/variable_review_controller.mjs?v=710f80a253290383";
-import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=710f80a253290383";
-import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=710f80a253290383";
-import { installLayoutDebug } from "/echo_viewer_staging/layout_debug.mjs?v=710f80a253290383";
+import * as exportData from "/echo_viewer_staging/dag_exports.mjs?v=42a75e489610903d";
+import { createDagExportController } from "/echo_viewer_staging/dag_export_controller.mjs?v=42a75e489610903d";
+import { renderDagPng } from "/echo_viewer_staging/dag_export_image.mjs?v=42a75e489610903d";
+import { createRenderCoordinator } from "/echo_viewer_staging/render_coordinator.mjs?v=42a75e489610903d";
+import * as candidates from "/echo_viewer_staging/dag_candidates.mjs?v=42a75e489610903d";
+import * as inspector from "/echo_viewer_staging/dag_inspector.mjs?v=42a75e489610903d";
+import * as searchModel from "/echo_viewer_staging/dag_search.mjs?v=42a75e489610903d";
+import * as workflow from "/echo_viewer_staging/dag_workflow.mjs?v=42a75e489610903d";
+import * as visibility from "/echo_viewer_staging/variable_visibility.mjs?v=42a75e489610903d";
+import { createDagAppState, ensureDiagnosticFilter } from "/echo_viewer_staging/dag_app_state.mjs?v=42a75e489610903d";
+import { createDagProjectController } from "/echo_viewer_staging/dag_project_controller.mjs?v=42a75e489610903d";
+import { createDagInspectorController, STUDY_DESIGN_EDGE_ID } from "/echo_viewer_staging/dag_inspector_controller.mjs?v=42a75e489610903d";
+import { createDagShellController } from "/echo_viewer_staging/dag_shell_controller.mjs?v=42a75e489610903d";
+import { createDagSetupGroupController } from "/echo_viewer_staging/dag_setup_group_controller.mjs?v=42a75e489610903d";
+import { createDagGroupEditorController } from "/echo_viewer_staging/dag_group_editor_controller.mjs?v=42a75e489610903d";
+import { deriveDagView, excludedForConnectivity } from "/echo_viewer_staging/dag_view.mjs?v=42a75e489610903d";
+import { createDagNetworkController, isDagDisplayGroup } from "/echo_viewer_staging/dag_network_controller.mjs?v=42a75e489610903d";
+import { createDagEventController } from "/echo_viewer_staging/dag_event_controller.mjs?v=42a75e489610903d";
+import { createGroupPalette } from "/echo_viewer_staging/group_palette.mjs?v=42a75e489610903d";
+import { createUoaController } from "/echo_viewer_staging/uoa_controller.mjs?v=42a75e489610903d";
+import { createToolbarController } from "/echo_viewer_staging/toolbar_controller.mjs?v=42a75e489610903d";
+import { createDefinitionWorkflowController } from "/echo_viewer_staging/definition_workflow_controller.mjs?v=42a75e489610903d";
+import { createCustomVariablesPresenter } from "/echo_viewer_staging/custom_variables_presenter.mjs?v=42a75e489610903d";
+import { createTaskViews } from "/echo_viewer_staging/task_views.mjs?v=42a75e489610903d";
+import { directionalPaperCounter, linksNeedingExactCounts } from "/echo_viewer_staging/causal_neighborhood.mjs?v=42a75e489610903d";
+import { createPublicationController } from "/echo_viewer_staging/dag_publication.mjs?v=42a75e489610903d";
+import { createGroupingSetController } from "/echo_viewer_staging/grouping_set_controller.mjs?v=42a75e489610903d";
+import { createProjectBootstrap } from "/echo_viewer_staging/project_bootstrap.mjs?v=42a75e489610903d";
+import { dagDataSource } from "/echo_viewer_staging/dag_data_source.mjs?v=42a75e489610903d";
+import { incrementCompiledDag } from "/echo_viewer_staging/compiled_dag.mjs?v=42a75e489610903d";
+import { createPersistentViewer } from "/echo_viewer_staging/persistent_viewer.mjs?v=42a75e489610903d";
+import { importDraftFile, makeDraftExport } from "/echo_viewer_staging/draft_exchange.mjs?v=42a75e489610903d";
+import { listPreviousSessions, listLocalSchemas } from "/echo_viewer_staging/local_schema_store.mjs?v=42a75e489610903d";
+import { escapeHtml } from "/echo_viewer_staging/text_utils.mjs?v=42a75e489610903d";
+import { relevantExclusions } from "/echo_viewer_staging/dag_export_relevance.mjs?v=42a75e489610903d";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticStatusRows } from "/echo_viewer_staging/confounder_status.mjs?v=42a75e489610903d";
+import { diagnosticKey } from "/echo_viewer_staging/confounder_status.mjs?v=42a75e489610903d";
+import { effectiveStudyGraph } from "/echo_viewer_staging/study_graph.mjs?v=42a75e489610903d";
+import { createVariableReviewController } from "/echo_viewer_staging/variable_review_controller.mjs?v=42a75e489610903d";
+import { h, replaceChildren, safeUrl, setSafeUrl } from "/echo_viewer_staging/dom_builder.mjs?v=42a75e489610903d";
+import { hydrateSearchResult, variableSearchCatalog } from "/echo_viewer_staging/variable_search_catalog.mjs?v=42a75e489610903d";
+import { installLayoutDebug } from "/echo_viewer_staging/layout_debug.mjs?v=42a75e489610903d";
 
 
 const ROLE_LABELS = {
@@ -955,18 +955,31 @@ function chooseIdentifyVariable(side, groupId) {
     state.selectedEvidenceGroupId = null;
     addToUndoHistory(`Remove "${label || side}" as ${side === "iv" ? "cause" : "outcome"}`, before, "anchors");
     renderAll({ reuseLinks: true });
-    setupGroupController.renderIdentifyPicker();
     return;
   }
   if (groupId === state.project?.[`${side}_group_id`] && groupById(groupId)?.variable_ids?.length) {
-    renderAll({ rebuild: false });
+    // Nothing in the project or graph changed; just dismiss the picker and
+    // restore the field label instead of rebuilding every control.
+    setupGroupController.renderIdentifyPicker();
+    taskViews.render();
     return;
   }
   // Replacing a role, rather than stepping through setup, goes straight to the map.
   state.changingAnchorSide = side;
   assignGroupAsAnchor(side, groupId);
   state.changingAnchorSide = null;
-  setupGroupController.renderIdentifyPicker();
+  // A single selected anchor is still an incomplete setup and must be
+  // represented in the URL so a reload can return to the next field.
+  const ivReady = Boolean(groupById(state.project.iv_group_id)?.variable_ids?.length);
+  const dvReady = Boolean(groupById(state.project.dv_group_id)?.variable_ids?.length);
+  if (!ivReady || !dvReady) {
+    state.workflowMode = "setup";
+    state.phase = ivReady ? "select_dv" : "select_iv";
+  }
+  persistentViewer.viewerChanged();
+  // Successful assignments already rendered the picker in renderAll(). Only
+  // redraw here if the assignment was rejected and no full render occurred.
+  if (state.project?.[`${side}_group_id`] !== groupId) setupGroupController.renderIdentifyPicker();
 }
 function seedLabel(side) { return groupEditorController.seedLabel(side); }
 // Event handlers retain group references through edits. Apply pure results while
@@ -1716,6 +1729,7 @@ function minimumDagScale() { return dagNetworkController.minimumDagScale(); }
 // ─── Edge inspector + provenance ──────────────────────────────────────────────
 
 let pendingEdgeEvidencePromise = null;
+let failedEvidenceEdgeId = null;
 
 function renderSelectedEdgePanels() {
   if (!state.selectedEdgeId && !state.selectedEvidenceGroupId && !els.edgeInspector.hidden
@@ -1788,6 +1802,7 @@ function renderSelectedEdge() {
   const missingVariables = loadedVariableIds().filter(id => !state.variableById.has(id));
   if ((missing.length || missingVariables.length) && !pendingEdgeEvidencePromise) {
     const loadingEdgeId = state.selectedEdgeId;
+    failedEvidenceEdgeId = null;
     state.pendingEdgeEvidence = true;
     const loadSources = async () => {
       if (!missing.length) return [];
@@ -1808,6 +1823,7 @@ function renderSelectedEdge() {
         for (const variable of variables) state.variableById.set(variable.variable_id, variable);
       }
     }).catch(error => {
+      failedEvidenceEdgeId = loadingEdgeId;
       console.warn("Could not lazily load aggregate-edge evidence.", error);
     }).finally(() => {
       if (pendingEdgeEvidencePromise !== load) return;
@@ -2040,6 +2056,7 @@ const customVariablesPresenter = createCustomVariablesPresenter({
     Number(b.source === "user_split") - Number(a.source === "user_split")
       || String(a.label || "").localeCompare(String(b.label || ""))),
   getSchema: currentWorkingGroupingSchema,
+  onVisibilityChange: () => persistentViewer.viewerChanged(),
   loadDetails: ids => hydrateVariableDetails(ids, { skipNeighbors: true }),
   conceptLabel: id => state.variableById.get(id)?.display_label || state.variableById.get(id)?.concept_label || id,
   onSplitSource: id => definitionWorkflowController.browsePreviousForSource("candidate", id),
@@ -2062,6 +2079,8 @@ const inspectorController = createDagInspectorController({
   state, elements: els, truncate, nowIso, takeSnapshot,
   applyProjectOperation, addDecision, addToUndoHistory, rebuildLinkDecision, renderAll,
   persistFindingDecision,
+  evidenceLoadFailed: () => failedEvidenceEdgeId === state.selectedEdgeId,
+  retryEvidence: () => { failedEvidenceEdgeId = null; renderSelectedEdge(); },
   loadConceptLabels: ids => dagDataSource.loadVariableProvenance(ids),
   loadVisibleLinkEndpoints: ids => dagDataSource.loadRawLinkEndpointsByIds(ids),
   excludeConcept: excludeGroupConcept,
@@ -2091,6 +2110,7 @@ const setupGroupController = createDagSetupGroupController({
   onCancelIdentify: () => taskViews.cancelIdentify(),
   canChangeCustom: group => Boolean(projectOps.customVariableContext(state.project, group.group_id)),
   previousSplits: savedSplitOptions, loadPreviousSplits, reusePreviousSplit,
+  splitsLoading: () => previousSplitsLoading || !previousSplitsLoaded, splitsError: () => previousSplitsError,
   browsePreviousForSource: (role, id) => definitionWorkflowController.browsePreviousForSource(role, id),
   deleteCustom: deleteCustomVariable,
   loadConceptLabels: ids => dagDataSource.loadVariableProvenance(ids),
@@ -2261,6 +2281,11 @@ const projectBootstrap = createProjectBootstrap({
     && Boolean(sessionStorage.getItem("echo-openrouter-definition-draft-v1")),
   onReady: async () => {
     persistentViewer.start();
+    if (state.customVariablesOpen) customVariablesPresenter.open();
+    else if (state.selectedEdgeId && !els.closeEvidencePane.hidden) {
+      markEvidenceOrigin();
+      shellController.showMobilePanel("dag");
+    }
     await definitionWorkflowController.resumeAfterOAuth();
     void publicationController.refreshPublicationState();
     // Compiled-DAG browsing and catalog search need no raw evidence engine.
@@ -2306,6 +2331,17 @@ const eventController = createDagEventController({
     });
   },
   showExcludedLinks, showExcludedFindings,
+});
+
+// A variable definition is kept in memory until it is saved. Protect work in
+// progress from an accidental reload; OAuth has its own draft handoff.
+window.addEventListener("beforeunload", event => {
+  const draft = state.definitionDraft;
+  if (!draft || sessionStorage.getItem("echo-openrouter-definition-draft-v1")) return;
+  if (!draft.source_group_ids?.length && !draft.new_label && !draft.new_description
+      && !draft.replaces_group_id && !draft.new_variable_ids?.length) return;
+  event.preventDefault();
+  event.returnValue = "";
 });
 
 // ─── Boot ──────────────────────────────────────────────────────────────────────

@@ -1,9 +1,9 @@
-import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=710f80a253290383";
-import * as projectOps from "./dag_project.mjs?v=710f80a253290383";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=710f80a253290383";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=710f80a253290383";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=710f80a253290383";
-import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=710f80a253290383";
+import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=42a75e489610903d";
+import * as projectOps from "./dag_project.mjs?v=42a75e489610903d";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=42a75e489610903d";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=42a75e489610903d";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=42a75e489610903d";
+import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=42a75e489610903d";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateVisibleCaches, renderAll, groupById, persistProjectLocally, getReturnUrl = () => location.href,
@@ -86,7 +86,9 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       if (sourceHydrations.has(source.group_id) || !source.variable_ids?.length) continue;
       const loading = hydrateVariableDetails(source.variable_ids, { skipNeighbors: true });
       sourceHydrations.set(source.group_id, loading);
-      void loading.catch(() => sourceHydrations.delete(source.group_id));
+      void loading.catch(() => {
+        if (sourceHydrations.get(source.group_id) === loading) sourceHydrations.delete(source.group_id);
+      });
     }
     try {
       const ids = row.local_variable_ids || await boundedSplitLookup(loadPublishedSplitMembership(row));
@@ -323,7 +325,9 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
         const loading = hydrateVariableDetails(source.variable_ids, { skipNeighbors: true });
         sourceHydrations.set(sourceId, loading);
         // Continue will await this same promise; handle cancellation separately.
-        void loading.catch(() => sourceHydrations.delete(sourceId));
+        void loading.catch(() => {
+          if (sourceHydrations.get(sourceId) === loading) sourceHydrations.delete(sourceId);
+        });
       }
     }
   }

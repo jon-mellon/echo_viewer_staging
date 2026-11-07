@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=710f80a253290383";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=710f80a253290383";
-import { pathView } from "./dag_table.mjs?v=710f80a253290383";
-import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=710f80a253290383";
+import { h, replaceChildren } from "./dom_builder.mjs?v=42a75e489610903d";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=42a75e489610903d";
+import { pathView } from "./dag_table.mjs?v=42a75e489610903d";
+import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=42a75e489610903d";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -676,7 +676,12 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
               attrs: { "aria-pressed": String(state.selectedEvidenceGroupId === item.groupId), "aria-label": label },
               title: `See the definition and concepts of ${label}${item.between.length ? ` (via ${item.between.map(labelFor).join(", ")})` : ""}`,
               onclick: () => onOpenIdentifyVariable(item.groupId),
-              onmouseenter: () => onIdentifyRowHover(item.rejected ? null : item.groupId), onmouseleave: () => onIdentifyRowHover(null),
+              // A picker can disappear under a stationary mouse, producing a
+              // mouseenter and an expensive graph redraw unrelated to intent.
+              // Pointer movement still highlights real mouse hovers; keyboard
+              // focus keeps the same path highlighting.
+              onpointermove: event => { if (event.pointerType === "mouse") onIdentifyRowHover(item.rejected ? null : item.groupId); },
+              onpointerleave: () => onIdentifyRowHover(null),
               onfocus: () => onIdentifyRowHover(item.rejected ? null : item.groupId), onblur: () => onIdentifyRowHover(null) },
               h("span", { className: "explore-row-text" }, h("span", { className: "explore-row-label", textContent: label }))),
             // On touch screens the info button opens the definition beside the status menu.
