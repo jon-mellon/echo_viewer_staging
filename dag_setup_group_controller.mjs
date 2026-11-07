@@ -1,11 +1,11 @@
-import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=10f1053dd87595cf";
-import * as groupListModel from "./dag_group_list.mjs?v=10f1053dd87595cf";
-import * as searchModel from "./dag_search.mjs?v=10f1053dd87595cf";
-import * as workflow from "./dag_workflow.mjs?v=10f1053dd87595cf";
-import { h, replaceChildren } from "./dom_builder.mjs?v=10f1053dd87595cf";
-import { excludeButton, excludedConcepts, exclusionNote, restoreList } from "./concept_exclusion_ui.mjs?v=10f1053dd87595cf";
-import { attachListKeyboardNav, resultCountText } from "./list_keyboard_nav.mjs?v=10f1053dd87595cf";
-import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=10f1053dd87595cf";
+import { isDagDisplayGroup } from "./dag_network_controller.mjs?v=a7c63f11b12bb724";
+import * as groupListModel from "./dag_group_list.mjs?v=a7c63f11b12bb724";
+import * as searchModel from "./dag_search.mjs?v=a7c63f11b12bb724";
+import * as workflow from "./dag_workflow.mjs?v=a7c63f11b12bb724";
+import { h, replaceChildren } from "./dom_builder.mjs?v=a7c63f11b12bb724";
+import { excludeButton, excludedConcepts, exclusionNote, restoreList } from "./concept_exclusion_ui.mjs?v=a7c63f11b12bb724";
+import { attachListKeyboardNav, resultCountText } from "./list_keyboard_nav.mjs?v=a7c63f11b12bb724";
+import { createVariableButton, customVariableActions } from "./custom_variable_actions.mjs?v=a7c63f11b12bb724";
 
 export function dag2AnchorPickerIsActive(state, side, groupById) {
   const iv = groupById(state.project?.iv_group_id);

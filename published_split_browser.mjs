@@ -1,7 +1,7 @@
-import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=10f1053dd87595cf";
-import { getOwnPublications } from "./cloudflare_api.mjs?v=10f1053dd87595cf";
-import { publicSchemaBaseUrl } from "./publication_access.mjs?v=10f1053dd87595cf";
-import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=10f1053dd87595cf";
+import { CLOUDFLARE_API_URL, cloudflareApiConfigured } from "./cloudflare_config.mjs?v=a7c63f11b12bb724";
+import { getOwnPublications } from "./cloudflare_api.mjs?v=a7c63f11b12bb724";
+import { publicSchemaBaseUrl } from "./publication_access.mjs?v=a7c63f11b12bb724";
+import { loadGroupingSchemaStructure } from "./grouping_schema_loader.mjs?v=a7c63f11b12bb724";
 
 export async function listOwnPublishedSplits({ apiUrl = CLOUDFLARE_API_URL, fetchImpl, storage } = {}) {
   if (!cloudflareApiConfigured(apiUrl)) throw new Error("Cloudflare publishing service is not configured.");
