@@ -1,5 +1,5 @@
-import { directedGroupLabels } from "./dag_exports.mjs?v=a7c63f11b12bb724";
-import { CONTROL_WARNING } from "./confounder_status.mjs?v=a7c63f11b12bb724";
+import { directedGroupLabels } from "./dag_exports.mjs?v=4128f3c37a8c3920";
+import { CONTROL_WARNING } from "./confounder_status.mjs?v=4128f3c37a8c3920";
 
 // A table of exactly what the graph draws. Each row is a path: the variables
 // along it are buttons that open their definitions, and the arrows between

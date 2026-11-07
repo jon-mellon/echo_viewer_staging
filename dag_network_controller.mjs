@@ -1,17 +1,17 @@
-import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=a7c63f11b12bb724";
-import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=a7c63f11b12bb724";
-import { routesToVisData } from "./dag_vis_routing.mjs?v=a7c63f11b12bb724";
-import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=a7c63f11b12bb724";
-import { attachDagInteractions } from "./dag_interactions.mjs?v=a7c63f11b12bb724";
-import { createStatusMenu } from "./dag_status_menu.mjs?v=a7c63f11b12bb724";
-import * as dagDisplay from "./dag_display.mjs?v=a7c63f11b12bb724";
-import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=a7c63f11b12bb724";
-import * as workflow from "./dag_workflow.mjs?v=a7c63f11b12bb724";
-import * as dagPathHighlights from "./dag_path_highlights.mjs?v=a7c63f11b12bb724";
-import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=a7c63f11b12bb724";
-import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=a7c63f11b12bb724";
-import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=a7c63f11b12bb724";
-import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=a7c63f11b12bb724";
+import { routeEdges, studyArrowCorridor } from "./dag_router.mjs?v=4128f3c37a8c3920";
+import { computeDagRender, reuseDagGeometry } from "./dag_render_compute.mjs?v=4128f3c37a8c3920";
+import { routesToVisData } from "./dag_vis_routing.mjs?v=4128f3c37a8c3920";
+import { roundedBoxDistance } from "./dag_routing_geometry.mjs?v=4128f3c37a8c3920";
+import { attachDagInteractions } from "./dag_interactions.mjs?v=4128f3c37a8c3920";
+import { createStatusMenu } from "./dag_status_menu.mjs?v=4128f3c37a8c3920";
+import * as dagDisplay from "./dag_display.mjs?v=4128f3c37a8c3920";
+import { EDGE_HIGHLIGHT_COLOR, PLAIN_EDGE_COLOR, PLAIN_EDGE_OPACITY, mixHex } from "./dag_display.mjs?v=4128f3c37a8c3920";
+import * as workflow from "./dag_workflow.mjs?v=4128f3c37a8c3920";
+import * as dagPathHighlights from "./dag_path_highlights.mjs?v=4128f3c37a8c3920";
+import { STUDY_DESIGN_EDGE_ID, STUDY_INSTRUMENT_EDGE_ID } from "./dag_inspector_controller.mjs?v=4128f3c37a8c3920";
+import { studyDesignEdgeData } from "./dag_study_edges.mjs?v=4128f3c37a8c3920";
+import { createDagTable, dagTableModel, pathView } from "./dag_table.mjs?v=4128f3c37a8c3920";
+import { DIAGNOSTIC_STATUSES, STATUS_MENU_LABELS, diagnosticReviewRows, diagnosticKey } from "./confounder_status.mjs?v=4128f3c37a8c3920";
 
 export function selectionUpdatesForSegments(edgeSegments, previousId, selectedId, links, visualData) {
   if (previousId === selectedId) return [];
@@ -735,7 +735,7 @@ async function renderDag({ reuseGeometry = false, allowRemovedGroups = false } =
     resolveRendered();
     return;
   }
-  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=a7c63f11b12bb724", import.meta.url), { type: "module" });
+  const worker = new Worker(new URL("./dag_layout_worker.mjs?v=4128f3c37a8c3920", import.meta.url), { type: "module" });
   _dagRenderWorker = worker;
   worker.addEventListener("message", async (event) => {
     if (event.data.requestId !== _dagRenderRequest) return;

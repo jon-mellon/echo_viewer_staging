@@ -1,5 +1,5 @@
-import { directedGroupLabels } from "./dag_exports.mjs?v=a7c63f11b12bb724";
-import { displayPaperTableKey } from "./dag_display.mjs?v=a7c63f11b12bb724";
+import { directedGroupLabels } from "./dag_exports.mjs?v=4128f3c37a8c3920";
+import { displayPaperTableKey } from "./dag_display.mjs?v=4128f3c37a8c3920";
 
 export function diagnosticEvidenceDirection(link, {
   showConfoundersOnly = false,

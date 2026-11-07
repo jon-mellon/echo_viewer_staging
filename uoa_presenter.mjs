@@ -1,5 +1,5 @@
-import { PERSON_UOA_SENTINEL } from "./dag_uoa.mjs?v=a7c63f11b12bb724";
-import { h, replaceChildren } from "./dom_builder.mjs?v=a7c63f11b12bb724";
+import { PERSON_UOA_SENTINEL } from "./dag_uoa.mjs?v=4128f3c37a8c3920";
+import { h, replaceChildren } from "./dom_builder.mjs?v=4128f3c37a8c3920";
 
 export function createUoaPresenter({ state, elements, visibleVariables, matches, getAllParts,
   supportedByAnchors, truncate, onSelect, onRemoveSeed }) {
@@ -7,14 +7,14 @@ export function createUoaPresenter({ state, elements, visibleVariables, matches,
     if (!elements.uoaChips) return;
     const parts = getAllParts();
     if (!parts.length) {
-      replaceChildren(elements.uoaChips, h("p", { className: "small-note", textContent: "No unit-of-analysis data found." }));
+      replaceChildren(elements.uoaChips, h("p", { className: "small-note", textContent: "No unit of analysis (the kind of entity a concept describes, such as person or country) found." }));
       return;
     }
     const personCount = visibleVariables().filter(variable => matches(variable.uoa, PERSON_UOA_SENTINEL)).length;
     const chip = (part, count, disabled, combined = false) => h("button", {
       className: `uoa-chip${combined ? " uoa-chip-combined" : ""}${state.selectedUoa === part ? " active" : ""}`,
       type: "button", dataset: { uoa: part }, disabled,
-      title: disabled ? `The selected Ind var and Dep var do not both contain ${combined ? "person-level variables" : "this unit of analysis"}` : "",
+      title: disabled ? `The selected independent and dependent variables do not both contain ${combined ? "person-level concepts" : "this unit of analysis"}` : "",
     }, combined ? "person (all)" : part, h("span", { className: "uoa-count", textContent: count }));
     replaceChildren(elements.uoaChips,
       personCount > 0 ? chip(PERSON_UOA_SENTINEL, personCount, !supportedByAnchors(PERSON_UOA_SENTINEL), true) : null,

@@ -2,7 +2,7 @@
 // evidence in each direction; a hop counts when that direction is supported by
 // at least `minPapers` distinct papers and the link is traversable by the same
 // rule the identification diagrams use.
-import { directionalPaperCounter, excludedForConnectivity } from "./dag_view.mjs?v=a7c63f11b12bb724";
+import { directionalPaperCounter, excludedForConnectivity } from "./dag_view.mjs?v=4128f3c37a8c3920";
 
 export { directionalPaperCounter };
 

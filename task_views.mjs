@@ -1,7 +1,7 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=a7c63f11b12bb724";
-import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=a7c63f11b12bb724";
-import { pathView } from "./dag_table.mjs?v=a7c63f11b12bb724";
-import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=a7c63f11b12bb724";
+import { h, replaceChildren } from "./dom_builder.mjs?v=4128f3c37a8c3920";
+import { causalNeighborhood, MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=4128f3c37a8c3920";
+import { pathView } from "./dag_table.mjs?v=4128f3c37a8c3920";
+import { DIAGNOSTIC_STATUSES, CONTROL_WARNING, LIGHT_STATUSES, diagnosticReviewRows } from "./confounder_status.mjs?v=4128f3c37a8c3920";
 
 const TASK_CLASSES = { identify: "task-identify", causes: "task-causes", consequences: "task-consequences" };
 const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
@@ -374,8 +374,8 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
       const empty = group.querySelector(".list-filter-empty");
       if (empty) {
         empty.hidden = shown > 0;
-        empty.textContent = total ? (query && searchStatus() === "loading" ? "Loading variable search…"
-          : query && searchStatus() === "error" ? "Variable search unavailable; no names match."
+        empty.textContent = total ? (query && searchStatus() === "loading" ? "Loading concept search…"
+          : query && searchStatus() === "error" ? "Concept search unavailable; no variable names match."
             : "No variable in this section matches the search.") : empty.dataset.empty;
       }
     }
@@ -589,7 +589,7 @@ export function createTaskViews({ state, searchGroups, searchStatus = () => "rea
       const label = id ? labelFor(id) : "";
       const active = picking === side;
       if (!active && document.activeElement !== input) input.value = label;
-      input.placeholder = active && id ? `Search to replace ${label}` : side === "instrument" ? "Optional" : "Search group or constituent variable";
+      input.placeholder = active && id ? `Search to replace ${label}` : side === "instrument" ? "Optional" : "Search variable or underlying concept";
       input.closest(".identify-field")?.classList.toggle("has-focus", Boolean(id));
       input.closest(".identify-field")?.classList.toggle("is-picking", active);
       const accepted = Boolean(id && !active);

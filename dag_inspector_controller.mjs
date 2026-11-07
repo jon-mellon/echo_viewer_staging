@@ -1,7 +1,8 @@
-import * as inspector from "./dag_inspector.mjs?v=a7c63f11b12bb724";
-import * as projectOps from "./dag_project.mjs?v=a7c63f11b12bb724";
-import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=a7c63f11b12bb724";
-import { excludeButton, excludedConcepts, exclusionNote, restoreList } from "./concept_exclusion_ui.mjs?v=a7c63f11b12bb724";
+import { conceptWithUoaHint } from "./concept_text.mjs?v=4128f3c37a8c3920";
+import * as inspector from "./dag_inspector.mjs?v=4128f3c37a8c3920";
+import * as projectOps from "./dag_project.mjs?v=4128f3c37a8c3920";
+import { h, replaceChildren, safeUrl } from "./dom_builder.mjs?v=4128f3c37a8c3920";
+import { excludeButton, excludedConcepts, exclusionNote, restoreList } from "./concept_exclusion_ui.mjs?v=4128f3c37a8c3920";
 
 export const STUDY_DESIGN_EDGE_ID = "__study_design_iv_to_dv__";
 export const STUDY_INSTRUMENT_EDGE_ID = "__study_design_instrument_to_iv__";
@@ -301,6 +302,7 @@ export function createDagInspectorController({
       replaceChildren(elements.provenancePanel, h("div", { className: "small-note", textContent: "No evidence records for this link." }));
       return;
     }
+    const uoaHint = { shown: false };
     const renderRow = ({ raw, source, target }) => {
       const doi = isDoi(raw.paper_id) ? raw.paper_id.trim() : null;
       const title = truncate(raw.paper_title || raw.paper_id, 44);
@@ -311,7 +313,7 @@ export function createDagInspectorController({
       const loadedConceptLabel = variableId => state.variableById.get(variableId)?.concept_label
         || state.variableById.get(variableId)?.display_label;
       const conceptCell = (concept, variableId) => {
-        if (loadedConceptLabel(variableId)) return cell(concept, "provenance-concept");
+        if (loadedConceptLabel(variableId)) return h("td", { className: "provenance-concept" }, ...conceptWithUoaHint(concept, uoaHint));
         return h("td", { className: "provenance-concept" }, state.pendingEdgeEvidence
           ? h("span", { className: "concept-loading", role: "status" },
             h("span", { className: "inline-spinner", ariaHidden: "true" }),
