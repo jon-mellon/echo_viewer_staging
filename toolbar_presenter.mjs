@@ -1,4 +1,4 @@
-import { h, replaceChildren } from "./dom_builder.mjs?v=41dfceeb63d55254";
+import { h, replaceChildren } from "./dom_builder.mjs?v=a959eed4d2df9136";
 
 export function diagnosticViewTitle(state, anchorsReady) {
   if (!anchorsReady) return "";

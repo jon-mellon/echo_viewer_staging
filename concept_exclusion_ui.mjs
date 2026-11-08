@@ -1,4 +1,4 @@
-import { h } from "./dom_builder.mjs?v=41dfceeb63d55254";
+import { h } from "./dom_builder.mjs?v=a959eed4d2df9136";
 
 export const EXCLUSION_SCOPE_NOTE =
   "Exclude removes a concept from this variable in your schema, so the map and evidence update too. "

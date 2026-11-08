@@ -1,5 +1,5 @@
-import { PERSON_UOA_SENTINEL } from "./dag_uoa.mjs?v=41dfceeb63d55254";
-import { h, replaceChildren } from "./dom_builder.mjs?v=41dfceeb63d55254";
+import { PERSON_UOA_SENTINEL } from "./dag_uoa.mjs?v=a959eed4d2df9136";
+import { h, replaceChildren } from "./dom_builder.mjs?v=a959eed4d2df9136";
 
 export function createUoaPresenter({ state, elements, visibleVariables, matches, getAllParts,
   supportedByAnchors, truncate, onSelect, onRemoveSeed }) {
