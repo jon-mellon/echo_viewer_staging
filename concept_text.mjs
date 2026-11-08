@@ -1,4 +1,4 @@
-import { h } from "./dom_builder.mjs?v=b0eb6f8d5eab9b81";
+import { h } from "./dom_builder.mjs?v=41dfceeb63d55254";
 
 // Source data writes concepts with "uoa" standing for the unit of analysis
 // ("uoa's self-reported amusement"). The abbreviation stays, and its first
@@ -11,16 +11,22 @@ function uoaHint(word) {
   const button = h("button", { className: "uoa-hint", type: "button", textContent: word,
     attrs: { "aria-expanded": "false", "aria-label": `${word}: what is this?` } });
   const wrap = h("span", { className: "uoa-hint-wrap" }, button, popover);
+  // One outside-dismiss handler per hint, detached whenever it closes. Closing from the button used to leave
+  // the document listeners behind, so each reopen stacked another pair and kept this hint's DOM alive.
+  const close = event => {
+    if (event.type === "keydown") {
+      if (event.key !== "Escape") return;
+      // Escape closes the hint only, not the screen behind it.
+      event.preventDefault();
+    } else if (wrap.contains(event.target)) return;
+    setOpen(false);
+  };
   const setOpen = open => {
     popover.hidden = !open;
     button.setAttribute("aria-expanded", String(open));
+    document.removeEventListener("click", close);
+    document.removeEventListener("keydown", close);
     if (open) {
-      const close = event => {
-        if (event.type === "keydown" ? event.key !== "Escape" : wrap.contains(event.target)) return;
-        setOpen(false);
-        document.removeEventListener("click", close);
-        document.removeEventListener("keydown", close);
-      };
       document.addEventListener("click", close);
       document.addEventListener("keydown", close);
     }

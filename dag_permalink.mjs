@@ -1,4 +1,4 @@
-import { MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=b0eb6f8d5eab9b81";
+import { MAX_NEIGHBORHOOD_DEPTH } from "./causal_neighborhood.mjs?v=41dfceeb63d55254";
 
 export const PERMALINK_VERSION = "1";
 export const TASKS = ["identify", "causes", "consequences"];
@@ -175,7 +175,8 @@ export function applyPermalink(params, state) {
   state.groupListSort = params.get("sort") === "alpha" ? "alpha" : "relevance";
   state.fullscreenPanel = params.get("fs") === "dag" ? "dag" : null;
   const numeric = key => Number(params.get(key));
-  if (["dz", "dx", "dy"].every(key => params.has(key) && Number.isFinite(numeric(key)))) {
+  if (["dz", "dx", "dy"].every(key => params.has(key) && params.get(key) !== "" && Number.isFinite(numeric(key)))
+    && numeric("dz") > 0) {
     state.permalinkDagViewport = { scale: numeric("dz"), position: { x: numeric("dx"), y: numeric("dy") } };
   }
   return true;

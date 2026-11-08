@@ -1,9 +1,9 @@
-import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=b0eb6f8d5eab9b81";
-import * as projectOps from "./dag_project.mjs?v=b0eb6f8d5eab9b81";
-import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=b0eb6f8d5eab9b81";
-import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=b0eb6f8d5eab9b81";
-import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=b0eb6f8d5eab9b81";
-import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=b0eb6f8d5eab9b81";
+import { boundedSplitLookup } from "./split_lookup_timeout.mjs?v=41dfceeb63d55254";
+import * as projectOps from "./dag_project.mjs?v=41dfceeb63d55254";
+import { createDefinitionWorkflowPresenter } from "./definition_workflow_presenter.mjs?v=41dfceeb63d55254";
+import { createDefinitionJevAssist } from "./definition_jev_assist.mjs?v=41dfceeb63d55254";
+import { listOwnPublishedSplits, loadPublishedSplitMembership } from "./published_split_browser.mjs?v=41dfceeb63d55254";
+import { eligiblePreviousSplits, projectWithoutRoleSplit, previousSplitsForRole } from "./previous_split_candidates.mjs?v=41dfceeb63d55254";
 
 export function createDefinitionWorkflowController({ state, elements: els, activeGroup, clusterRep,
   invalidateVisibleCaches, renderAll, groupById, persistProjectLocally, getReturnUrl = () => location.href,
@@ -493,7 +493,7 @@ export function createDefinitionWorkflowController({ state, elements: els, activ
       persistProjectLocally();
     });
     const nextOnEnter = event => {
-      if (event.key === "Enter" && !event.shiftKey && state.definitionDraft?.step === "describe") {
+      if (event.key === "Enter" && !event.shiftKey && !event.isComposing && state.definitionDraft?.step === "describe") {
         event.preventDefault();
         goToStep("partition");
       }

@@ -1,4 +1,4 @@
-import { h } from "./dom_builder.mjs?v=b0eb6f8d5eab9b81";
+import { h } from "./dom_builder.mjs?v=41dfceeb63d55254";
 
 /**
  * A right-click menu on the graph for setting a variable's status. One menu is reused; it closes on a choice,
@@ -31,7 +31,8 @@ export function createStatusMenu({ onChoose }) {
   }
 
   document.addEventListener("pointerdown", event => { if (!menu.hidden && !menu.contains(event.target)) hide(); });
-  document.addEventListener("keydown", event => { if (event.key === "Escape" && !menu.hidden) hide(); });
+  // Escape is consumed here so it does not also step back a screen or close a full-screen panel behind the menu.
+  document.addEventListener("keydown", event => { if (event.key === "Escape" && !menu.hidden) { event.preventDefault(); hide(); } });
   window.addEventListener("resize", hide);
   window.addEventListener("wheel", hide, { passive: true });
 

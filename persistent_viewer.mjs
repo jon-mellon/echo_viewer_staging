@@ -1,9 +1,21 @@
-import { buildPermalink } from "./dag_permalink.mjs?v=b0eb6f8d5eab9b81";
-import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=b0eb6f8d5eab9b81";
-import { validateGroupingSchema } from "./data_validation.mjs?v=b0eb6f8d5eab9b81";
-import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=b0eb6f8d5eab9b81";
+import { buildPermalink } from "./dag_permalink.mjs?v=41dfceeb63d55254";
+import { commitLocalSchema, mirrorSessionUrl, updateLocalPublication, urlSequence } from "./local_schema_store.mjs?v=41dfceeb63d55254";
+import { validateGroupingSchema } from "./data_validation.mjs?v=41dfceeb63d55254";
+import { GROUPING_FORMAT_VERSION, GROUPING_MEMBERSHIP_UNIT } from "./app_contracts.mjs?v=41dfceeb63d55254";
 
 const RESET_HANDOFF_KEY = "echo-pending-reset-session";
+
+/**
+ * Whether leaving the page now would lose work that exists only in memory: a
+ * definition being written or schema-editor changes. Writes that are running or
+ * failed are reported separately by `saving`.
+ */
+export function hasUnsavedWork({ definitionDraft, editorDirty = false }) {
+  const draft = definitionDraft;
+  const draftStarted = Boolean(draft && (draft.source_group_ids?.length || draft.new_label
+    || draft.new_description || draft.replaces_group_id || draft.new_variable_ids?.length));
+  return draftStarted || Boolean(editorDirty);
+}
 
 export function createPersistentViewer({ state, getSchema, getViewport = () => {},
   status = () => {}, onDiscard = () => {}, onSessionSaved = () => {}, onSaveStateChange = () => {}, saveSchema = commitLocalSchema }) {
