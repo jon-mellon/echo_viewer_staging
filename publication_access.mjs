@@ -1,5 +1,5 @@
-import { publishedFileUrl } from "./schema_source.mjs?v=e7c0d001315d75c9";
-import { getPublishedRow } from "./cloudflare_api.mjs?v=e7c0d001315d75c9";
+import { publishedFileUrl } from "./schema_source.mjs?v=f929dd46301f7c4b";
+import { getPublishedRow } from "./cloudflare_api.mjs?v=f929dd46301f7c4b";
 
 /** The folder holding one publication's files in R2. */
 export function publicSchemaBaseUrl(_client, storagePrefix) {

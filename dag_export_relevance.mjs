@@ -1,4 +1,4 @@
-import { deriveDagView } from "./dag_view.mjs?v=e7c0d001315d75c9";
+import { deriveDagView } from "./dag_view.mjs?v=f929dd46301f7c4b";
 
 // An exclusion belongs in the document only when reversing that one decision
 // would put its edge in the current DAG view. The project itself is untouched.
