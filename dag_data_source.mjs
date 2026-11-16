@@ -1,16 +1,16 @@
-import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=52d36785042c5791";
+import * as duckdb from "./vendor/duckdb/duckdb-browser.mjs?v=3e593d0fe6eb42b9";
 import { evidenceManifestUrl, evidenceSnapshotIdFromManifestUrl, groupingSchemaUrl,
-  schemaPublicationId } from "./dag_data_config.mjs?v=52d36785042c5791";
+  schemaPublicationId } from "./dag_data_config.mjs?v=3e593d0fe6eb42b9";
 import { browserV2ManifestLayout, browserV2ShardPath,
-  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=52d36785042c5791";
-import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=52d36785042c5791";
-import { loadPublishedSchema } from "./published_schema_loader.mjs?v=52d36785042c5791";
-import { variableSearchCatalog, searchCatalogs } from "./variable_search_catalog.mjs?v=52d36785042c5791";
-import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=52d36785042c5791";
-import { variableMapCatalog } from "./variable_map_catalog.mjs?v=52d36785042c5791";
-import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=52d36785042c5791";
-import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=52d36785042c5791";
-import { fetchViewerAssets, bindViewerAssets, missingViewerAssets } from "./viewer_assets.mjs?v=52d36785042c5791";
+  validateBrowserV2EvidenceBinding } from "./dag_manifest.mjs?v=3e593d0fe6eb42b9";
+import { loadGroupingSchema } from "./grouping_schema_loader.mjs?v=3e593d0fe6eb42b9";
+import { loadPublishedSchema } from "./published_schema_loader.mjs?v=3e593d0fe6eb42b9";
+import { variableSearchCatalog, searchCatalogs } from "./variable_search_catalog.mjs?v=3e593d0fe6eb42b9";
+import { evidencePanelCatalog } from "./evidence_panel_catalog.mjs?v=3e593d0fe6eb42b9";
+import { variableMapCatalog } from "./variable_map_catalog.mjs?v=3e593d0fe6eb42b9";
+import { variableNeighborCatalog } from "./variable_neighbor_catalog.mjs?v=3e593d0fe6eb42b9";
+import { variableIncidentCatalog } from "./variable_incident_catalog.mjs?v=3e593d0fe6eb42b9";
+import { fetchViewerAssets, bindViewerAssets, missingViewerAssets } from "./viewer_assets.mjs?v=3e593d0fe6eb42b9";
 
 // Reading many small remote Parquet shards incurs a separate metadata/range
 // round trip for each shard. The canonical snapshot is cheaper for wide groups.
@@ -131,7 +131,7 @@ export class ParquetManifestDagDataSource {
     this.onStatus("Starting query engine…");
     const engineStart = performance.now();
     const mainModule = new URL("./vendor/duckdb/duckdb-eh.wasm", import.meta.url).href;
-    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=52d36785042c5791", import.meta.url).href;
+    const mainWorker = new URL("./vendor/duckdb/duckdb-browser-eh.worker.js?v=3e593d0fe6eb42b9", import.meta.url).href;
     const worker = new Worker(mainWorker);
     const database = new duckdb.AsyncDuckDB(
       new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING),

@@ -1,8 +1,8 @@
-import * as exportData from "./dag_exports.mjs?v=52d36785042c5791";
-import * as history from "./project_history.mjs?v=52d36785042c5791";
-import * as persistence from "./project_persistence.mjs?v=52d36785042c5791";
-import * as projectOps from "./dag_project.mjs?v=52d36785042c5791";
-import * as workflow from "./dag_workflow.mjs?v=52d36785042c5791";
+import * as exportData from "./dag_exports.mjs?v=3e593d0fe6eb42b9";
+import * as history from "./project_history.mjs?v=3e593d0fe6eb42b9";
+import * as persistence from "./project_persistence.mjs?v=3e593d0fe6eb42b9";
+import * as projectOps from "./dag_project.mjs?v=3e593d0fe6eb42b9";
+import * as workflow from "./dag_workflow.mjs?v=3e593d0fe6eb42b9";
 
 // Owns project lifecycle and the sole in-place mutation adapter used by the UI.
 export function createDagProjectController({
