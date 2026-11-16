@@ -1,4 +1,4 @@
-import { createToolbarPresenter } from "./toolbar_presenter.mjs?v=bb7c7c2df2cd0cec";
+import { createToolbarPresenter } from "./toolbar_presenter.mjs?v=9d0891e5cefc3af1";
 
 export function createToolbarController({ state, elements, dagGroups, groupById }) {
   const presenter = createToolbarPresenter({ state, elements, groupById });
